@@ -1,6 +1,5 @@
 # SNMP Cockpit Android App 
 
-<script src="https://liberapay.com/emschu/widgets/button.js"></script>
 <noscript><a href="https://liberapay.com/emschu/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
 
 A free software GPL v3 Android SNMP reader app. Its designed to be used in a single WIFI environment and includes several security mechanisms to ensure connectivity. This app supports QR code driven workflows for establishing WIFI network connections as well as initiating multiple SNMP connections with IPv4/v6 addresses and UDP protocol. To ease the work with MIBs there is a built-in, but replaceable, MIB catalog integrated.  
@@ -158,9 +157,9 @@ This project is licensed under [**GPL v3**](./LICENSE), except all third party c
 
 ### Libraries
 
-* **Jackson Release 2.9.7**, Apache v2, *com.fasterxml.jackson.core:jackson-databind:2.9.7*
-* **ZXing**, Apache v2, *com.journeyapps:zxing-android-embedded:3.6.0*
-* **SNMP4J**, Apache v2, *org.snmp4j:snmp4j:2.6.3*
+* **Jackson Release 2.9.7**, Apache v2, *com.fasterxml.jackson.core:jackson-databind*
+* **ZXing**, Apache v2, *com.journeyapps:zxing-android-embedded*
+* **SNMP4J**, (modified), Apache v2, *org.snmp4j:snmp4j*
 * **RecyclerTreeView** (modified), Apache v2
 *[Repository](https://github.com/TellH/RecyclerTreeView)*
 * **AboutLibraries**, Apache v2, [Repository](https://github.com/mikepenz/AboutLibraries)
@@ -168,7 +167,7 @@ This project is licensed under [**GPL v3**](./LICENSE), except all third party c
 
 ### Static resources
 - [Cube CSS Animation](
-https://github.com/tobiasahlin/SpinKit/blob/master/css/spinners/11-folding-cube.css), MIT Lizenz
+https://github.com/tobiasahlin/SpinKit/blob/master/css/spinners/11-folding-cube.css), MIT License
 
 
 ### Used icons:
