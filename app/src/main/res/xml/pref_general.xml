@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SNMP Cockpit Android App
+  ~
+  ~ Copyright (C) 2018-2019
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="network_category"
+        android:title="@string/pref_category_network_security">
+        <CheckBoxPreference
+            android:key="is_wifi_ssid_locked"
+            android:maxLines="8"
+            android:checked="true"
+            android:title="@string/pref_is_wifi_ssid_locked_label"
+            android:defaultValue="true"
+            android:summary="@string/pref_is_wifi_ssid_locked_summary"
+            android:icon="@drawable/ic_lock_outline_black"/>
+
+        <!--android:dependency="is_wifi_ssid_locked"-->
+        <SwitchPreference
+            android:key="is_ssid_manual"
+            android:title="@string/pref_is_ssid_manually_set_label"
+            android:defaultValue="true"
+            android:summary="@string/pref_is_ssid_manually_set_summary"
+            android:icon="@drawable/ic_autorenew_black"/>
+
+        <EditTextPreference
+            android:key="secure_wifi_ssid"
+            android:title="@string/pref_secure_wifi_ssid_label"
+            android:icon="@drawable/ic_wifi_lock_black"
+            android:selectAllOnFocus="true"
+            android:dependency="is_ssid_manual"
+            android:dialogLayout="@layout/pref_ssid_layout" />
+
+        <SwitchPreference
+            android:key="is_wpa2_only"
+            android:defaultValue="true"
+            android:title="@string/pref_is_wpa2_only_label"
+            android:summary="@string/pref_is_wpa2_only_summary" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="general_category"
+        android:title="@string/pref_category_general">
+        <SwitchPreference
+            android:key="show_flash_light_hint"
+            android:defaultValue="true"
+            android:icon="@drawable/ic_flash_on_black"
+            android:title="@string/pref_flashlight_hint_label"
+            android:summary="@string/pref_flashlight_hint_summary" />
+
+        <SwitchPreference
+            android:key="use_v1_instead_of_v2c"
+            android:defaultValue="false"
+            android:icon="@drawable/ic_accessibility_black"
+            android:title="@string/pref_general_use_v1_insteadv2c_title"
+            android:summary="@string/pref_general_use_v1_insteadv2c_summary" />
+
+        <EditTextPreference
+            android:key="session_timeout"
+            android:icon="@drawable/ic_av_timer_black"
+            android:title="@string/pref_session_timeout_title"
+            android:dialogTitle="@string/pref_session_timeout_dialog_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_session_timeout_summary"
+            android:defaultValue="120" />
+
+        <SwitchPreference
+            android:key="periodic_ui_update_enabled"
+            android:title="@string/pref_periodic_update_enabled_title"
+            android:icon="@drawable/ic_refresh_black"
+            android:summary="@string/pref_periodic_update_enabled_summary"
+            android:defaultValue="true" />
+
+        <EditTextPreference
+            android:key="ui_update_interval_seconds"
+            android:icon="@drawable/ic_update_black"
+            android:dependency="periodic_ui_update_enabled"
+            android:title="@string/pref_periodic_update_interval"
+            android:dialogTitle="@string/pref_periodic_update_interval_dialog_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_periodic_update_summary"
+            android:defaultValue="15" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_mib_configuration_title"
+        android:key="mib_catalog">
+            <ListPreference
+                android:key="mib_catalog_selection"
+                android:icon="@drawable/ic_view_list_black"
+                android:title="@string/preference_mib_catalog_selection"
+                android:summary="@string/preference_mib_catalog_selection_summary"
+                android:defaultValue="default_catalog"
+                android:entries="@array/listArray"
+                android:entryValues="@array/listValues" />
+
+            <Preference
+                android:key="mib_catalog_reset"
+                android:title="@string/preference_reset_mibs"
+                android:summary="@string/preference_mib_catalog_reset_summary" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="debug_category"
+        android:title="@string/debug_menu_label">
+
+        <SwitchPreference
+            android:key="is_all_networks_allowed_debug"
+            android:defaultValue="false"
+            android:title="@string/pref_allow_all_networks_label"
+            android:summary="@string/pref_allow_all_networks_summary" />
+
+        <EditTextPreference
+            android:key="connection_timeout"
+            android:title="@string/pref_general_connection_timeout_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_general_connection_timeout_summary"
+            android:defaultValue="7500" />
+
+        <EditTextPreference
+            android:key="connection_retries"
+            android:title="@string/pref_general_connection_retries_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_general_connection_retries_summary"
+            android:defaultValue="3" />
+
+        <EditTextPreference
+            android:key="connection_test_timeout"
+            android:title="@string/pref_connection_test_timeout_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_connection_test_timeout_summary"
+            android:defaultValue="750" />
+
+        <EditTextPreference
+            android:key="connection_test_retries"
+            android:title="@string/pref_connection_test_retries_title"
+            android:dialogLayout="@layout/pref_number_layout"
+            android:summary="@string/pref_connection_test_retries_summary"
+            android:defaultValue="3" />
+
+        <Preference
+            android:key="request_action_counter"
+            android:enabled="false"
+            android:title="RequestActionCounter" />
+
+        <Preference
+            android:key="version"
+            android:enabled="false"
+            android:title="@string/pref_version_title" />
+
+        <Preference
+            android:key="build_timestamp"
+            android:enabled="false"
+            android:title="@string/pref_build_timestamp" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

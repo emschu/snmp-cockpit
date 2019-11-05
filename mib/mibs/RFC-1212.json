@@ -1,0 +1,39 @@
+{
+  "imports": {
+    "class": "imports",
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "NOTIFICATION-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "ObjectName",
+      "Counter64",
+      "OBJECT-IDENTITY",
+      "Unsigned32",
+      "Counter32",
+      "Gauge32",
+      "MODULE-IDENTITY",
+      "TimeTicks",
+      "Bits",
+      "iso",
+      "MibIdentifier",
+      "Integer32",
+      "NOTIFICATION-TYPE",
+      "OBJECT-TYPE",
+      "IpAddress"
+    ],
+    "SNMPv2-TC": [
+      "TEXTUAL-CONVENTION",
+      "DisplayString"
+    ]
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///home/worker/workspaces/snmp-cockpit/mib/orig/RFC-1212-MIB.txt",
+      "Produced by pysmi-0.3.2 at Fri Jul 26 22:09:51 2019",
+      "On host workerhost.local platform Linux version 5.1.15-300.fc30.x86_64 by user worker",
+      "Using Python version 3.7.3 (default, May 11 2019, 00:38:04) "
+    ],
+    "module": "RFC-1212"
+  }
+}

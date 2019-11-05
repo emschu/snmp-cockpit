@@ -1,0 +1,25 @@
+<!--
+  ~ SNMP Cockpit Android App
+  ~
+  ~ Copyright (C) 2018-2019
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<vector android:height="24dp" android:viewportHeight="468.138"
+    android:viewportWidth="468.138" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FF000000" android:pathData="M234.068,468.138c-62.522,0 -121.302,-24.348 -165.511,-68.558C24.347,355.37 0,296.591 0,234.068S24.347,112.768 68.557,68.558S171.546,0.001 234.068,0.001S355.37,24.348 399.58,68.558c44.21,44.209 68.558,102.989 68.558,165.511S443.79,355.37 399.58,399.581C355.37,443.79 296.59,468.138 234.068,468.138zM234.068,20.001c-57.18,0 -110.937,22.267 -151.369,62.699S20,176.89 20,234.068c0,57.18 22.267,110.937 62.699,151.37c40.432,40.432 94.189,62.699 151.369,62.699s110.937,-22.268 151.37,-62.699c40.432,-40.433 62.699,-94.189 62.699,-151.37c0,-57.18 -22.268,-110.937 -62.699,-151.369C345.005,42.268 291.249,20.001 234.068,20.001z"/>
+    <path android:fillColor="#FF000000" android:pathData="M206.743,184.883h43.721v174.883h-43.721z"/>
+    <path android:fillColor="#FF000000" android:pathData="M206.743,119.303h43.721v43.721h-43.721z"/>
+</vector>

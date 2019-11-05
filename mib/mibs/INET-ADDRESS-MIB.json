@@ -1,0 +1,298 @@
+{
+  "imports": {
+    "class": "imports",
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "NOTIFICATION-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "OBJECT-IDENTITY",
+      "Counter64",
+      "Unsigned32",
+      "Counter32",
+      "Gauge32",
+      "IpAddress",
+      "MODULE-IDENTITY",
+      "TimeTicks",
+      "Bits",
+      "iso",
+      "MibIdentifier",
+      "Integer32",
+      "NOTIFICATION-TYPE",
+      "OBJECT-TYPE",
+      "mib-2"
+    ],
+    "SNMPv2-TC": [
+      "TEXTUAL-CONVENTION",
+      "DisplayString"
+    ]
+  },
+  "inetAddressMIB": {
+    "name": "inetAddressMIB",
+    "oid": "1.3.6.1.2.1.76",
+    "class": "moduleidentity",
+    "revisions": [
+      {
+        "revision": "2005-02-04 00:00",
+        "description": "Third version, published as RFC 4001.  This revision\n         introduces the InetZoneIndex, InetScopeType, and\n         InetVersion textual conventions."
+      },
+      {
+        "revision": "2002-05-09 00:00",
+        "description": "Second version, published as RFC 3291.  This\n         revision contains several clarifications and\n         introduces several new textual conventions:\n         InetAddressPrefixLength, InetPortNumber,\n         InetAutonomousSystemNumber, InetAddressIPv4z,\n         and InetAddressIPv6z."
+      },
+      {
+        "revision": "2000-06-08 00:00",
+        "description": "Initial version, published as RFC 2851."
+      }
+    ],
+    "lastupdated": "200502040000Z",
+    "organization": "IETF Operations and Management Area",
+    "contactinfo": "Juergen Schoenwaelder (Editor)\n         International University Bremen\n         P.O. Box 750 561\n         28725 Bremen, Germany\n\n         Phone: +49 421 200-3587\n         EMail: j.schoenwaelder@iu-bremen.de\n\n         Send comments to <ietfmibs@ops.ietf.org>.",
+    "description": "This MIB module defines textual conventions for\n         representing Internet addresses.  An Internet\n         address can be an IPv4 address, an IPv6 address,\n         or a DNS domain name.  This module also defines\n         textual conventions for Internet port numbers,\n         autonomous system numbers, and the length of an\n         Internet address prefix.\n\n         Copyright (C) The Internet Society (2005).  This version\n         of this MIB module is part of RFC 4001, see the RFC\n         itself for full legal notices."
+  },
+  "InetAddressType": {
+    "name": "InetAddressType",
+    "class": "textualconvention",
+    "type": {
+      "type": "INTEGER",
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "unknown": 0,
+          "ipv4": 1,
+          "ipv6": 2,
+          "ipv4z": 3,
+          "ipv6z": 4,
+          "dns": 16
+        }
+      }
+    },
+    "status": "current",
+    "description": "A value that represents a type of Internet address.\n\n         unknown(0)  An unknown address type.  This value MUST\n                     be used if the value of the corresponding\n                     InetAddress object is a zero-length string.\n                     It may also be used to indicate an IP address\n                     that is not in one of the formats defined\n                     below.\n\n         ipv4(1)     An IPv4 address as defined by the\n                     InetAddressIPv4 textual convention.\n\n         ipv6(2)     An IPv6 address as defined by the\n                     InetAddressIPv6 textual convention.\n\n         ipv4z(3)    A non-global IPv4 address including a zone\n                     index as defined by the InetAddressIPv4z\n                     textual convention.\n\n         ipv6z(4)    A non-global IPv6 address including a zone\n                     index as defined by the InetAddressIPv6z\n                     textual convention.\n\n         dns(16)     A DNS domain name as defined by the\n                     InetAddressDNS textual convention.\n\n         Each definition of a concrete InetAddressType value must be\n         accompanied by a definition of a textual convention for use\n         with that InetAddressType.\n\n         To support future extensions, the InetAddressType textual\n         convention SHOULD NOT be sub-typed in object type definitions.\n         It MAY be sub-typed in compliance statements in order to\n         require only a subset of these address types for a compliant\n         implementation.\n\n         Implementations must ensure that InetAddressType objects\n         and any dependent objects (e.g., InetAddress objects) are\n         consistent.  An inconsistentValue error must be generated\n         if an attempt to change an InetAddressType object would,\n         for example, lead to an undefined InetAddress value.  In\n\n         particular, InetAddressType/InetAddress pairs must be\n         changed together if the address type changes (e.g., from\n         ipv6(2) to ipv4(1))."
+  },
+  "InetAddress": {
+    "name": "InetAddress",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 0,
+            "max": 255
+          }
+        ]
+      }
+    },
+    "status": "current",
+    "description": "Denotes a generic Internet address.\n\n         An InetAddress value is always interpreted within the context\n         of an InetAddressType value.  Every usage of the InetAddress\n         textual convention is required to specify the InetAddressType\n         object that provides the context.  It is suggested that the\n         InetAddressType object be logically registered before the\n         object(s) that use the InetAddress textual convention, if\n         they appear in the same logical row.\n\n         The value of an InetAddress object must always be\n         consistent with the value of the associated InetAddressType\n         object.  Attempts to set an InetAddress object to a value\n         inconsistent with the associated InetAddressType\n         must fail with an inconsistentValue error.\n\n         When this textual convention is used as the syntax of an\n         index object, there may be issues with the limit of 128\n         sub-identifiers specified in SMIv2, STD 58.  In this case,\n         the object definition MUST include a 'SIZE' clause to\n         limit the number of potential instance sub-identifiers;\n         otherwise the applicable constraints MUST be stated in\n         the appropriate conceptual row DESCRIPTION clauses, or\n         in the surrounding documentation if there is no single\n         DESCRIPTION clause that is appropriate."
+  },
+  "InetAddressIPv4": {
+    "name": "InetAddressIPv4",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 4,
+            "max": 4
+          }
+        ]
+      }
+    },
+    "displayhint": "1d.1d.1d.1d",
+    "status": "current",
+    "description": "Represents an IPv4 network address:\n\n           Octets   Contents         Encoding\n            1-4     IPv4 address     network-byte order\n\n         The corresponding InetAddressType value is ipv4(1).\n\n         This textual convention SHOULD NOT be used directly in object\n         definitions, as it restricts addresses to a specific format.\n         However, if it is used, it MAY be used either on its own or in\n         conjunction with InetAddressType, as a pair."
+  },
+  "InetAddressIPv6": {
+    "name": "InetAddressIPv6",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 16,
+            "max": 16
+          }
+        ]
+      }
+    },
+    "displayhint": "2x:2x:2x:2x:2x:2x:2x:2x",
+    "status": "current",
+    "description": "Represents an IPv6 network address:\n\n           Octets   Contents         Encoding\n            1-16    IPv6 address     network-byte order\n\n         The corresponding InetAddressType value is ipv6(2).\n\n         This textual convention SHOULD NOT be used directly in object\n         definitions, as it restricts addresses to a specific format.\n         However, if it is used, it MAY be used either on its own or in\n         conjunction with InetAddressType, as a pair."
+  },
+  "InetAddressIPv4z": {
+    "name": "InetAddressIPv4z",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 8,
+            "max": 8
+          }
+        ]
+      }
+    },
+    "displayhint": "1d.1d.1d.1d%4d",
+    "status": "current",
+    "description": "Represents a non-global IPv4 network address, together\n         with its zone index:\n\n           Octets   Contents         Encoding\n            1-4     IPv4 address     network-byte order\n            5-8     zone index       network-byte order\n\n         The corresponding InetAddressType value is ipv4z(3).\n\n         The zone index (bytes 5-8) is used to disambiguate identical\n         address values on nodes that have interfaces attached to\n         different zones of the same scope.  The zone index may contain\n         the special value 0, which refers to the default zone for each\n         scope.\n\n         This textual convention SHOULD NOT be used directly in object\n\n         definitions, as it restricts addresses to a specific format.\n         However, if it is used, it MAY be used either on its own or in\n         conjunction with InetAddressType, as a pair."
+  },
+  "InetAddressIPv6z": {
+    "name": "InetAddressIPv6z",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 20,
+            "max": 20
+          }
+        ]
+      }
+    },
+    "displayhint": "2x:2x:2x:2x:2x:2x:2x:2x%4d",
+    "status": "current",
+    "description": "Represents a non-global IPv6 network address, together\n         with its zone index:\n\n           Octets   Contents         Encoding\n            1-16    IPv6 address     network-byte order\n           17-20    zone index       network-byte order\n\n         The corresponding InetAddressType value is ipv6z(4).\n\n         The zone index (bytes 17-20) is used to disambiguate\n         identical address values on nodes that have interfaces\n         attached to different zones of the same scope.  The zone index\n         may contain the special value 0, which refers to the default\n         zone for each scope.\n\n         This textual convention SHOULD NOT be used directly in object\n         definitions, as it restricts addresses to a specific format.\n         However, if it is used, it MAY be used either on its own or in\n         conjunction with InetAddressType, as a pair."
+  },
+  "InetAddressDNS": {
+    "name": "InetAddressDNS",
+    "class": "textualconvention",
+    "type": {
+      "type": "OCTET STRING",
+      "class": "type",
+      "constraints": {
+        "size": [
+          {
+            "min": 1,
+            "max": 255
+          }
+        ]
+      }
+    },
+    "displayhint": "255a",
+    "status": "current",
+    "description": "Represents a DNS domain name.  The name SHOULD be fully\n         qualified whenever possible.\n\n         The corresponding InetAddressType is dns(16).\n\n         The DESCRIPTION clause of InetAddress objects that may have\n         InetAddressDNS values MUST fully describe how (and when)\n         these names are to be resolved to IP addresses.\n\n         The resolution of an InetAddressDNS value may require to\n         query multiple DNS records (e.g., A for IPv4 and AAAA for\n         IPv6).  The order of the resolution process and which DNS\n         record takes precedence depends on the configuration of the\n         resolver.\n\n         This textual convention SHOULD NOT be used directly in object\n         definitions, as it restricts addresses to a specific format.\n         However, if it is used, it MAY be used either on its own or in\n         conjunction with InetAddressType, as a pair."
+  },
+  "InetAddressPrefixLength": {
+    "name": "InetAddressPrefixLength",
+    "class": "textualconvention",
+    "type": {
+      "type": "Unsigned32",
+      "class": "type",
+      "constraints": {
+        "range": [
+          {
+            "min": 0,
+            "max": 2040
+          }
+        ]
+      }
+    },
+    "displayhint": "d",
+    "status": "current",
+    "description": "Denotes the length of a generic Internet network address\n         prefix.  A value of n corresponds to an IP address mask\n         that has n contiguous 1-bits from the most significant\n         bit (MSB), with all other bits set to 0.\n\n         An InetAddressPrefixLength value is always interpreted within\n         the context of an InetAddressType value.  Every usage of the\n         InetAddressPrefixLength textual convention is required to\n         specify the InetAddressType object that provides the\n         context.  It is suggested that the InetAddressType object be\n         logically registered before the object(s) that use the\n         InetAddressPrefixLength textual convention, if they appear\n         in the same logical row.\n\n         InetAddressPrefixLength values larger than\n         the maximum length of an IP address for a specific\n         InetAddressType are treated as the maximum significant\n         value applicable for the InetAddressType.  The maximum\n         significant value is 32 for the InetAddressType\n         'ipv4(1)' and 'ipv4z(3)' and 128 for the InetAddressType\n         'ipv6(2)' and 'ipv6z(4)'.  The maximum significant value\n         for the InetAddressType 'dns(16)' is 0.\n\n         The value zero is object-specific and must be defined as\n         part of the description of any object that uses this\n         syntax.  Examples of the usage of zero might include\n         situations where the Internet network address prefix\n         is unknown or does not apply.\n\n         The upper bound of the prefix length has been chosen to\n         be consistent with the maximum size of an InetAddress."
+  },
+  "InetPortNumber": {
+    "name": "InetPortNumber",
+    "class": "textualconvention",
+    "type": {
+      "type": "Unsigned32",
+      "class": "type",
+      "constraints": {
+        "range": [
+          {
+            "min": 0,
+            "max": 65535
+          }
+        ]
+      }
+    },
+    "displayhint": "d",
+    "status": "current",
+    "description": "Represents a 16 bit port number of an Internet transport\n\n         layer protocol.  Port numbers are assigned by IANA.  A\n         current list of all assignments is available from\n         <http://www.iana.org/>.\n\n         The value zero is object-specific and must be defined as\n         part of the description of any object that uses this\n         syntax.  Examples of the usage of zero might include\n         situations where a port number is unknown, or when the\n         value zero is used as a wildcard in a filter.",
+    "reference": "STD 6 (RFC 768), STD 7 (RFC 793) and RFC 2960"
+  },
+  "InetAutonomousSystemNumber": {
+    "name": "InetAutonomousSystemNumber",
+    "class": "textualconvention",
+    "type": {
+      "type": "Unsigned32",
+      "class": "type"
+    },
+    "displayhint": "d",
+    "status": "current",
+    "description": "Represents an autonomous system number that identifies an\n         Autonomous System (AS).  An AS is a set of routers under a\n         single technical administration, using an interior gateway\n         protocol and common metrics to route packets within the AS,\n         and using an exterior gateway protocol to route packets to\n         other ASes'.  IANA maintains the AS number space and has\n         delegated large parts to the regional registries.\n\n         Autonomous system numbers are currently limited to 16 bits\n         (0..65535).  There is, however, work in progress to enlarge the\n         autonomous system number space to 32 bits.  Therefore, this\n         textual convention uses an Unsigned32 value without a\n         range restriction in order to support a larger autonomous\n         system number space.",
+    "reference": "RFC 1771, RFC 1930"
+  },
+  "InetScopeType": {
+    "name": "InetScopeType",
+    "class": "textualconvention",
+    "type": {
+      "type": "INTEGER",
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "interfaceLocal": 1,
+          "linkLocal": 2,
+          "subnetLocal": 3,
+          "adminLocal": 4,
+          "siteLocal": 5,
+          "organizationLocal": 8,
+          "global": 14
+        }
+      }
+    },
+    "status": "current",
+    "description": "Represents a scope type.  This textual convention can be used\n         in cases where a MIB has to represent different scope types\n         and there is no context information, such as an InetAddress\n         object, that implicitly defines the scope type.\n\n         Note that not all possible values have been assigned yet, but\n         they may be assigned in future revisions of this specification.\n         Applications should therefore be able to deal with values\n         not yet assigned.",
+    "reference": "RFC 3513"
+  },
+  "InetZoneIndex": {
+    "name": "InetZoneIndex",
+    "class": "textualconvention",
+    "type": {
+      "type": "Unsigned32",
+      "class": "type"
+    },
+    "displayhint": "d",
+    "status": "current",
+    "description": "A zone index identifies an instance of a zone of a\n         specific scope.\n\n         The zone index MUST disambiguate identical address\n         values.  For link-local addresses, the zone index will\n         typically be the interface index (ifIndex as defined in the\n         IF-MIB) of the interface on which the address is configured.\n\n         The zone index may contain the special value 0, which refers\n         to the default zone.  The default zone may be used in cases\n         where the valid zone index is not known (e.g., when a\n         management application has to write a link-local IPv6\n         address without knowing the interface index value).  The\n         default zone SHOULD NOT be used as an easy way out in\n         cases where the zone index for a non-global IPv6 address\n         is known.",
+    "reference": "RFC4007"
+  },
+  "InetVersion": {
+    "name": "InetVersion",
+    "class": "textualconvention",
+    "type": {
+      "type": "INTEGER",
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "unknown": 0,
+          "ipv4": 1,
+          "ipv6": 2
+        }
+      }
+    },
+    "status": "current",
+    "description": "A value representing a version of the IP protocol.\n\n         unknown(0)  An unknown or unspecified version of the IP\n                     protocol.\n\n         ipv4(1)     The IPv4 protocol as defined in RFC 791 (STD 5).\n\n         ipv6(2)     The IPv6 protocol as defined in RFC 2460.\n\n         Note that this textual convention SHOULD NOT be used to\n         distinguish different address types associated with IP\n         protocols.  The InetAddressType has been designed for this\n         purpose.",
+    "reference": "RFC 791, RFC 2460"
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///home/worker/workspaces/snmp-cockpit/mib/orig/INET-ADDRESS-MIB.txt",
+      "Produced by pysmi-0.3.2 at Fri Jul 26 22:09:51 2019",
+      "On host workerhost.local platform Linux version 5.1.15-300.fc30.x86_64 by user worker",
+      "Using Python version 3.7.3 (default, May 11 2019, 00:38:04) "
+    ],
+    "module": "INET-ADDRESS-MIB"
+  }
+}

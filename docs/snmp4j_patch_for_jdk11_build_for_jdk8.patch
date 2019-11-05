@@ -1,0 +1,623 @@
+Index: pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- pom.xml	(date 1572895738000)
++++ pom.xml	(date 1572821736000)
+@@ -208,10 +208,10 @@
+             </plugin>
+             <plugin>
+                 <artifactId>maven-compiler-plugin</artifactId>
+-                <version>3.7.0</version>
++                <version>3.8.1</version>
+                 <configuration>
+-                    <source>1.9</source>
+-                    <target>1.9</target>
++                    <source>11</source>
++		             <release>8</release>
+                     <encoding>UTF-8</encoding>
+                     <compilerArgument>-Xlint:all</compilerArgument>
+                 </configuration>
+Index: src/main/java/module-info.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/snmp4j/asn1/BEROutputStream.java	(date 1572895738000)
++++ src/main/java/org/snmp4j/asn1/BEROutputStream.java	(date 1572821736000)
+@@ -87,7 +87,7 @@
+    *    set to the begin of the output stream.
+    */
+   public ByteBuffer rewind() {
+-    return buffer.position(offset);
++    return (ByteBuffer) buffer.position(offset);
+   }
+ 
+   /**
+Index: src/main/java/org/snmp4j/security/TSM.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/snmp4j/security/TSM.java	(date 1572895738000)
++++ src/main/java/org/snmp4j/security/TSM.java	(date 1572821736000)
+@@ -192,7 +192,7 @@
+         byte[] wholeMessage =
+                 buildWholeMessage(new Integer32(messageProcessingModel),
+                         scopedPduBytes, globalData, securityParameters);
+-        ByteBuffer buf = ByteBuffer.wrap(wholeMessage).position(wholeMessage.length);
++        ByteBuffer buf = (ByteBuffer) ByteBuffer.wrap(wholeMessage).position(wholeMessage.length);
+         wholeMsg.setBuffer(buf);
+         return SnmpConstants.SNMPv3_TSM_OK;
+     }
+Index: src/main/java/org/snmp4j/security/USM.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/snmp4j/security/USM.java	(date 1572895738000)
++++ src/main/java/org/snmp4j/security/USM.java	(date 1572821736000)
+@@ -515,7 +515,7 @@
+                     buildWholeMessage(new Integer32(snmpVersion),
+                             scopedPduBytes, globalData, usmSecurityParams);
+         }
+-        ByteBuffer buf = ByteBuffer.wrap(wholeMessage).position(wholeMessage.length);
++        ByteBuffer buf = (ByteBuffer) ByteBuffer.wrap(wholeMessage).position(wholeMessage.length);
+         wholeMsg.setBuffer(buf);
+         // not necessary: wholeMsg.write(wholeMessage);
+         return SnmpConstants.SNMPv3_USM_OK;
+Index: src/main/java/org/snmp4j/smi/TimeTicks.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/java/org/snmp4j/transport/DTLSTM.java	(date 1572895738000)
++++ src/main/java/org/snmp4j/transport/DTLSTM.java	(date 1572821736000)
+@@ -746,180 +746,181 @@
+         }
+ 
+         public void run() {
+-            socketEntry.setHandshakeFinished(false);
+-            DatagramPacket received = receivedPacket;
+-            SSLEngine engine = socketEntry.sslEngine;
+-            engine.setEnableSessionCreation(true);
+-            boolean endLoops = false;
+-            int loops = MAX_HANDSHAKE_LOOPS;
+-            ByteBuffer iNet = null;
+-            ByteBuffer iApp = null;
+-            UdpAddress peerAddress = socketEntry.getPeerAddress();
+-            InetSocketAddress peerSocketAddress =
+-                    new InetSocketAddress(peerAddress.getInetAddress(), peerAddress.getPort());
+-            try {
+-                engine.beginHandshake();
+-                long startTime = System.nanoTime();
+-                long timeoutMillis = handshakeTimeout <= 0 ? getHandshakeTimeout() : handshakeTimeout;
+-                while (!endLoops && !engine.isInboundDone() && (sockets.containsKey(peerSocketAddress)) &&
+-                        (((System.nanoTime() - startTime) / SnmpConstants.MILLISECOND_TO_NANOSECOND) < timeoutMillis)) {
+-                    if (--loops < 0) {
+-                        throw new IOException("DTLSTM: Too much loops to produce handshake packets");
+-                    }
+-                    HandshakeStatus hs = engine.getHandshakeStatus();
+-                    if (logger.isDebugEnabled()) {
+-                        logger.debug("Processing handshake status " + hs + " in loop #" + (MAX_HANDSHAKE_LOOPS - loops));
+-                    }
+-                    Status rs = null;
+-                    while (!endLoops && (hs == NEED_UNWRAP || hs == NEED_UNWRAP_AGAIN)) {
+-                        if (hs != NEED_UNWRAP_AGAIN) {
+-                            if (received == null && !((iNet != null) && (iNet.hasRemaining()))) {
+-                                if (isListening()) {
+-                                    long timeout = timeoutMillis - ((System.nanoTime() - startTime) /
+-                                            SnmpConstants.MILLISECOND_TO_NANOSECOND);
+-                                    if (timeout > 0) {
+-                                        synchronized (socketEntry) {
+-                                            try {
+-                                                if (socketEntry.inboundPacketQueue.isEmpty()) {
+-                                                    logger.debug("Waiting for next handshake packet timeout=" + timeout);
+-                                                    socketEntry.wait(timeoutMillis);
+-                                                }
+-                                            } catch (InterruptedException iex) {
+-                                                // ignore
+-                                            }
+-                                            if (engine.getHandshakeStatus() == NOT_HANDSHAKING) {
+-                                                if (logger.isDebugEnabled()) {
+-                                                    logger.debug("Handshake finished already by other thread");
+-                                                }
+-                                                return;
+-                                            }
+-                                            synchronized (socketEntry.inboundLock) {
+-                                                received = socketEntry.inboundPacketQueue.pollFirst();
+-                                                if (logger.isDebugEnabled() && (received != null)) {
+-                                                    logger.debug("Polled DTLS packet with length " + received.getLength());
+-                                                }
+-                                            }
+-                                        }
+-                                    } else {
+-                                        endLoops = true;
+-
+-                                    }
+-                                    if (received == null) {
+-                                        continue;
+-                                    }
+-                                } else {
+-                                    byte[] buf = new byte[getMaxInboundMessageSize()];
+-                                    // receive ClientHello request and other SSL/TLS records
+-                                    received = new DatagramPacket(buf, buf.length);
+-                                    try {
+-                                        socket.receive(received);
+-                                    } catch (SocketTimeoutException ste) {
+-                                        if (logger.isInfoEnabled()) {
+-                                            logger.info("Socket timeout while receiving DTLS handshake packet");
+-                                        }
+-                                        if (maxRetries > retries++) {
+-                                            synchronized (socketEntry.outboundLock) {
+-                                                // ignore and handle later below
+-                                                List<DatagramPacket> packets = onReceiveTimeout(engine, peerAddr);
+-                                                for (DatagramPacket p : packets) {
+-                                                    socket.send(p);
+-                                                    if (logger.isDebugEnabled()) {
+-                                                        logger.debug("Sent " + new OctetString(p.getData()).toHexString() +
+-                                                                " to " + p.getAddress() + ":" + p.getPort());
+-                                                    }
+-                                                }
+-                                            }
+-                                        } else {
+-                                            endLoops = true;
+-                                        }
+-                                        break;
+-                                    }
+-                                }
+-                            }
+-                            if (received != null) {
+-                                if (((iNet == null) || (!iNet.hasRemaining()))) {
+-                                    iNet = ByteBuffer.wrap(received.getData(), 0, received.getLength());
+-                                } else {
+-                                    iNet.compact();
+-                                    iNet.put(received.getData(), 0, received.getLength());
+-                                    iNet.flip();
+-                                }
+-                            }
+-                            iApp = ByteBuffer.allocate(getMaxInboundMessageSize());
+-                        } else {
+-                            iApp = ByteBuffer.allocate(getMaxInboundMessageSize());
+-                        }
+-                        received = null;
+-                        synchronized (socketEntry.inboundLock) {
+-                            if (logger.isDebugEnabled()) {
+-                                logger.debug("unrwap start: iNet=" + iNet + ",iApp=" + iApp);
+-                            }
+-                            SSLEngineResult r = engine.unwrap(iNet, iApp);
+-                            rs = r.getStatus();
+-                            hs = r.getHandshakeStatus();
+-                            if (logger.isDebugEnabled()) {
+-                                logger.debug("unrwap done: iNet=" + iNet + ",iApp=" + iApp + ",rs=" + rs + ",hs=" + hs);
+-                            }
+-                        }
+-                        if (rs == Status.BUFFER_OVERFLOW) {
+-                            // the client maximum fragment size config does not work?
+-                            throw new IOException("DTLSTM: Buffer overflow: incorrect client maximum fragment size");
+-                        } else if (rs == Status.BUFFER_UNDERFLOW) {
+-                            // bad packet, or the client maximum fragment size
+-                            logger.warn("DTLS buffer underflow iNet=" + iNet + ",iApp=" + iApp);
+-                            // config does not work?
+-                            if (hs == NOT_HANDSHAKING) {
+-                                endLoops = true;
+-                                break;
+-                            } // otherwise, ignore this packet
+-                            continue;
+-                        } else if (rs == Status.CLOSED) {
+-                            endLoops = true;
+-                        }   // otherwise, SSLEngineResult.Status.OK:
+-                        if (rs != Status.OK) {
+-                            break;
+-                        }
+-                    }
+-                    if (hs == NEED_WRAP) {
+-                        synchronized (socketEntry.outboundLock) {
+-                            List<DatagramPacket> packets = produceHandshakePackets(engine, peerAddr);
+-                            for (DatagramPacket p : packets) {
+-                                if (logger.isDebugEnabled()) {
+-                                    logger.debug("Sending handshake packet with length " + p.getLength() +
+-                                            " [" + new OctetString(p.getData()).toHexString() +
+-                                            "] to " + p.getAddress() + ":" + p.getPort());
+-                                }
+-                                socket.send(p);
+-                            }
+-                        }
+-                    } else if (hs == NEED_TASK) {
+-                        runDelegatedTasks(engine);
+-                    } else if (hs == NOT_HANDSHAKING) {
+-                        // OK, time to do application data exchange.
+-                        endLoops = true;
+-                    } else if (hs == FINISHED) {
+-                        endLoops = true;
+-                    }
+-                }
+-            } catch (IOException iox) {
+-                logger.error("DTLS handshake failed for " + peerAddr +
+-                        " failed with IO exception:" + iox.getMessage(), iox);
+-            }
+-            HandshakeStatus hs = engine.getHandshakeStatus();
+-            if (hs != NOT_HANDSHAKING) {
+-                sockets.remove(peerSocketAddress);
+-                logger.error("DTLS handshake failed for " + peerAddr + ": Not ready for application data yet, giving up");
+-                socketEntry.closeSession();
+-            } else {
+-                socketEntry.setHandshakeFinished(true);
+-                if (logger.isInfoEnabled()) {
+-                    logger.info("SSL handshake completed for " + peerAddr);
+-                }
+-                timeoutSocket(socketEntry);
+-                TransportStateEvent e = new TransportStateEvent(DTLSTM.this, socketEntry.getPeerAddress(),
+-                        TransportStateEvent.STATE_CONNECTED, null);
+-                fireConnectionStateChanged(e);
+-            }
++            throw new UnsupportedOperationException("no implementation provided. Requires android SDK supporting jdk 9+");
++//            socketEntry.setHandshakeFinished(false);
++//            DatagramPacket received = receivedPacket;
++//            SSLEngine engine = socketEntry.sslEngine;
++//            engine.setEnableSessionCreation(true);
++//            boolean endLoops = false;
++//            int loops = MAX_HANDSHAKE_LOOPS;
++//            ByteBuffer iNet = null;
++//            ByteBuffer iApp = null;
++//            UdpAddress peerAddress = socketEntry.getPeerAddress();
++//            InetSocketAddress peerSocketAddress =
++//                    new InetSocketAddress(peerAddress.getInetAddress(), peerAddress.getPort());
++//            try {
++//                engine.beginHandshake();
++//                long startTime = System.nanoTime();
++//                long timeoutMillis = handshakeTimeout <= 0 ? getHandshakeTimeout() : handshakeTimeout;
++//                while (!endLoops && !engine.isInboundDone() && (sockets.containsKey(peerSocketAddress)) &&
++//                        (((System.nanoTime() - startTime) / SnmpConstants.MILLISECOND_TO_NANOSECOND) < timeoutMillis)) {
++//                    if (--loops < 0) {
++//                        throw new IOException("DTLSTM: Too much loops to produce handshake packets");
++//                    }
++//                    HandshakeStatus hs = engine.getHandshakeStatus();
++//                    if (logger.isDebugEnabled()) {
++//                        logger.debug("Processing handshake status " + hs + " in loop #" + (MAX_HANDSHAKE_LOOPS - loops));
++//                    }
++//                    Status rs = null;
++//                    while (!endLoops && (hs == NEED_UNWRAP || hs == NEED_UNWRAP_AGAIN)) {
++//                        if (hs != NEED_UNWRAP_AGAIN) {
++//                            if (received == null && !((iNet != null) && (iNet.hasRemaining()))) {
++//                                if (isListening()) {
++//                                    long timeout = timeoutMillis - ((System.nanoTime() - startTime) /
++//                                            SnmpConstants.MILLISECOND_TO_NANOSECOND);
++//                                    if (timeout > 0) {
++//                                        synchronized (socketEntry) {
++//                                            try {
++//                                                if (socketEntry.inboundPacketQueue.isEmpty()) {
++//                                                    logger.debug("Waiting for next handshake packet timeout=" + timeout);
++//                                                    socketEntry.wait(timeoutMillis);
++//                                                }
++//                                            } catch (InterruptedException iex) {
++//                                                // ignore
++//                                            }
++//                                            if (engine.getHandshakeStatus() == NOT_HANDSHAKING) {
++//                                                if (logger.isDebugEnabled()) {
++//                                                    logger.debug("Handshake finished already by other thread");
++//                                                }
++//                                                return;
++//                                            }
++//                                            synchronized (socketEntry.inboundLock) {
++//                                                received = socketEntry.inboundPacketQueue.pollFirst();
++//                                                if (logger.isDebugEnabled() && (received != null)) {
++//                                                    logger.debug("Polled DTLS packet with length " + received.getLength());
++//                                                }
++//                                            }
++//                                        }
++//                                    } else {
++//                                        endLoops = true;
++//
++//                                    }
++//                                    if (received == null) {
++//                                        continue;
++//                                    }
++//                                } else {
++//                                    byte[] buf = new byte[getMaxInboundMessageSize()];
++//                                    // receive ClientHello request and other SSL/TLS records
++//                                    received = new DatagramPacket(buf, buf.length);
++//                                    try {
++//                                        socket.receive(received);
++//                                    } catch (SocketTimeoutException ste) {
++//                                        if (logger.isInfoEnabled()) {
++//                                            logger.info("Socket timeout while receiving DTLS handshake packet");
++//                                        }
++//                                        if (maxRetries > retries++) {
++//                                            synchronized (socketEntry.outboundLock) {
++//                                                // ignore and handle later below
++//                                                List<DatagramPacket> packets = onReceiveTimeout(engine, peerAddr);
++//                                                for (DatagramPacket p : packets) {
++//                                                    socket.send(p);
++//                                                    if (logger.isDebugEnabled()) {
++//                                                        logger.debug("Sent " + new OctetString(p.getData()).toHexString() +
++//                                                                " to " + p.getAddress() + ":" + p.getPort());
++//                                                    }
++//                                                }
++//                                            }
++//                                        } else {
++//                                            endLoops = true;
++//                                        }
++//                                        break;
++//                                    }
++//                                }
++//                            }
++//                            if (received != null) {
++//                                if (((iNet == null) || (!iNet.hasRemaining()))) {
++//                                    iNet = ByteBuffer.wrap(received.getData(), 0, received.getLength());
++//                                } else {
++//                                    iNet.compact();
++//                                    iNet.put(received.getData(), 0, received.getLength());
++//                                    iNet.flip();
++//                                }
++//                            }
++//                            iApp = ByteBuffer.allocate(getMaxInboundMessageSize());
++//                        } else {
++//                            iApp = ByteBuffer.allocate(getMaxInboundMessageSize());
++//                        }
++//                        received = null;
++//                        synchronized (socketEntry.inboundLock) {
++//                            if (logger.isDebugEnabled()) {
++//                                logger.debug("unrwap start: iNet=" + iNet + ",iApp=" + iApp);
++//                            }
++//                            SSLEngineResult r = engine.unwrap(iNet, iApp);
++//                            rs = r.getStatus();
++//                            hs = r.getHandshakeStatus();
++//                            if (logger.isDebugEnabled()) {
++//                                logger.debug("unrwap done: iNet=" + iNet + ",iApp=" + iApp + ",rs=" + rs + ",hs=" + hs);
++//                            }
++//                        }
++//                        if (rs == Status.BUFFER_OVERFLOW) {
++//                            // the client maximum fragment size config does not work?
++//                            throw new IOException("DTLSTM: Buffer overflow: incorrect client maximum fragment size");
++//                        } else if (rs == Status.BUFFER_UNDERFLOW) {
++//                            // bad packet, or the client maximum fragment size
++//                            logger.warn("DTLS buffer underflow iNet=" + iNet + ",iApp=" + iApp);
++//                            // config does not work?
++//                            if (hs == NOT_HANDSHAKING) {
++//                                endLoops = true;
++//                                break;
++//                            } // otherwise, ignore this packet
++//                            continue;
++//                        } else if (rs == Status.CLOSED) {
++//                            endLoops = true;
++//                        }   // otherwise, SSLEngineResult.Status.OK:
++//                        if (rs != Status.OK) {
++//                            break;
++//                        }
++//                    }
++//                    if (hs == NEED_WRAP) {
++//                        synchronized (socketEntry.outboundLock) {
++//                            List<DatagramPacket> packets = produceHandshakePackets(engine, peerAddr);
++//                            for (DatagramPacket p : packets) {
++//                                if (logger.isDebugEnabled()) {
++//                                    logger.debug("Sending handshake packet with length " + p.getLength() +
++//                                            " [" + new OctetString(p.getData()).toHexString() +
++//                                            "] to " + p.getAddress() + ":" + p.getPort());
++//                                }
++//                                socket.send(p);
++//                            }
++//                        }
++//                    } else if (hs == NEED_TASK) {
++//                        runDelegatedTasks(engine);
++//                    } else if (hs == NOT_HANDSHAKING) {
++//                        // OK, time to do application data exchange.
++//                        endLoops = true;
++//                    } else if (hs == FINISHED) {
++//                        endLoops = true;
++//                    }
++//                }
++//            } catch (IOException iox) {
++//                logger.error("DTLS handshake failed for " + peerAddr +
++//                        " failed with IO exception:" + iox.getMessage(), iox);
++//            }
++//            HandshakeStatus hs = engine.getHandshakeStatus();
++//            if (hs != NOT_HANDSHAKING) {
++//                sockets.remove(peerSocketAddress);
++//                logger.error("DTLS handshake failed for " + peerAddr + ": Not ready for application data yet, giving up");
++//                socketEntry.closeSession();
++//            } else {
++//                socketEntry.setHandshakeFinished(true);
++//                if (logger.isInfoEnabled()) {
++//                    logger.info("SSL handshake completed for " + peerAddr);
++//                }
++//                timeoutSocket(socketEntry);
++//                TransportStateEvent e = new TransportStateEvent(DTLSTM.this, socketEntry.getPeerAddress(),
++//                        TransportStateEvent.STATE_CONNECTED, null);
++//                fireConnectionStateChanged(e);
++//            }
+         }
+ 
+         /**
+@@ -1076,63 +1077,64 @@
+ 
+     protected List<DatagramPacket> produceHandshakePackets(SSLEngine sslEngine,
+                                                            SocketAddress socketAddress) throws IOException {
+-        List<DatagramPacket> packets = new ArrayList<>();
+-        boolean endLoops = false;
+-        int loops = MAX_HANDSHAKE_LOOPS;
+-        while (!endLoops) {
+-
+-            if (--loops < 0) {
+-                throw new RuntimeException(
+-                        "Too much loops to produce handshake packets");
+-            }
+-
+-            ByteBuffer oNet = ByteBuffer.allocate(getMaxInboundMessageSize());
+-            ByteBuffer oApp = ByteBuffer.allocate(0);
+-            SSLEngineResult r = sslEngine.wrap(oApp, oNet);
+-            oNet.flip();
+-
+-            Status rs = r.getStatus();
+-            HandshakeStatus hs = r.getHandshakeStatus();
+-            if (rs == Status.BUFFER_OVERFLOW) {
+-                // the client maximum fragment size config does not work?
+-                throw new IOException("Buffer overflow: " +
+-                        "incorrect server maximum fragment size");
+-            } else if (rs == Status.BUFFER_UNDERFLOW) {
+-                // bad packet, or the client maximum fragment size
+-                // config does not work?
+-                if (hs != NOT_HANDSHAKING) {
+-                    throw new IOException("Buffer underflow: " +
+-                            "incorrect server maximum fragment size");
+-                } // otherwise, ignore this packet
+-            } else if (rs == Status.CLOSED) {
+-                throw new IOException("SSLEngine has closed");
+-            }   // otherwise, SSLEngineResult.Status.OK
+-
+-            // SSLEngineResult.Status.OK:
+-            if (oNet.hasRemaining()) {
+-                byte[] ba = new byte[oNet.remaining()];
+-                oNet.get(ba);
+-                DatagramPacket packet = createHandshakePacket(ba, socketAddress);
+-                packets.add(packet);
+-            }
+-            boolean endInnerLoop = false;
+-            HandshakeStatus nhs = hs;
+-            while (!endInnerLoop) {
+-                if (nhs == NEED_TASK) {
+-                    runDelegatedTasks(sslEngine);
+-                    nhs = sslEngine.getHandshakeStatus();
+-                } else if ((nhs == FINISHED) ||
+-                        (nhs == NEED_UNWRAP) ||
+-                        (nhs == NEED_UNWRAP_AGAIN) ||
+-                        (nhs == NOT_HANDSHAKING)) {
+-                    endInnerLoop = true;
+-                    endLoops = true;
+-                } else if (nhs == NEED_WRAP) {
+-                    endInnerLoop = true;
+-                }
+-            }
+-        }
+-        return packets;
++        throw new UnsupportedOperationException("requires Android SDK supporting jdk 9+");
++        //        List<DatagramPacket> packets = new ArrayList<>();
++//        boolean endLoops = false;
++//        int loops = MAX_HANDSHAKE_LOOPS;
++//        while (!endLoops) {
++//
++//            if (--loops < 0) {
++//                throw new RuntimeException(
++//                        "Too much loops to produce handshake packets");
++//            }
++//
++//            ByteBuffer oNet = ByteBuffer.allocate(getMaxInboundMessageSize());
++//            ByteBuffer oApp = ByteBuffer.allocate(0);
++//            SSLEngineResult r = sslEngine.wrap(oApp, oNet);
++//            oNet.flip();
++//
++//            Status rs = r.getStatus();
++//            HandshakeStatus hs = r.getHandshakeStatus();
++//            if (rs == Status.BUFFER_OVERFLOW) {
++//                // the client maximum fragment size config does not work?
++//                throw new IOException("Buffer overflow: " +
++//                        "incorrect server maximum fragment size");
++//            } else if (rs == Status.BUFFER_UNDERFLOW) {
++//                // bad packet, or the client maximum fragment size
++//                // config does not work?
++//                if (hs != NOT_HANDSHAKING) {
++//                    throw new IOException("Buffer underflow: " +
++//                            "incorrect server maximum fragment size");
++//                } // otherwise, ignore this packet
++//            } else if (rs == Status.CLOSED) {
++//                throw new IOException("SSLEngine has closed");
++//            }   // otherwise, SSLEngineResult.Status.OK
++//
++//            // SSLEngineResult.Status.OK:
++//            if (oNet.hasRemaining()) {
++//                byte[] ba = new byte[oNet.remaining()];
++//                oNet.get(ba);
++//                DatagramPacket packet = createHandshakePacket(ba, socketAddress);
++//                packets.add(packet);
++//            }
++//            boolean endInnerLoop = false;
++//            HandshakeStatus nhs = hs;
++//            while (!endInnerLoop) {
++//                if (nhs == NEED_TASK) {
++//                    runDelegatedTasks(sslEngine);
++//                    nhs = sslEngine.getHandshakeStatus();
++//                } else if ((nhs == FINISHED) ||
++//                        (nhs == NEED_UNWRAP) ||
++//                        (nhs == NEED_UNWRAP_AGAIN) ||
++//                        (nhs == NOT_HANDSHAKING)) {
++//                    endInnerLoop = true;
++//                    endLoops = true;
++//                } else if (nhs == NEED_WRAP) {
++//                    endInnerLoop = true;
++//                }
++//            }
++//        }
++//        return packets;
+     }
+ 
+     protected DatagramPacket createHandshakePacket(byte[] buf, SocketAddress socketAddr) {
+@@ -1167,7 +1169,7 @@
+             sslEngine.setUseClientMode(useClientMode);
+             sslEngine.setNeedClientAuth(true);
+             SSLParameters parameters = this.sslEngine.getSSLParameters();
+-            parameters.setMaximumPacketSize(getMaxInboundMessageSize());
++            //parameters.setMaximumPacketSize(getMaxInboundMessageSize());
+             this.sslEngine.setSSLParameters(parameters);
+             sslEngineConfigurator.configure(sslEngine);
+             synchronized (DTLSTM.this) {
+Index: src/test/java/org/snmp4j/transport/TLSTMTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/test/java/org/snmp4j/transport/TLSTMTest.java	(date 1572895738000)
++++ src/test/java/org/snmp4j/transport/TLSTMTest.java	(date 1572821736000)
+@@ -304,29 +304,29 @@
+ 
+     @Test
+     public void sendMessageWithBufferUnderflow() throws Exception {
+-        TLSTM tlstmCS = new TLSTM() {
+-            @Override
+-            void writeNetBuffer(SocketEntry entry, SocketChannel sc) throws IOException {
+-                entry.getOutNetBuffer().flip();
+-                // Send SSL/TLS encoded data to peer
+-                ByteBuffer outNet = entry.getOutNetBuffer().slice();
+-                while (outNet.hasRemaining()) {
+-                    for (int start = outNet.position(), end = outNet.limit(),
+-                        packetLength = 500; start < end; start = outNet.limit()) {
+-                        int num = sc.write(outNet.position(start).limit(start + Math.min(end - start, packetLength)));
+-                        try {
+-                            Thread.sleep(100);
+-                        } catch (InterruptedException e) {
+-                            e.printStackTrace();
+-                        }
+-                        if (num == -1) {
+-                            throw new IOException("TLS connection closed");
+-                        }
+-                    }
+-                }
+-                entry.getOutNetBuffer().clear();
+-            }
+-        };
++//        TLSTM tlstmCS = new TLSTM() {
++//            @Override
++//            void writeNetBuffer(SocketEntry entry, SocketChannel sc) throws IOException {
++//                entry.getOutNetBuffer().flip();
++//                // Send SSL/TLS encoded data to peer
++//                ByteBuffer outNet = entry.getOutNetBuffer().slice();
++//                while (outNet.hasRemaining()) {
++//                    for (int start = outNet.position(), end = outNet.limit(),
++//                        packetLength = 500; start < end; start = outNet.limit()) {
++//                        int num = sc.write(outNet.position(start).limit(start + Math.min(end - start, packetLength)));
++//                        try {
++//                            Thread.sleep(100);
++//                        } catch (InterruptedException e) {
++//                            e.printStackTrace();
++//                        }
++//                        if (num == -1) {
++//                            throw new IOException("TLS connection closed");
++//                        }
++//                    }
++//                }
++//                entry.getOutNetBuffer().clear();
++//            }
++//        };
+         tlstmCS.setServerEnabled(false);
+         URL keystoreUrl = getClass().getResource("dtls-cert.ks");
+         String password = "snmp4j";

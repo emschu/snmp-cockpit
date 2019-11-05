@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SNMP Cockpit Android App
+  ~
+  ~ Copyright (C) 2018-2019
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="define_SNMP4J" translatable="false"></string>
+    <string name="library_SNMP4J_author" translatable="false">Frank Fock and Jochen Katz</string>
+    <string name="library_SNMP4J_authorWebsite" translatable="false">https://snmp4j.org/</string>
+    <string name="library_SNMP4J_libraryName" translatable="false">SNMP4J</string>
+    <string name="library_SNMP4J_libraryDescription" translatable="false">SNMP4J is an enterprise class free open source and state-of-the-art SNMP implementation for Java™ SE 8 or later*. SNMP4J supports command generation (managers) as well as command responding (agents). Its clean object oriented design is inspired by SNMP++, which is a well-known SNMPv1/v2c/v3 API for C++ (see https://agentpp.com).</string>
+    <string name="library_SNMP4J_libraryVersion" translatable="false">3.3.1-modified</string>
+    <string name="library_SNMP4J_libraryWebsite" translatable="false">https://snmp4j.org/</string>
+    <string name="library_SNMP4J_licenseId" translatable="false">apache_2_0</string>
+    <!-- you still can define the license within your library definition, but it is recommend to use the id -->
+    <!-- possible fields for a custom license: *_licenseVersion, *_licenseLink, *_licenseContent -->
+    <string name="library_SNMP4J_isOpenSource" translatable="false">true</string>
+    <string name="library_SNMP4J_repositoryLink" translatable="false">http://www.snmp4j.org/html/download.html</string>
+
+    <string name="define_RecyclerTreeView" translatable="false"></string>
+    <string name="library_RecyclerTreeView_author" translatable="false">TellH</string>
+    <string name="library_RecyclerTreeView_authorWebsite" translatable="false">https://github.com/TellH/RecyclerTreeView/</string>
+    <string name="library_RecyclerTreeView_libraryName" translatable="false">RecyclerTreeView (modified)</string>
+    <string name="library_RecyclerTreeView_libraryDescription" translatable="false">TreeView implementation in Android with RecyclerView.</string>
+    <string name="library_RecyclerTreeView_libraryVersion" translatable="false">1.2.3</string>
+    <string name="library_RecyclerTreeView_libraryWebsite" translatable="false">https://github.com/TellH/RecyclerTreeView/</string>
+    <string name="library_RecyclerTreeView_licenseId" translatable="false">apache_2_0</string>
+    <!-- you still can define the license within your library definition, but it is recommend to use the id -->
+    <!-- possible fields for a custom license: *_licenseVersion, *_licenseLink, *_licenseContent -->
+    <string name="library_RecyclerTreeView_isOpenSource" translatable="false">true</string>
+    <string name="library_RecyclerTreeView_repositoryLink" translatable="false">https://github.com/TellH/RecyclerTreeView/</string>
+
+    <string name="define_FlaticonIcons" translatable="false"></string>
+    <string name="library_FlaticonIcons_author" translatable="false">Smashicons, freepik, becris, xnimrodx</string>
+    <string name="library_FlaticonIcons_authorWebsite" translatable="false">https://www.flaticon.com/authors/</string>
+    <string name="library_FlaticonIcons_libraryName" translatable="false">Flaticons</string>
+    <string name="library_FlaticonIcons_libraryDescription" translatable="false">Affected icons: ic_add_device, ic_disconnect, ic_qr_code, ic_eject, ic_list, ic_devices, ic_settings</string>
+    <string name="library_FlaticonIcons_libraryWebsite" translatable="false">http://www.flaticon.com</string>
+    <!-- possible fields for a custom license: *_licenseVersion, *_licenseLink, *_licenseContent -->
+    <string name="library_FlaticonIcons_isOpenSource" translatable="false">true</string>
+</resources>

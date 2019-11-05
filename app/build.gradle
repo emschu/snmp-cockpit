@@ -1,0 +1,124 @@
+apply plugin: 'com.android.application'
+apply from: './jacoco.gradle'
+
+ext.androidSupportVersion = '1.1.0'
+/*
+ * SNMP Cockpit Android App
+ *
+ * Copyright (C) 2018-2019
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+// we need to use old mockito!
+ext.mockitoVersion = "2.22.0"
+ext.androidTestVersion = '1.2.0'
+ext.espressoVersion = '3.2.0'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "org.emschu.snmp.cockpit"
+        minSdkVersion 23
+        targetSdkVersion 28
+        versionCode 31
+        versionName "0.9.8"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "app_version",
+            "${defaultConfig.versionName}"
+        }
+        debug {
+            testCoverageEnabled true
+            versionNameSuffix ".debug"
+            resValue "string", "app_version",
+                    "${defaultConfig.versionName}${versionNameSuffix}"
+        }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        abortOnError false
+    }
+    adbOptions {
+        timeOutInMs 15 * 60 * 1000 // 15 Minutes due to gitlab ci is slow
+    }
+    packagingOptions {
+        exclude 'META-INF/library-core_release.kotlin_module'
+    }
+    buildToolsVersion '29.0.2'
+}
+configurations {
+    compile.exclude group: 'log4j'
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "SnmpCockpit"
+        property "sonar.projectKey", "org.emschu.snmp.cockpit"
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.language", "java"
+        property "sonar.sources", "src/main/"
+    }
+}
+
+dependencies {
+//    constraints {
+//        implementation('org.snmp4j:org.snmp4j:2.6.3') {
+//            because 'later would break android api compatibility with sdk 23'
+//        }
+//    }
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
+    implementation "androidx.appcompat:appcompat:$androidSupportVersion"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "androidx.legacy:legacy-preference-v14:1.0.0"
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.viewpager:viewpager:1.0.0"
+    implementation "com.mikepenz:aboutlibraries:7.0.1"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0.pr3'
+    // tests
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoVersion"
+    androidTestImplementation "androidx.test:rules:$androidTestVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
+    androidTestImplementation "androidx.annotation:annotation:$androidSupportVersion"
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'junit:junit:4.12'
+    // debug
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-3'
+}

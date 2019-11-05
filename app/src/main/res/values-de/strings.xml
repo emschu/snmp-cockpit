@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ SNMP Cockpit Android App
+  ~
+  ~ Copyright (C) 2018-2019
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- About Screen Items -->
+    <string-array name="about_screen">
+        <item>Lizenz (GPL v3)</item>
+        <item>Wifi QR-Code Schema</item>
+        <item>Geräte QR-Code Schema</item>
+        <item>GitHub Repository (Web)</item>
+        <item>Version und Bibliotheken</item>
+        <item>Feedback (Mail)</item>
+        <item>Datenschutzrichtlinien</item>
+    </string-array>
+    <string name="app_name">SNMP Cockpit</string>
+    <string name="activity_title_tag_management">Hardware-Tags verwalten</string>
+    <string name="activty_title_oid_single_query">OID-Einzelabfrage</string>
+    <string name="add_custom_query_menu_label">Neue Abfrage</string>
+    <string name="alert_connection_timeout_multi_remove">Verbindungen entfernen</string>
+    <string name="view_query_label">Ausführen</string>
+    <string name="welcome_dialog_message">Diese App funktioniert standardmäßig nur in WIFI-Umgebungen mit einer bestimmten SSID. Die App sollte zunächst in den Einstellungen konfiguriert werden.</string>
+    <string name="welcome_dialog_take_current_ssid_btn">Aktuelle SSID übernehmen</string>
+    <string name="welcome_dialog_title">Willkommen in der SNMP Cockpit Android App!</string>
+    <string name="wifi_activated_toast_label">WLAN aktiviert</string>
+    <string name="wifi_connection_list_item">\t• WLAN-Verbindung</string>
+    <string name="wifi_connection_wpa_needed_list_item">\t• Verbindungssicherheit: WPA2-PSK oder WPA2-EAP</string>
+    <string name="wifi_disable_adapter">WLAN deaktiviert</string>
+    <string name="wifi_qr_code_network_change_success">Verbindungsversuch wird gestartet. Die Verbindung zum Netzwerk \'%s\' wird hergestellt.</string>
+    <string name="user">Benutzer:</string>
+    <string name="update_label">Aktualisieren</string>
+    <string name="app_logo_content_description">App Logo</string>
+    <string name="alert_session_timeout_title">Sitzung abgelaufen</string>
+    <string name="alert_session_timeout_message">Die maximale Zeit der Sitzung (in den Einstellungen konfigurierbar) ist abgelaufen. Alle Verbindungen werden entfernt und müssen neu hinzugefügt werden.</string>
+    <string name="alert_select_device_dialog_title">Gerät auswählen für SNMP-Abfrage mit der OID</string>
+    <string name="alert_please_add_device_first">Bitte zuerst ein Gerät hinzufügen…</string>
+    <string name="alert_open_query_in_new_device_tab">In neuem Geräte-Tab öffnen</string>
+    <string name="alert_open_query_in_new_activity">In neuem Fenster öffnen</string>
+    <string name="alert_connection_timeout_title">Verbindung unterbrochen</string>
+    <string name="alert_connection_timeout_single_remove">Verbindung entfernen</string>
+    <string name="alert_connection_timeout_single_message">Die Verbindung zu einem Gerät wurde unterbrochen.</string>
+    <string name="alert_connection_timeout_retry">Erneut versuchen</string>
+    <string name="alert_connection_timeout_multiple_devices">Die Verbindungen zu mereren Geräten wurde unterbrochen.</string>
+    <string name="btn_autofill_qr_code">Autofill mit QR-Code</string>
+    <string name="btn_device_connect">Gerät verbinden</string>
+    <string name="btn_no_longer_show">Nicht mehr anzeigen</string>
+    <string name="btn_ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="cancel_app_btn_label">App beenden</string>
+    <string name="close">Schließen</string>
+    <string name="community_label">Community:</string>
+    <string name="connect_to_device_toast">Verbinde zum Netzwerk \'%s\'</string>
+    <string name="edit_queries">Bearbeiten</string>
+    <string name="host">Host:</string>
+    <string name="fragment_title_monitoring_info">Monitoring-Informationen</string>
+    <string name="hardware_info_label">Hardware-Informationen</string>
+    <string name="drawer_header_ssid_label">SSID: %s</string>
+    <string name="drawer_header_ipv6_address_label">IPv6-Adresse:\n%s</string>
+    <string name="disconnect_all_devices_success">Von allen Geräten getrennt</string>
+    <string name="dialog_title_custom_query_edit">Abfrage bearbeiten</string>
+    <string name="dialog_title_custom_query_add">Neue Abfrage hinzufügen</string>
+    <string name="empty_device_list_message">Derzeit ist kein Gerät verbunden.\nDas Plus-Zeichen auswählen, um eine Verbindung herzustellen.</string>
+    <string name="error_connecting_to_network">Keine erfolgreiche WLAN-Verbindung zum Netz \'%s\'. Zugangsdaten korrekt?</string>
+    <string name="fix_wifi_connection_ssid_list_item">\t• Feste SSID: \'%s\'</string>
+    <string name="flashlight_hint">Um die Taschenlampe zu aktivieren, können die Lautstärke-Tasten verwendet werden.</string>
+    <string name="toast_no_valid_device_qr_code">Keinen gültigen Geräte-QR-Code erhalten.</string>
+    <string name="title_network_details">Netzwerkdetails</string>
+    <string name="title_activity_tag_management">Tags verwalten</string>
+    <string name="title_activity_tabbed_device">Geräte Detailansicht</string>
+    <string name="title_activity_snmplogin">Verbinde Gerät per SNMP</string>
+    <string name="title_activity_single_query_result">Abfrageansicht</string>
+    <string name="title_activity_settings">Einstellungen</string>
+    <string name="title_activity_own_queries">Eigene SNMP-Abfragen</string>
+    <string name="splash_screen_logo">Splash Screen Logo</string>
+    <string name="title_activity_about">Über die App</string>
+    <string name="snmpv3_key">Schlüssel:</string>
+    <string name="snmp_version">SNMP Version:</string>
+    <string name="snmp_usage_tab_content_title">Nutzung</string>
+    <string name="snmp_usage_tab_content_mibs">MIBs</string>
+    <string name="show_password_label">Passwort anzeigen</string>
+    <string name="nav_header_dns_server">DNS</string>
+    <string name="nav_header_gateway_ip">Gateway</string>
+    <string name="nav_header_ip_label">IP: %s</string>
+    <string name="nav_header_subnet_label">Subnetzmaske</string>
+    <string name="navigate_up_content_description">Zurück navigieren</string>
+    <string name="navigation_drawer_close">Menü schließen</string>
+    <string name="navigation_drawer_open">Menü öffnen</string>
+    <string name="no_information_available">Keine Informationen vorhanden.</string>
+    <string name="no_own_queries_message">Es sind keine eigenen Abfragen gepflegt.\nDas Plus-Zeichen auswählen, um eine neue Abfrage hinzuzufügen.</string>
+    <string name="no_secure_environment">SNMP Cockpit: Keine sichere Umgebung!</string>
+    <string name="no_secure_environment_label">"Eine sichere Netzwerkverbindung muss hergestellt werden, um SNMP Cockpit weiter benutzen zu können.\n<b>Benötigt:</b> "</string>
+    <string name="password_label">Passwort:</string>
+    <string name="please_wait_label">Bitte warten…</string>
+    <string name="port">Port:</string>
+    <string name="pref_allow_all_networks_label">Erlaube alle Netzwerke</string>
+    <string name="connection_already_exists">Verbindung existiert bereits</string>
+    <string name="connection_attempt_canceled">Verbindungsversuch abgebrochen</string>
+    <string name="connection_attempt_label">Verbindungsversuch</string>
+    <string name="scan_wifi_code_label">WIFI-QR-Code (WPA2-PSK oder WPA2-EAP) einscannen.</string>
+    <string name="scan_device_code_label">Geräte-QR-Code einscannen</string>
+    <string name="reconnect_button_label">Erneut verbinden</string>
+    <string name="query_add_textinfo">Eigene OID</string>
+    <string name="public_default_community">public</string>
+    <string name="pref_version_title">Version</string>
+    <string name="pref_session_timeout_title">Session-Ablaufzeit</string>
+    <string name="connection_information">Verbindungsinformationen</string>
+    <string name="connection_test_not_successful_label">Verbindungstest nicht erfolgreich. Das Gerät kann nicht verbunden werden.</string>
+    <string name="connection_test_successful_label">Verbindungstest erfolgreich. Gerät wurde hinzugefügt.</string>
+    <string name="connectivity_check_start_label">Verbindungsversuch wird gestartet…</string>
+    <string name="custom_query_hardware_type_hint">Hardware-Typ</string>
+    <string name="custom_query_name">Bezeichnung</string>
+    <string name="custom_query_name_label">Name:</string>
+    <string name="custom_query_oid">OID:</string>
+    <string name="custom_query_oid_field_label">Abfrage-OID</string>
+    <string name="custom_query_single_query_enabled">Einzelabfrage aktiviert</string>
+    <string name="custom_query_tag_categories_label">Tags/Kategorien</string>
+    <string name="custom_query_tags">Kategorien:</string>
+    <string name="debug_menu_label">Experteneinstellungen</string>
+    <string name="delete_custom_query_label">Abfrage entfernen</string>
+    <string name="dialog_tag_edit_title">Hardware-Tag umbenennen</string>
+    <string name="dialog_tag_add_title">Hardware-Tag hinzufügen</string>
+    <string name="dialog_delete_tag_label">Hardware-Tag entfernen</string>
+    <string name="dialog_custom_query_tags_remove_last_tag_content_description">Letzten Tag entfernen</string>
+    <string name="dialog_cancel_connection_test_message">Soll der Verbindungsversuch wirklich abgebrochen werden?</string>
+    <string name="dialog_cancel_connection_dialog_title">Abbruch Bestätigen</string>
+    <string name="device_snmp_version_label">SNMP-Version:</string>
+    <string name="device_menu_disconnect">Verbindung zum Gerät trennen</string>
+    <string name="device_detail_usage_tab_hint">SNMP-Benutzungsinformationen</string>
+    <string name="device_detail_tab_hardware_label">Hardware</string>
+    <string name="device_detail_snmp_usage_query_label">Status</string>
+    <string name="device_detail_fragment_tab_title">Allgemein</string>
+    <string name="device_refresh_toast_message">Informationen werden aktualisiert.\nGerät:</string>
+    <string name="device_detail_main_hint">Allgemeine SNMP-Informationen des verbundenen Geräts</string>
+    <string name="device_detail_custom_hint">Hier werden die eigene Abfragen angezeigt.</string>
+    <string name="device_custom_query_tab_title">Abfragen</string>
+    <string name="device_card_ip_address">IP-Adresse:</string>
+    <string name="detail_info_task_view_label_table_udp_configuration">UDP-Konfiguration | udp</string>
+    <string name="detail_info_task_view_label_table_udpTable">UDP-Verbindungen | udpTable</string>
+    <string name="detail_info_task_view_label_iproutetable">IP-Routen | ipRouteTable</string>
+    <string name="detail_info_task_view_label_table_attable">Address Translation | atTable</string>
+    <string name="detail_info_task_view_label_table_egp_configuration">EGP-Konfiguration | egp</string>
+    <string name="detail_info_task_view_label_table_egpneigh">egpNeighTable</string>
+    <string name="detail_info_task_view_label_table_icmp_configuration">ICMP-Konfiguration | icmp</string>
+    <string name="detail_info_task_view_label_table_iftable">Netzwerkschnittstellen | ifTable</string>
+    <string name="detail_info_task_view_label_table_ip_configuration">IP-Konfiguration | ip</string>
+    <string name="detail_info_task_view_label_table_ipaddr">IP-Adressen | ipAddrTable</string>
+    <string name="detail_info_task_view_label_table_ipnettomedia">ipNetToMediaTable</string>
+    <string name="detail_info_task_view_label_table_standard_router">Standard-Router | ipDefaultRouterTable</string>
+    <string name="detail_info_task_view_label_table_tcp_configuration">TCP-Konfiguration | tcp</string>
+    <string name="detail_info_task_view_label_table_tcpconntable">TCP-Verbindungen | tcpConnTable</string>
+    <string name="hw_info_task_view_label_table_dsktable">Festplatten 1 | dskTable</string>
+    <string name="hw_info_task_view_label_table_hrdevicetable">Festplatten 2 | hrDeviceTable</string>
+    <string name="hw_info_task_view_label_table_hrdiskstorage">Storage | hrDiskStorageTable</string>
+    <string name="hw_info_task_view_label_table_hrpartitiontable">Partitionstabelle | hrPartitionTable</string>
+    <string name="hw_info_task_view_label_table_icmpstats">icmpStatsTable</string>
+    <string name="hw_info_task_view_label_table_ipifstats">ipIfStatsTable</string>
+    <string name="hw_info_task_view_label_table_ipsystemstats">ipSystemStatsTable</string>
+    <string name="hw_info_task_view_label_table_la">Load | laTable</string>
+    <string name="hw_info_task_view_label_table_sensortable">Sensoren | sensorTable</string>
+    <string name="invalid_user_input">Falsche Eingabe</string>
+    <string name="invalid_wifi_qr_code_label">Keinen Wifi-QR-Code erkannt</string>
+    <string name="ip_address">IP-Adresse</string>
+    <string name="manage_query_label">Abfrage verwalten</string>
+    <string name="menu_about_label">App-Informationen</string>
+    <string name="menu_action_device_eject_label">Alle Geräte entfernen</string>
+    <string name="menu_action_qr_code_label">WLAN-QR-Code scannen</string>
+    <string name="menu_action_wifi_activate">WLAN aktivieren</string>
+    <string name="menu_action_wifi_disconnect_label">Vom WLAN trennen</string>
+    <string name="menu_catalog_label">MIB-Katalog</string>
+    <string name="menu_devices_label">Verbundene Geräte</string>
+    <string name="menu_hardware_tags_label">Hardware-Tags verwalten</string>
+    <string name="menu_network_details_label">Netzwerkdetails</string>
+    <string name="menu_own_queries_label">Eigene Abfragen</string>
+    <string name="menu_settings_label">Einstellungen</string>
+    <string name="mib_tree_title">MIB-Übersicht</string>
+    <string name="pref_allow_all_networks_summary">Die Netzwerk-Sicherheitseinstellungen der App sind deaktiviert. Nicht empfohlen.</string>
+    <string name="pref_build_timestamp">Build-Zeitpunkt</string>
+    <string name="pref_category_general">Allgemein</string>
+    <string name="pref_category_network_security">Netzwerk/WIFI-Sicherheit</string>
+    <string name="pref_connection_test_retries_summary">Wiederholungsversuche beim Verbindungsaufbau</string>
+    <string name="pref_connection_test_retries_title">Verbindungsaufbau-Versuche</string>
+    <string name="pref_connection_test_timeout_title">Verbindungsaufbau-Timeout</string>
+    <string name="pref_connection_test_timeout_summary">Verbindungs-Timeout für den Verbindungstest in Millisekunden</string>
+    <string name="pref_flashlight_hint_label">Taschenlampen-Hinweis anzeigen</string>
+    <string name="pref_flashlight_hint_summary">Vor jedem QR-Code Scan wird ein Hinweis angezeigt</string>
+    <string name="pref_general_connection_retries_summary">Anzahl der allgemeinen Wiederholungsversuche</string>
+    <string name="pref_general_connection_retries_title">Verbindungs-Versuche</string>
+    <string name="pref_general_connection_timeout_summary">Allgemeines SNMP-Verbindungs-Timeout in Millisekunden</string>
+    <string name="pref_general_connection_timeout_title">Verbindungs-Timeout</string>
+    <string name="pref_general_use_v1_insteadv2c_summary">Versions-Kompatibilität mit SNMPv1</string>
+    <string name="pref_general_use_v1_insteadv2c_title">SNMP Version 1 statt 2c</string>
+    <string name="pref_is_ssid_manually_set_label">Manueller Modus</string>
+    <string name="pref_is_ssid_manually_set_summary">Sichere SSID beim QR Code Scan nicht aktualisieren</string>
+    <string name="pref_is_wifi_ssid_locked_label">Fixe WLAN-SSID</string>
+    <string name="pref_session_timeout_summary">Nach einer gewissen Zeit an Inaktivität (in Minuten), läuft die Benutzersitzung ab und muss neu gestartet werden.</string>
+    <string name="pref_session_timeout_dialog_title">Session-Ablaufzeit (Minuten)</string>
+    <string name="pref_secure_wifi_ssid_label">Fixe WLAN-SSID</string>
+    <string name="pref_periodic_update_summary">Zeitintervall für Aktualisierungen der Oberfläche</string>
+    <string name="pref_periodic_update_interval_dialog_title">UI-Aktualisierungszeit (Sekunden)</string>
+    <string name="pref_periodic_update_interval">Aktualisierungszeit</string>
+    <string name="pref_periodic_update_enabled_title">Regelmäßige Abfragen</string>
+    <string name="pref_periodic_update_enabled_summary">Aktualisiert die Oberfläche (Tab-Inhalte sind nur manuell aktualisierbar)</string>
+    <string name="pref_is_wpa2_only_summary">Ausschließlich WPA2-PSK und WPA2-EAP verwenden</string>
+    <string name="pref_is_wpa2_only_label">Nur WPA2-PSK und WPA2-EAP</string>
+    <string name="pref_is_wifi_ssid_locked_summary">Die App ist nur in einem bestimmten WLAN funktionsfähig. Manuelle Eingabe möglich oder Aktualisierung beim WLAN-QR-Code Scan (Standard).</string>
+    <string name="pref_mib_configuration_title">MIB Konfiguration</string>
+    <string name="preference_mib_catalog_selection">Ausgewählter MIB-Katalog</string>
+    <string name="preference_mib_catalog_selection_summary">Es können MIB-Kataloge im ZIP-Format im MIB-Katalog hinzugefügt und dann hier ausgewählt werden.</string>
+    <string name="import_new_mib">MIB-Katalog JSON importieren</string>
+    <string name="error_importing_mib_catalog_archive">Beim Import des .zip-Archivs ist etwas schief gelaufen. Sind die JSON-Dateien syntaktisch korrekt?</string>
+    <string name="invalid_mib_catalog_archive_toast_message">Nicht valide MIB-Katalog .zip-Datei. Dokumentation beachten.</string>
+    <string name="mib_catalog_duplicate_toast_message">Es existiert bereits ein MIB-Katalog mit diesem Namen. Das Archiv muss umbenannt werden. Der Import wird nicht fortgesetzt.</string>
+    <string name="mib_catalog_reset_confirmation_message">Sollen wirklich alle importierten MIBs gelöscht werden?</string>
+    <string name="mib_catalog_reset_dialog_title">MIB-Kataloge zurücksetzen</string>
+    <string name="mib_catalog_reset_success_toast_message">Alle importierten MIBs wurden gelöscht. Default MIB wurde aktiviert.</string>
+    <string name="new_mib_catalog_created_toast_message">Ein neuer MIB-Katalog \'%s\' wurde importiert und aktiviert.</string>
+    <string name="drawer_header_ipv6_address">IPv6-Adresse</string>
+    <string name="drawer_header_ssid">SSID</string>
+    <string name="nav_header_ip">IP</string>
+    <string name="secure_network_toast">SNMP-Cockpit: Im sicheren Netzwerk!</string>
+    <string name="not_secure_network_toast">SNMP-Cockpit: Kein sicheres Netzwerk!</string>
+    <string name="net_details_refreshed_toast">Netzwerk-Informationen aktualisiert!</string>
+    <string name="device_removal_toast">Das Gerät %s wurde entfernt</string>
+    <string name="nav_header_dns_server_label">DNS: %s</string>
+    <string name="nav_header_gateway_ip_label">Gateway: %s</string>
+    <string name="nav_header_subnet">Subnetzmaske</string>
+    <string name="used_libraries">Verwendete Bibliotheken</string>
+    <string name="app_build_time">Build time: %s</string>
+    <string name="license_about_text">This project is licensed under GPL v3, except all third party components, MIBs and libraries and icons or unless stated otherwise.</string>
+    <string name="mib_catalog_import_dialog_description">Ein .zip-Archiv mit den beiden Dateien oid_catalog.json und oid_tree.json muss ausgewählt werden. Fortfahren?</string>
+    <string name="mib_catalog_import_process">MIB-Katalog Import</string>
+    <string name="mib_catalog_import_intent_extra">Select a JSON MIB catalog .zip file</string>
+    <string name="connection_attempt_is_running">Verbindungsversuch läuft noch</string>
+    <string name="ipv6_enabled">IPv6 aktiviert</string>
+    <string name="connection_attempt_is_running_msg">Es läuft noch ein Verbindungsversuch. Bitte warten.</string>
+    <string name="invalid_snmp_endpoint_information_in_qr_code_toast">Falsche SNMP Endpunkt-Information im QR-Code</string>
+    <string name="preference_mib_catalog_reset_summary">Hier können importierte MIB Kataloge entfernt und zum Standard zurückgekehrt werden</string>
+    <string name="send_email_title">E-Mail versenden</string>
+    <string name="preference_reset_mibs">MIB-Kataloge zurücksetzen</string>
+</resources>

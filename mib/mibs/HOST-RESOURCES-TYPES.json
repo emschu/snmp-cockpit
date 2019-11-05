@@ -1,0 +1,430 @@
+{
+  "imports": {
+    "class": "imports",
+    "HOST-RESOURCES-MIB": [
+      "hrStorage",
+      "hrMIBAdminInfo",
+      "hrDevice"
+    ],
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "NOTIFICATION-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "OBJECT-IDENTITY",
+      "Counter64",
+      "Unsigned32",
+      "Counter32",
+      "Gauge32",
+      "MODULE-IDENTITY",
+      "TimeTicks",
+      "Bits",
+      "iso",
+      "MibIdentifier",
+      "Integer32",
+      "NOTIFICATION-TYPE",
+      "OBJECT-TYPE",
+      "IpAddress"
+    ],
+    "SNMPv2-TC": [
+      "TEXTUAL-CONVENTION",
+      "DisplayString"
+    ]
+  },
+  "hostResourcesTypesModule": {
+    "name": "hostResourcesTypesModule",
+    "oid": "1.3.6.1.2.1.25.7.4",
+    "class": "moduleidentity",
+    "revisions": [
+      {
+        "revision": "2000-03-06 00:00",
+        "description": "The original version of this module, published as RFC\n      2790."
+      }
+    ],
+    "lastupdated": "200003060000Z",
+    "organization": "IETF Host Resources MIB Working Group",
+    "contactinfo": "Steve Waldbusser\n      Postal: Lucent Technologies, Inc.\n              1213 Innsbruck Dr.\n              Sunnyvale, CA 94089\n              USA\n      Phone: 650-318-1251\n      Fax:   650-318-1633\n      Email: waldbusser@ins.com\n\n      In addition, the Host Resources MIB mailing list is dedicated\n      to discussion of this MIB. To join the mailing list, send a\n      request message to hostmib-request@andrew.cmu.edu. The mailing\n      list address is hostmib@andrew.cmu.edu.",
+    "description": "This MIB module registers type definitions for\n      storage types, device types, and file system types.\n\n      After the initial revision, this module will be\n      maintained by IANA."
+  },
+  "hrStorageTypes": {
+    "name": "hrStorageTypes",
+    "oid": "1.3.6.1.2.1.25.2.1",
+    "class": "objectidentity"
+  },
+  "hrStorageOther": {
+    "name": "hrStorageOther",
+    "oid": "1.3.6.1.2.1.25.2.1.1",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used when no other defined\n        type is appropriate."
+  },
+  "hrStorageRam": {
+    "name": "hrStorageRam",
+    "oid": "1.3.6.1.2.1.25.2.1.2",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for RAM."
+  },
+  "hrStorageVirtualMemory": {
+    "name": "hrStorageVirtualMemory",
+    "oid": "1.3.6.1.2.1.25.2.1.3",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for virtual memory,\n        temporary storage of swapped or paged memory."
+  },
+  "hrStorageFixedDisk": {
+    "name": "hrStorageFixedDisk",
+    "oid": "1.3.6.1.2.1.25.2.1.4",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for non-removable\n        rigid rotating magnetic storage devices."
+  },
+  "hrStorageRemovableDisk": {
+    "name": "hrStorageRemovableDisk",
+    "oid": "1.3.6.1.2.1.25.2.1.5",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for removable rigid\n        rotating magnetic storage devices."
+  },
+  "hrStorageFloppyDisk": {
+    "name": "hrStorageFloppyDisk",
+    "oid": "1.3.6.1.2.1.25.2.1.6",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for non-rigid rotating\n        magnetic storage devices."
+  },
+  "hrStorageCompactDisc": {
+    "name": "hrStorageCompactDisc",
+    "oid": "1.3.6.1.2.1.25.2.1.7",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for read-only rotating\n        optical storage devices."
+  },
+  "hrStorageRamDisk": {
+    "name": "hrStorageRamDisk",
+    "oid": "1.3.6.1.2.1.25.2.1.8",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for a file system that\n        is stored in RAM."
+  },
+  "hrStorageFlashMemory": {
+    "name": "hrStorageFlashMemory",
+    "oid": "1.3.6.1.2.1.25.2.1.9",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for flash memory."
+  },
+  "hrStorageNetworkDisk": {
+    "name": "hrStorageNetworkDisk",
+    "oid": "1.3.6.1.2.1.25.2.1.10",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The storage type identifier used for a\n        networked file system."
+  },
+  "hrDeviceTypes": {
+    "name": "hrDeviceTypes",
+    "oid": "1.3.6.1.2.1.25.3.1",
+    "class": "objectidentity"
+  },
+  "hrDeviceOther": {
+    "name": "hrDeviceOther",
+    "oid": "1.3.6.1.2.1.25.3.1.1",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used when no other defined\n        type is appropriate."
+  },
+  "hrDeviceUnknown": {
+    "name": "hrDeviceUnknown",
+    "oid": "1.3.6.1.2.1.25.3.1.2",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used when the device type is\n        unknown."
+  },
+  "hrDeviceProcessor": {
+    "name": "hrDeviceProcessor",
+    "oid": "1.3.6.1.2.1.25.3.1.3",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a CPU."
+  },
+  "hrDeviceNetwork": {
+    "name": "hrDeviceNetwork",
+    "oid": "1.3.6.1.2.1.25.3.1.4",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a network interface."
+  },
+  "hrDevicePrinter": {
+    "name": "hrDevicePrinter",
+    "oid": "1.3.6.1.2.1.25.3.1.5",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a printer."
+  },
+  "hrDeviceDiskStorage": {
+    "name": "hrDeviceDiskStorage",
+    "oid": "1.3.6.1.2.1.25.3.1.6",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a disk drive."
+  },
+  "hrDeviceVideo": {
+    "name": "hrDeviceVideo",
+    "oid": "1.3.6.1.2.1.25.3.1.10",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a video device."
+  },
+  "hrDeviceAudio": {
+    "name": "hrDeviceAudio",
+    "oid": "1.3.6.1.2.1.25.3.1.11",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for an audio device."
+  },
+  "hrDeviceCoprocessor": {
+    "name": "hrDeviceCoprocessor",
+    "oid": "1.3.6.1.2.1.25.3.1.12",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a co-processor."
+  },
+  "hrDeviceKeyboard": {
+    "name": "hrDeviceKeyboard",
+    "oid": "1.3.6.1.2.1.25.3.1.13",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a keyboard device."
+  },
+  "hrDeviceModem": {
+    "name": "hrDeviceModem",
+    "oid": "1.3.6.1.2.1.25.3.1.14",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a modem."
+  },
+  "hrDeviceParallelPort": {
+    "name": "hrDeviceParallelPort",
+    "oid": "1.3.6.1.2.1.25.3.1.15",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a parallel port."
+  },
+  "hrDevicePointing": {
+    "name": "hrDevicePointing",
+    "oid": "1.3.6.1.2.1.25.3.1.16",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a pointing device\n        (e.g., a mouse)."
+  },
+  "hrDeviceSerialPort": {
+    "name": "hrDeviceSerialPort",
+    "oid": "1.3.6.1.2.1.25.3.1.17",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a serial port."
+  },
+  "hrDeviceTape": {
+    "name": "hrDeviceTape",
+    "oid": "1.3.6.1.2.1.25.3.1.18",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a tape storage device."
+  },
+  "hrDeviceClock": {
+    "name": "hrDeviceClock",
+    "oid": "1.3.6.1.2.1.25.3.1.19",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a clock device."
+  },
+  "hrDeviceVolatileMemory": {
+    "name": "hrDeviceVolatileMemory",
+    "oid": "1.3.6.1.2.1.25.3.1.20",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a volatile memory\n        storage device."
+  },
+  "hrDeviceNonVolatileMemory": {
+    "name": "hrDeviceNonVolatileMemory",
+    "oid": "1.3.6.1.2.1.25.3.1.21",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The device type identifier used for a non-volatile memory\n\n        storage device."
+  },
+  "hrFSTypes": {
+    "name": "hrFSTypes",
+    "oid": "1.3.6.1.2.1.25.3.9",
+    "class": "objectidentity"
+  },
+  "hrFSOther": {
+    "name": "hrFSOther",
+    "oid": "1.3.6.1.2.1.25.3.9.1",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used when no other\n        defined type is appropriate."
+  },
+  "hrFSUnknown": {
+    "name": "hrFSUnknown",
+    "oid": "1.3.6.1.2.1.25.3.9.2",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used when the type of\n        file system is unknown."
+  },
+  "hrFSBerkeleyFFS": {
+    "name": "hrFSBerkeleyFFS",
+    "oid": "1.3.6.1.2.1.25.3.9.3",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Berkeley Fast File System."
+  },
+  "hrFSSys5FS": {
+    "name": "hrFSSys5FS",
+    "oid": "1.3.6.1.2.1.25.3.9.4",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        System V File System."
+  },
+  "hrFSFat": {
+    "name": "hrFSFat",
+    "oid": "1.3.6.1.2.1.25.3.9.5",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for\n        DOS's FAT file system."
+  },
+  "hrFSHPFS": {
+    "name": "hrFSHPFS",
+    "oid": "1.3.6.1.2.1.25.3.9.6",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for OS/2's\n        High Performance File System."
+  },
+  "hrFSHFS": {
+    "name": "hrFSHFS",
+    "oid": "1.3.6.1.2.1.25.3.9.7",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Macintosh Hierarchical File System."
+  },
+  "hrFSMFS": {
+    "name": "hrFSMFS",
+    "oid": "1.3.6.1.2.1.25.3.9.8",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Macintosh File System."
+  },
+  "hrFSNTFS": {
+    "name": "hrFSNTFS",
+    "oid": "1.3.6.1.2.1.25.3.9.9",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Windows NT File System."
+  },
+  "hrFSVNode": {
+    "name": "hrFSVNode",
+    "oid": "1.3.6.1.2.1.25.3.9.10",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        VNode File System."
+  },
+  "hrFSJournaled": {
+    "name": "hrFSJournaled",
+    "oid": "1.3.6.1.2.1.25.3.9.11",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Journaled File System."
+  },
+  "hrFSiso9660": {
+    "name": "hrFSiso9660",
+    "oid": "1.3.6.1.2.1.25.3.9.12",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        ISO 9660 File System for CD's."
+  },
+  "hrFSRockRidge": {
+    "name": "hrFSRockRidge",
+    "oid": "1.3.6.1.2.1.25.3.9.13",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        RockRidge File System for CD's."
+  },
+  "hrFSNFS": {
+    "name": "hrFSNFS",
+    "oid": "1.3.6.1.2.1.25.3.9.14",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        NFS File System."
+  },
+  "hrFSNetware": {
+    "name": "hrFSNetware",
+    "oid": "1.3.6.1.2.1.25.3.9.15",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Netware File System."
+  },
+  "hrFSAFS": {
+    "name": "hrFSAFS",
+    "oid": "1.3.6.1.2.1.25.3.9.16",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Andrew File System."
+  },
+  "hrFSDFS": {
+    "name": "hrFSDFS",
+    "oid": "1.3.6.1.2.1.25.3.9.17",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        OSF DCE Distributed File System."
+  },
+  "hrFSAppleshare": {
+    "name": "hrFSAppleshare",
+    "oid": "1.3.6.1.2.1.25.3.9.18",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        AppleShare File System."
+  },
+  "hrFSRFS": {
+    "name": "hrFSRFS",
+    "oid": "1.3.6.1.2.1.25.3.9.19",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        RFS File System."
+  },
+  "hrFSDGCFS": {
+    "name": "hrFSDGCFS",
+    "oid": "1.3.6.1.2.1.25.3.9.20",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Data General DGCFS."
+  },
+  "hrFSBFS": {
+    "name": "hrFSBFS",
+    "oid": "1.3.6.1.2.1.25.3.9.21",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        SVR4 Boot File System."
+  },
+  "hrFSFAT32": {
+    "name": "hrFSFAT32",
+    "oid": "1.3.6.1.2.1.25.3.9.22",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Windows FAT32 File System."
+  },
+  "hrFSLinuxExt2": {
+    "name": "hrFSLinuxExt2",
+    "oid": "1.3.6.1.2.1.25.3.9.23",
+    "class": "objectidentity",
+    "status": "current",
+    "description": "The file system type identifier used for the\n        Linux EXT2 File System."
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///home/worker/workspaces/snmp-cockpit/mib/orig/HOST-RESOURCES-TYPES.txt",
+      "Produced by pysmi-0.3.2 at Fri Jul 26 22:09:51 2019",
+      "On host workerhost.local platform Linux version 5.1.15-300.fc30.x86_64 by user worker",
+      "Using Python version 3.7.3 (default, May 11 2019, 00:38:04) "
+    ],
+    "module": "HOST-RESOURCES-TYPES"
+  }
+}

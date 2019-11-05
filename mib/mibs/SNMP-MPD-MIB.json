@@ -1,0 +1,166 @@
+{
+  "imports": {
+    "class": "imports",
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "OBJECT-GROUP",
+      "NOTIFICATION-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "OBJECT-IDENTITY",
+      "Counter64",
+      "Unsigned32",
+      "Counter32",
+      "Gauge32",
+      "MODULE-IDENTITY",
+      "snmpModules",
+      "Bits",
+      "TimeTicks",
+      "iso",
+      "MibIdentifier",
+      "Integer32",
+      "NOTIFICATION-TYPE",
+      "OBJECT-TYPE",
+      "IpAddress"
+    ],
+    "SNMPv2-TC": [
+      "TEXTUAL-CONVENTION",
+      "DisplayString"
+    ]
+  },
+  "snmpMPDMIB": {
+    "name": "snmpMPDMIB",
+    "oid": "1.3.6.1.6.3.11",
+    "class": "moduleidentity",
+    "revisions": [
+      {
+        "revision": "2002-10-14 00:00",
+        "description": "Updated addresses, published as RFC 3412."
+      },
+      {
+        "revision": "1999-05-04 16:36",
+        "description": "Updated addresses, published as RFC 2572."
+      },
+      {
+        "revision": "1997-09-30 00:00",
+        "description": "Original version, published as RFC 2272."
+      }
+    ],
+    "lastupdated": "200210140000Z",
+    "organization": "SNMPv3 Working Group",
+    "contactinfo": "WG-EMail:   snmpv3@lists.tislabs.com\n                  Subscribe:  snmpv3-request@lists.tislabs.com\n\n                  Co-Chair:   Russ Mundy\n                              Network Associates Laboratories\n                  postal:     15204 Omega Drive, Suite 300\n                              Rockville, MD 20850-4601\n                              USA\n\n                  EMail:      mundy@tislabs.com\n                  phone:      +1 301-947-7107\n\n                  Co-Chair &\n                  Co-editor:  David Harrington\n                              Enterasys Networks\n                  postal:     35 Industrial Way\n                              P. O. Box 5005\n                              Rochester NH 03866-5005\n                              USA\n                  EMail:      dbh@enterasys.com\n                  phone:      +1 603-337-2614\n\n                  Co-editor:  Jeffrey Case\n                              SNMP Research, Inc.\n                  postal:     3001 Kimberlin Heights Road\n                              Knoxville, TN 37920-9716\n                              USA\n                  EMail:      case@snmp.com\n                  phone:      +1 423-573-1434\n\n                  Co-editor:  Randy Presuhn\n                              BMC Software, Inc.\n                  postal:     2141 North First Street\n                              San Jose, CA 95131\n                              USA\n                  EMail:      randy_presuhn@bmc.com\n                  phone:      +1 408-546-1006\n\n                  Co-editor:  Bert Wijnen\n                              Lucent Technologies\n                  postal:     Schagen 33\n                              3461 GL Linschoten\n                              Netherlands\n                  EMail:      bwijnen@lucent.com\n                  phone:      +31 348-680-485\n                 ",
+    "description": "The MIB for Message Processing and Dispatching\n\n                  Copyright (C) The Internet Society (2002). This\n                  version of this MIB module is part of RFC 3412;\n                  see the RFC itself for full legal notices.\n                 "
+  },
+  "snmpMPDAdmin": {
+    "name": "snmpMPDAdmin",
+    "oid": "1.3.6.1.6.3.11.1",
+    "class": "objectidentity"
+  },
+  "snmpMPDMIBObjects": {
+    "name": "snmpMPDMIBObjects",
+    "oid": "1.3.6.1.6.3.11.2",
+    "class": "objectidentity"
+  },
+  "snmpMPDMIBConformance": {
+    "name": "snmpMPDMIBConformance",
+    "oid": "1.3.6.1.6.3.11.3",
+    "class": "objectidentity"
+  },
+  "snmpMPDStats": {
+    "name": "snmpMPDStats",
+    "oid": "1.3.6.1.6.3.11.2.1",
+    "class": "objectidentity"
+  },
+  "snmpUnknownSecurityModels": {
+    "name": "snmpUnknownSecurityModels",
+    "oid": "1.3.6.1.6.3.11.2.1.1",
+    "nodetype": "scalar",
+    "class": "objecttype",
+    "syntax": {
+      "type": "Counter32",
+      "class": "type"
+    },
+    "maxaccess": "read-only",
+    "status": "current",
+    "description": "The total number of packets received by the SNMP\n                 engine which were dropped because they referenced a\n                 securityModel that was not known to or supported by\n                 the SNMP engine.\n                "
+  },
+  "snmpInvalidMsgs": {
+    "name": "snmpInvalidMsgs",
+    "oid": "1.3.6.1.6.3.11.2.1.2",
+    "nodetype": "scalar",
+    "class": "objecttype",
+    "syntax": {
+      "type": "Counter32",
+      "class": "type"
+    },
+    "maxaccess": "read-only",
+    "status": "current",
+    "description": "The total number of packets received by the SNMP\n                 engine which were dropped because there were invalid\n                 or inconsistent components in the SNMP message.\n                "
+  },
+  "snmpUnknownPDUHandlers": {
+    "name": "snmpUnknownPDUHandlers",
+    "oid": "1.3.6.1.6.3.11.2.1.3",
+    "nodetype": "scalar",
+    "class": "objecttype",
+    "syntax": {
+      "type": "Counter32",
+      "class": "type"
+    },
+    "maxaccess": "read-only",
+    "status": "current",
+    "description": "The total number of packets received by the SNMP\n                 engine which were dropped because the PDU contained\n                 in the packet could not be passed to an application\n                 responsible for handling the pduType, e.g. no SNMP\n                 application had registered for the proper\n                 combination of the contextEngineID and the pduType.\n                "
+  },
+  "snmpMPDMIBCompliances": {
+    "name": "snmpMPDMIBCompliances",
+    "oid": "1.3.6.1.6.3.11.3.1",
+    "class": "objectidentity"
+  },
+  "snmpMPDMIBGroups": {
+    "name": "snmpMPDMIBGroups",
+    "oid": "1.3.6.1.6.3.11.3.2",
+    "class": "objectidentity"
+  },
+  "snmpMPDCompliance": {
+    "name": "snmpMPDCompliance",
+    "oid": "1.3.6.1.6.3.11.3.1.1",
+    "class": "modulecompliance",
+    "modulecompliance": [
+      {
+        "object": "snmpMPDGroup",
+        "module": "SNMP-MPD-MIB"
+      }
+    ],
+    "status": "current",
+    "description": "The compliance statement for SNMP entities which\n                 implement the SNMP-MPD-MIB.\n                "
+  },
+  "snmpMPDGroup": {
+    "name": "snmpMPDGroup",
+    "oid": "1.3.6.1.6.3.11.3.2.1",
+    "class": "objectgroup",
+    "objects": [
+      {
+        "module": "SNMP-MPD-MIB",
+        "object": "snmpUnknownSecurityModels"
+      },
+      {
+        "module": "SNMP-MPD-MIB",
+        "object": "snmpInvalidMsgs"
+      },
+      {
+        "module": "SNMP-MPD-MIB",
+        "object": "snmpUnknownPDUHandlers"
+      }
+    ],
+    "status": "current",
+    "description": "A collection of objects providing for remote\n                 monitoring of the SNMP Message Processing and\n                 Dispatching process.\n                "
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///home/worker/workspaces/snmp-cockpit/mib/orig/SNMP-MPD-MIB.txt",
+      "Produced by pysmi-0.3.2 at Fri Jul 26 22:09:51 2019",
+      "On host workerhost.local platform Linux version 5.1.15-300.fc30.x86_64 by user worker",
+      "Using Python version 3.7.3 (default, May 11 2019, 00:38:04) "
+    ],
+    "module": "SNMP-MPD-MIB"
+  }
+}

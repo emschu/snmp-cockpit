@@ -1,0 +1,82 @@
+<h1 style="text-align: center;"><strong>Device QR-Code Guide</strong></h1>
+<p><strong>Schema (valid JSON-Format):</strong></p>
+<pre><code class="json">{
+     &quot;user&quot;: &quot;&quot;,
+     &quot;pw&quot;: &quot;&quot;,
+     &quot;enc&quot;: &quot;&quot;,
+     &quot;naddr&quot;: {
+         &quot;IPv4&quot;: &quot;&quot;,
+         &quot;IPv6&quot;: &quot;&quot;
+     }
+ }
+</code></pre>
+<h4>Description:</h4>
+<ul>
+    <li><strong>user</strong>:
+        <ul>
+            <li><em>v1/v2c</em>: Community</li>
+            <li><em>v3</em>: User</li>
+        </ul>
+    </li>
+    <li><strong>pw</strong>:
+        <ul>
+            <li><em>v1/v2c</em>: Empty</li>
+            <li><em>v3/v2c</em>: Auth password</li>
+        </ul>
+    </li>
+    <li><strong>enc</strong>:
+        <ul>
+            <li><em>v1/v2c</em>: Empty</li>
+            <li><em>v3 simple</em>: Priv password</li>
+            <li><em>v3 custom</em>: Schema: <code>SecurityLevel;AuthProtocol;PrivProtocol;Context;Password</code>
+                <ul>
+                    <li><strong>SecurityLevel</strong>: <code>int 0-2</code>
+                        <ul>
+                            <li><strong>0</strong>: AUTH_PRIV</li>
+                            <li><strong>1</strong>: AUTH_NO_PRIV</li>
+                            <li><strong>2</strong>: NO_AUTH_NO_PRIV</li>
+                        </ul>
+                    </li>
+                    <li><strong>AuthProtocol</strong>: <code>int 0-5</code>
+                        <ul>
+                            <li><strong>0</strong>: SHA-1</li>
+                            <li><strong>1</strong>: MD5</li>
+                            <li><strong>2</strong>: HMAC128SHA224</li>
+                            <li><strong>3</strong>: HMAC192SHA256</li>
+                            <li><strong>4</strong>: HMAC256SHA384</li>
+                            <li><strong>5</strong>: HMAC384SHA512</li>
+                        </ul>
+                    </li>
+                    <li><strong>PrivProtocol</strong>: <code>int 0-4</code>
+                        <ul>
+                            <li><strong>0</strong>: AES-128</li>
+                            <li><strong>1</strong>: DES</li>
+                            <li><strong>2</strong>: AES-192</li>
+                            <li><strong>3</strong>: AES-256</li>
+                            <li><strong>4</strong>: 3DES</li>
+                        </ul>
+                    </li>
+                    <li><strong>Context</strong>: empty or string</li>
+                    <li><strong>Password</strong>: Priv password</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><strong>naddr</strong>:
+        <ul>
+            <li><em>v1 and v3</em>:
+                <ul>
+                    <li><strong>IPv4</strong>: IPv4-Addresse of a SNMP Daemon software
+                        <ul>
+                            <li><strong>Custom Port</strong>: suffix string with &quot;:&lt;Port&gt;&quot; (as usual)</li>
+                        </ul>
+                    </li>
+                    <li><strong>IPv6</strong>: Use &quot;[Address]:Port&quot; Schema</li>
+                </ul>
+            </li>
+            <li><em>Note:</em> If you provide both IPv4 and IPv6 address, the app will use the latter.</li>
+        </ul>
+    </li>
+</ul>
+
+

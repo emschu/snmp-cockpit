@@ -1,0 +1,116 @@
+{
+  "imports": {
+    "class": "imports",
+    "SNMPv2-CONF": [
+      "MODULE-COMPLIANCE",
+      "NOTIFICATION-GROUP"
+    ],
+    "SNMPv2-SMI": [
+      "OBJECT-IDENTITY",
+      "Counter64",
+      "Unsigned32",
+      "Counter32",
+      "Gauge32",
+      "IpAddress",
+      "MODULE-IDENTITY",
+      "TimeTicks",
+      "Bits",
+      "iso",
+      "MibIdentifier",
+      "Integer32",
+      "NOTIFICATION-TYPE",
+      "OBJECT-TYPE",
+      "mib-2"
+    ],
+    "SNMPv2-TC": [
+      "TEXTUAL-CONVENTION",
+      "DisplayString"
+    ]
+  },
+  "ianaRtProtoMIB": {
+    "name": "ianaRtProtoMIB",
+    "oid": "1.3.6.1.2.1.84",
+    "class": "moduleidentity",
+    "revisions": [
+      {
+        "revision": "2011-07-22 00:00",
+        "description": "Added rpl(18) ."
+      },
+      {
+        "revision": "2000-09-26 00:00",
+        "description": "Original version, published in coordination\n                 with RFC 2932."
+      }
+    ],
+    "lastupdated": "201107220000Z",
+    "organization": "IANA",
+    "contactinfo": " Internet Assigned Numbers Authority\n              Internet Corporation for Assigned Names and Numbers\n              4676 Admiralty Way, Suite 330\n              Marina del Rey, CA 90292-6601\n\n              Phone: +1 310 823 9358\n              EMail: iana&iana.org",
+    "description": "This MIB module defines the IANAipRouteProtocol and\n            IANAipMRouteProtocol textual conventions for use in MIBs\n            which need to identify unicast or multicast routing\n            mechanisms.\n\n            Any additions or changes to the contents of this MIB module\n            require either publication of an RFC, or Designated Expert\n            Review as defined in RFC 2434, Guidelines for Writing an\n            IANA Considerations Section in RFCs.  The Designated Expert \n            will be selected by the IESG Area Director(s) of the Routing\n            Area."
+  },
+  "IANAipRouteProtocol": {
+    "name": "IANAipRouteProtocol",
+    "class": "textualconvention",
+    "type": {
+      "type": "INTEGER",
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "other": 1,
+          "local": 2,
+          "netmgmt": 3,
+          "icmp": 4,
+          "egp": 5,
+          "ggp": 6,
+          "hello": 7,
+          "rip": 8,
+          "isIs": 9,
+          "esIs": 10,
+          "ciscoIgrp": 11,
+          "bbnSpfIgp": 12,
+          "ospf": 13,
+          "bgp": 14,
+          "idpr": 15,
+          "ciscoEigrp": 16,
+          "dvmrp": 17,
+          "rpl": 18
+        }
+      }
+    },
+    "status": "current",
+    "description": "A mechanism for learning routes.  Inclusion of values for\n            routing protocols is not intended to imply that those\n            protocols need be supported."
+  },
+  "IANAipMRouteProtocol": {
+    "name": "IANAipMRouteProtocol",
+    "class": "textualconvention",
+    "type": {
+      "type": "INTEGER",
+      "class": "type",
+      "constraints": {
+        "enumeration": {
+          "other": 1,
+          "local": 2,
+          "netmgmt": 3,
+          "dvmrp": 4,
+          "mospf": 5,
+          "pimSparseDense": 6,
+          "cbt": 7,
+          "pimSparseMode": 8,
+          "pimDenseMode": 9,
+          "igmpOnly": 10,
+          "bgmp": 11,
+          "msdp": 12
+        }
+      }
+    },
+    "status": "current",
+    "description": "The multicast routing protocol.  Inclusion of values for\n            multicast routing protocols is not intended to imply that\n            those protocols need be supported."
+  },
+  "meta": {
+    "comments": [
+      "ASN.1 source file:///home/worker/workspaces/snmp-cockpit/mib/orig/IANA-RTPROTO-MIB.txt",
+      "Produced by pysmi-0.3.2 at Fri Jul 26 22:09:51 2019",
+      "On host workerhost.local platform Linux version 5.1.15-300.fc30.x86_64 by user worker",
+      "Using Python version 3.7.3 (default, May 11 2019, 00:38:04) "
+    ],
+    "module": "IANA-RTPROTO-MIB"
+  }
+}
