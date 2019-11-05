@@ -2,18 +2,17 @@
 
 <noscript><a href="https://liberapay.com/emschu/donate"><img alt="Donate using Liberapay" src="https://liberapay.com/assets/widgets/donate.svg"></a></noscript>
 
-A free software GPL v3 Android SNMP reader app. Its designed to be used in a single WIFI environment and includes several security mechanisms to ensure connectivity. This app supports QR code driven workflows for establishing WIFI network connections as well as initiating multiple SNMP connections with IPv4/v6 addresses and UDP protocol. To ease the work with MIBs there is a built-in, but replaceable, MIB catalog integrated.  
-This project initially was started as a team project at university with a small other focus as it has today and not all stuff is well-tested. Please report feedback and bugs via [GitHub Issue Tracker](https://github.com/emschu/snmp-cockpit/issues) or via E-Mail. Thank you!
+A free software GPL v3 Android SNMP reader app. This app is designed to be used in a single WIFI environment and includes several security mechanisms to ensure connectivity. This app supports QR code driven workflows for establishing WIFI network connections as well as initiating multiple SNMP connections with IPv4/v6 addresses and UDP protocol. To ease the work with MIBs there is a built-in, but replaceable, MIB catalog integrated.  
+This project initially was started as a team project at university with another focus as it has today and not all stuff is well-tested. Please report feedback and bugs via [GitHub Issue Tracker](https://github.com/emschu/snmp-cockpit/issues) or via E-Mail. Thank you!
 
 ![App Screenshot 1](./docs/images/screenshot_1_small.png)
 ![App Screenshot 2](./docs/images/screenshot_2_small.png)
 ![App Screenshot 3](./docs/images/screenshot_3_small.png)
 
-TODO add screenshots of device detail view
-
+TODO: More Screenshots
 
 # General features
-- establish SNMP v1/v2c/v3 connections between your smartphone and a SNMP demon in your WIFI IPv4/v6 network
+- establish SNMP v1/v2c/v3 connections between your smartphone and a SNMP daemon in your WIFI IPv4/v6 network
 - show basic system information and 20+ SNMP tables by default
 - query results for single OIDs and SNMP tables
 - use the built-in MIB catalog (RFC 1213 + common MIBs of *net-snmp*) or generate and import your own as described [here](./docs/MIB_catalog_guide.md)
@@ -84,7 +83,7 @@ TODO add screenshots of device detail view
 
 - If a SNMP connection does not respond for longer than a certain time (default: 5-10 seconds) during execution, the app switches to **connection timeout mode** with **warning dialog** and troubleshooting.
 
-- For IP addresses its always possible to **specify a port manually** that differs from the assumed standard `161`.
+- For IP addresses it's always possible to **specify a port manually** that differs from the assumed standard `161`.
 - If SNMP connections are established by the app - without the help of a QR code - all authentication and transport protocols (A x T) are tried out until a **response to sysName** (1.3.6.1.2.1.1.5.0) is possible in a connection.
 - Nevertheless - by certain specifications in the *enc* field of the QR code - each setting can also be determined manually, which is taken over during reading.
 - It is possible to add your own tabs to **device detail view** through the area of your **own queries** or in the **MIB catalog** for the period of the session.
