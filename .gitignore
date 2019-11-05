@@ -139,3 +139,6 @@ gradle-app.setting
 
 *.vpp.bak_*
 *.vpp.lck
+
+app/release/*.json
+app/debug/*.json

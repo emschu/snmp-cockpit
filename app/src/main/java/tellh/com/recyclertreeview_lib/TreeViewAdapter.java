@@ -336,11 +336,8 @@ public class TreeViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private List<TreeNode> backupDisplayNodes() {
         List<TreeNode> temp = new ArrayList<>();
         for (TreeNode displayNode : displayNodes) {
-            try {
-                temp.add(displayNode.clone());
-            } catch (CloneNotSupportedException e) {
-                temp.add(displayNode);
-            }
+                TreeNode clone = new TreeNode(displayNode.getContent(), displayNode.isExpand());
+                temp.add(clone);
         }
         return temp;
     }

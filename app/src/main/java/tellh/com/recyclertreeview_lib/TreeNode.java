@@ -30,7 +30,7 @@ import org.emschu.snmp.cockpit.fragment.MibCatalogFragment;
  * Created by tlh on 2016/10/1 :)
  */
 
-public class TreeNode<T extends LayoutItemType> implements Cloneable {
+public class TreeNode<T extends LayoutItemType> {
     private T content;
     private TreeNode parent;
     private List<TreeNode> childList;
@@ -47,6 +47,12 @@ public class TreeNode<T extends LayoutItemType> implements Cloneable {
     public TreeNode(@NonNull T content) {
         this.content = content;
         this.childList = new ArrayList<>();
+    }
+
+    public TreeNode(@NonNull T content, boolean isExpand) {
+        this.content = content;
+        this.childList = new ArrayList<>();
+        this.isExpand = isExpand;
     }
 
     public TreeNode(@NonNull T content, @NonNull String oidValue, @NonNull String nodeTitle) {
@@ -184,13 +190,6 @@ public class TreeNode<T extends LayoutItemType> implements Cloneable {
                 ", childList=" + (childList == null ? "null" : childList.toString()) +
                 ", isExpand=" + isExpand +
                 '}';
-    }
-
-    @Override
-    protected TreeNode<T> clone() throws CloneNotSupportedException {
-        TreeNode<T> clone = new TreeNode<>(this.content);
-        clone.isExpand = this.isExpand;
-        return clone;
     }
 
     public String getNodeTitle() {

@@ -43,7 +43,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "app_version",
-            "${defaultConfig.versionName}"
+                "${defaultConfig.versionName}"
         }
         debug {
             testCoverageEnabled true
