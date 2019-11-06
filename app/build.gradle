@@ -32,8 +32,8 @@ android {
         applicationId "org.emschu.snmp.cockpit"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 31
-        versionName "0.9.8"
+        versionCode 33
+        versionName "0.9.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
@@ -107,7 +107,7 @@ dependencies {
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.viewpager:viewpager:1.0.0"
     implementation "com.mikepenz:aboutlibraries:7.0.1"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0.pr3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.1'
     // tests
     androidTestImplementation "androidx.test.ext:junit:1.1.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"

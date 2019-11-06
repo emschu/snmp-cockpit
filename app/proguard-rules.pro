@@ -20,4 +20,16 @@
 -keepclasseswithmembers class **.R$* {
     public static final int define_*;
 }
+# keep snmp4j classes or crash
 -keep class org.snmp4j.** {*;}
+
+# handle jackson databind
+-keepattributes *Annotation*,EnclosingMethod,Signature
+-keepnames class com.fasterxml.jackson.** {
+*;
+}
+-keepnames interface com.fasterxml.jackson.** {
+*;
+}
+-dontwarn com.fasterxml.jackson.databind.**
+-keep class org.codehaus.** { *; }
