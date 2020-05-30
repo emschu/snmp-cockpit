@@ -21,13 +21,13 @@ package org.emschu.snmp.cockpit.snmp.adapter;
 
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.security.SecurityLevel;
-import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
@@ -61,18 +61,18 @@ public class V1Adapter extends AbstractSnmpAdapter {
         this.isV1 = isV1;
     }
 
+    @NotNull
     @Override
-    public AbstractTarget getTarget() {
+    public AbstractTarget<UdpAddress> getTarget() {
         if (target != null) {
             return target;
         }
-        CommunityTarget communityTarget = new CommunityTarget();
+        CommunityTarget<UdpAddress> communityTarget = new CommunityTarget<>();
         OctetString securityName = new OctetString(deviceConfiguration.getUsername());
         communityTarget.setCommunity(securityName);
         communityTarget.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV); // this is fix for v1!
 
-        final String udpIpAddress = getAddress();
-        communityTarget.setAddress(GenericAddress.parse(udpIpAddress));
+        communityTarget.setAddress(new UdpAddress(getAddress()));
         communityTarget.setVersion(deviceConfiguration.getSnmpVersion());
         communityTarget.setRetries(deviceConfiguration.getRetries());
         communityTarget.setTimeout(deviceConfiguration.getTimeout());

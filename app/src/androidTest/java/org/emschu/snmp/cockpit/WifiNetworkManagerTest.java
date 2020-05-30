@@ -20,13 +20,11 @@
 package org.emschu.snmp.cockpit;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import org.emschu.snmp.cockpit.CockpitMainActivity;
-import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

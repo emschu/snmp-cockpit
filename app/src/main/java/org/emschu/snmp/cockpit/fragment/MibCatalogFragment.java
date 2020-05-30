@@ -239,7 +239,7 @@ public class MibCatalogFragment extends Fragment {
     private JsonNode readJsonTree() {
         ObjectMapper om = new ObjectMapper();
         try {
-            MibCatalogManager mcm = new MibCatalogManager(android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
+            MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
             Reader is = new BufferedReader(
                     new InputStreamReader(mcm.getTreeFileInputStream(getContext()), StandardCharsets.UTF_8));
             JsonNode tree = om.readTree(is);
@@ -292,7 +292,7 @@ public class MibCatalogFragment extends Fragment {
                 Log.i(TAG, "URI of import archive: " + uri.toString());
 
                 MibCatalogArchiveManager fm = new MibCatalogArchiveManager(getActivity(), uri);
-                MibCatalogManager mcm = new MibCatalogManager(android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
 
                 if (mcm.isDuplicate(fm.getArchiveName())) {
                     Toast.makeText(getActivity(), R.string.mib_catalog_duplicate_toast_message, Toast.LENGTH_LONG).show();

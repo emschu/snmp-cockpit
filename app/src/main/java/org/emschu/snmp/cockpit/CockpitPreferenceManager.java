@@ -108,7 +108,7 @@ public class CockpitPreferenceManager {
      * @param context
      */
     public CockpitPreferenceManager(Context context) {
-        sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
 
         if (BuildConfig.VERSION_CODE > getPrefVersion()) {
             Log.d(TAG, "update pref version. reset request counter.");
@@ -535,7 +535,7 @@ public class CockpitPreferenceManager {
                 findPreference(KEY_BUILD_TIMESTAMP).setSummary(getString(R.string.timestamp, timestamp));
                 ListPreference mibCatalogSelection = (ListPreference) findPreference(KEY_MIB_CATALOG_SELECTION);
 
-                MibCatalogManager mcm = new MibCatalogManager(android.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
                 List<String> availableMibs = new ArrayList<>();
                 for (MibCatalog mc : mcm.getMibCatalog()) {
                     availableMibs.add(mc.getCatalogName());
