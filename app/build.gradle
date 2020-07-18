@@ -73,7 +73,7 @@ android {
     packagingOptions {
         exclude 'META-INF/library-core_release.kotlin_module'
     }
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '29.0.3'
 }
 configurations {
     compile.exclude group: 'log4j'
@@ -93,15 +93,16 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation "androidx.appcompat:appcompat:$androidSupportVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta6'
-    implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta8'
+    implementation 'androidx.drawerlayout:drawerlayout:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.legacy:legacy-preference-v14:1.0.0"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation "androidx.cardview:cardview:1.0.0"
+    implementation "androidx.activity:activity:1.2.0-alpha06"
     implementation "androidx.viewpager:viewpager:1.0.0"
-    implementation "com.mikepenz:aboutlibraries:7.0.1"
+    implementation "com.mikepenz:aboutlibraries:7.1.0"
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10.1'
     // tests
     androidTestImplementation "androidx.test.ext:junit:1.1.1"

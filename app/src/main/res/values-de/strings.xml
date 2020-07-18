@@ -86,7 +86,7 @@
     <string name="title_activity_snmplogin">Verbinde Gerät per SNMP</string>
     <string name="title_activity_single_query_result">Abfrageansicht</string>
     <string name="title_activity_settings">Einstellungen</string>
-    <string name="title_activity_own_queries">Eigene SNMP-Abfragen</string>
+    <string name="title_activity_own_queries">Gespeicherte Abfragen</string>
     <string name="splash_screen_logo">Splash Screen Logo</string>
     <string name="title_activity_about">Über die App</string>
     <string name="snmpv3_key">Schlüssel:</string>
@@ -97,7 +97,7 @@
     <string name="nav_header_dns_server">DNS</string>
     <string name="nav_header_gateway_ip">Gateway</string>
     <string name="nav_header_ip_label">IP: %s</string>
-    <string name="nav_header_subnet_label">Subnetzmaske</string>
+    <string name="nav_header_subnet_label">Subnetzmaske %s</string>
     <string name="navigate_up_content_description">Zurück navigieren</string>
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="navigation_drawer_open">Menü öffnen</string>
