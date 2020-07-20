@@ -20,8 +20,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/tree_view_item_height"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="@dimen/tree_view_item_height">
     <TextView
         android:id="@+id/query_catalog_list_item_text"
         android:layout_marginStart="24dp"

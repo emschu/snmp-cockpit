@@ -21,6 +21,7 @@
     public static final int define_*;
 }
 # keep snmp4j classes or crash
+#noinspection ShrinkerUnresolvedReference
 -keep class org.snmp4j.** {*;}
 
 # handle jackson databind

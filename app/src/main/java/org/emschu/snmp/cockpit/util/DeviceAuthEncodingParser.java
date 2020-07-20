@@ -86,7 +86,7 @@ public class DeviceAuthEncodingParser {
      */
     private static class SemicolonDividedString {
         private boolean myResult;
-        private String qrEncField;
+        private final String qrEncField;
         private EncodingStringPartial.AuthProtocol authProtocol;
         private EncodingStringPartial.PrivProtocol privProtocol;
         private String context;

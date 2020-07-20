@@ -43,7 +43,7 @@ public class MonitoringQueryTask extends AsyncTask<Void, Void, Void> implements 
     public static final String TAG = MonitoringQueryTask.class.getName();
 
     private final AtomicReference<CockpitQueryView> queryView = new AtomicReference<>();
-    private DeviceConfiguration deviceConfiguration;
+    private final DeviceConfiguration deviceConfiguration;
     private QueryTask<LaTableQuery> laTableQueryTask;
     private QueryTask<IpSystemStatsTableQuery> ipSystemStatsQueryTask;
     private QueryTask<IpIfStatsTableQuery> ipIfStatsQueryTask;

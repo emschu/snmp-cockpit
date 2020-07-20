@@ -19,6 +19,7 @@
 
 package org.emschu.snmp.cockpit;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
@@ -26,6 +27,7 @@ import android.content.Context;
  * simple application class which provides the context within the app
  */
 public class SnmpCockpitApp extends Application {
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
     private static CockpitPreferenceManager cockpitPreferenceManager;
 

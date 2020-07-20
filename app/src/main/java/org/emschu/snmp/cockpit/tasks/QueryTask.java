@@ -34,7 +34,6 @@ import org.emschu.snmp.cockpit.snmp.SnmpConnection;
 import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -156,12 +155,17 @@ public class QueryTask<T extends SnmpQuery> extends AsyncTask<QueryRequest<? ext
      * @return
      */
     public T getQuery() {
+        DeviceConfiguration deviceConfiguration = getDeviceConfiguration();
+        if (deviceConfiguration == null) {
+            Log.w(TAG, "No DeviceConfiguration found!");
+            return null;
+        }
         try {
             // wait for reference or illegal state exception is thrown
-            int offset = getDeviceConfiguration().getAdditionalTimeoutOffset();
+            int offset = deviceConfiguration.getAdditionalTimeoutOffset();
             T query = get((long) CockpitPreferenceManager.TIMEOUT_WAIT_ASYNC_MILLISECONDS + offset, TimeUnit.MILLISECONDS);
             if (query != null) {
-                SnmpManager.getInstance().resetTimeout(deviceConfiguration);
+                SnmpManager.getInstance().resetTimeout(this.deviceConfiguration);
                 return query;
             }
         } catch (InterruptedException e) {
@@ -171,9 +175,7 @@ public class QueryTask<T extends SnmpQuery> extends AsyncTask<QueryRequest<? ext
             Log.w(TAG, "execution exception: " + e.getMessage());
         } catch (TimeoutException e) {
             Log.w(TAG, "timeout reached for query task");
-            if (deviceConfiguration != null) {
-                SnmpManager.getInstance().registerTimeout(deviceConfiguration);
-            }
+            SnmpManager.getInstance().registerTimeout(deviceConfiguration);
         }
         return null;
     }

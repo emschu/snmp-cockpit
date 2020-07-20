@@ -84,7 +84,6 @@ public class CockpitPreferenceManager {
     static final String KEY_PREF_VERSION = "pref_version_code";
     static final String KEY_SHOW_WELCOME_DIALOG = "welcome_dialog";
 
-
     // static prefs
     public static final int TIMEOUT_WAIT_ASYNC_MILLISECONDS_SHORT = 3000;
     public static final int TIMEOUT_WAIT_ASYNC_MILLISECONDS = 7500;
@@ -112,7 +111,6 @@ public class CockpitPreferenceManager {
 
         if (BuildConfig.VERSION_CODE > getPrefVersion()) {
             Log.d(TAG, "update pref version. reset request counter.");
-            resetRequestCounter();
             setPrefVersion(BuildConfig.VERSION_CODE);
         }
     }
@@ -161,10 +159,7 @@ public class CockpitPreferenceManager {
             return 3;
         }
         // 3000 secs max
-        if (value > 3000) {
-            return 3000;
-        }
-        return value;
+        return Math.min(value, 3000);
     }
 
     /**
@@ -317,7 +312,7 @@ public class CockpitPreferenceManager {
             Log.w(TAG, NOT_AN_INTEGER_GIVEN);
         }
         if (prefValue == 0) {
-            Log.w(TAG, "Bad user input detected. Connection test timeout too small. Using 1000 ms.");
+            Log.w(TAG, "Bad user input detected. Connection test timeout too large. Using 1000 ms.");
             return 1000;
         }
         if (prefValue <= 100) {
@@ -515,7 +510,7 @@ public class CockpitPreferenceManager {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.pref_general);
-            PackageInfo packageInfo = null;
+            PackageInfo packageInfo;
             try {
                 if (getContext() == null) {
                     Log.d(TAG, "null context founds");
@@ -535,7 +530,8 @@ public class CockpitPreferenceManager {
                 findPreference(KEY_BUILD_TIMESTAMP).setSummary(getString(R.string.timestamp, timestamp));
                 ListPreference mibCatalogSelection = (ListPreference) findPreference(KEY_MIB_CATALOG_SELECTION);
 
-                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                Context context = SnmpCockpitApp.getContext();
+                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(context));
                 List<String> availableMibs = new ArrayList<>();
                 for (MibCatalog mc : mcm.getMibCatalog()) {
                     availableMibs.add(mc.getCatalogName());
@@ -545,12 +541,12 @@ public class CockpitPreferenceManager {
 
                 Preference resetMibsPreference = findPreference(KEY_MIB_CATALOG_RESET);
                 resetMibsPreference.setOnPreferenceClickListener(preference -> {
-                    new AlertDialog.Builder(getActivity())
+                    new AlertDialog.Builder(context)
                             .setTitle(R.string.mib_catalog_reset_dialog_title)
                             .setMessage(R.string.mib_catalog_reset_confirmation_message)
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                                 dialog.dismiss();
-                                mcm.resetToDefault(getActivity().getFilesDir());
+                                mcm.resetToDefault(context.getFilesDir());
                                 Toast.makeText(getActivity(), R.string.mib_catalog_reset_success_toast_message, Toast.LENGTH_LONG).show();
 
                                 // refresh preferences
@@ -605,7 +601,7 @@ public class CockpitPreferenceManager {
                                 || key.equals(KEY_SECURE_WIFI_SSID)
                                 || key.equals(KEY_DEBUG_ALLOW_ALL_NETWORKS)
                                 || key.equals(KEY_IS_WPA2_ONLY)) {
-                            WifiNetworkManager networkManager = WifiNetworkManager.getInstance(getContext());
+                            WifiNetworkManager networkManager = WifiNetworkManager.getInstance();
                             networkManager.updateMode();
                         }
 

@@ -83,7 +83,7 @@
     <string name="title_network_details">Netzwerkdetails</string>
     <string name="title_activity_tag_management">Tags verwalten</string>
     <string name="title_activity_tabbed_device">Geräte Detailansicht</string>
-    <string name="title_activity_snmplogin">Verbinde Gerät per SNMP</string>
+    <string name="title_activity_snmplogin">Verbinde Gerät</string>
     <string name="title_activity_single_query_result">Abfrageansicht</string>
     <string name="title_activity_settings">Einstellungen</string>
     <string name="title_activity_own_queries">Gespeicherte Abfragen</string>
@@ -253,4 +253,5 @@
     <string name="preference_mib_catalog_reset_summary">Hier können importierte MIB Kataloge entfernt und zum Standard zurückgekehrt werden</string>
     <string name="send_email_title">E-Mail versenden</string>
     <string name="preference_reset_mibs">MIB-Kataloge zurücksetzen</string>
+    <string name="use_current_network">Aktuelle SSID verwenden</string>
 </resources>
