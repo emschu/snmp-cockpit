@@ -63,7 +63,7 @@ public class NetworkDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        wifiNetworkManager = WifiNetworkManager.getInstance(getContext());
+        wifiNetworkManager = WifiNetworkManager.getInstance();
 
         Log.d(TAG, "update network information");
         wifiNetworkManager.refresh(); // refreshes dhcp info

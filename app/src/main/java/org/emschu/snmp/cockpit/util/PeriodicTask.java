@@ -27,9 +27,9 @@ import android.os.Looper;
  * implementation of regular task
  */
 public class PeriodicTask {
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
-    private Runnable internalWraperRunnable;
+    private final Runnable internalWrapperRunnable;
 
     private int INTERVAL = 10000;
 
@@ -39,7 +39,7 @@ public class PeriodicTask {
      * @param regularTask
      */
     private PeriodicTask(final Runnable regularTask) {
-        internalWraperRunnable = new Runnable() {
+        internalWrapperRunnable = new Runnable() {
             @Override
             public void run() {
                 regularTask.run();
@@ -60,10 +60,10 @@ public class PeriodicTask {
     }
 
     public synchronized void start(){
-        internalWraperRunnable.run();
+        internalWrapperRunnable.run();
     }
 
     public synchronized void stop(){
-        handler.removeCallbacks(internalWraperRunnable);
+        handler.removeCallbacks(internalWrapperRunnable);
     }
 }

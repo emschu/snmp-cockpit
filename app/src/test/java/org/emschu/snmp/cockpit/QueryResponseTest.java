@@ -34,6 +34,6 @@ public class QueryResponseTest {
         QueryResponse response = new QueryResponse(SnmpConstants.sysLocation.toDottedString(), new VariableBinding());
         Assert.assertNotNull(response);
         Assert.assertEquals(SnmpConstants.sysLocation.toDottedString(), response.getOid());
-        Assert.assertTrue(response.getVariableBinding() != null);
+        Assert.assertNotNull(response.getVariableBinding());
     }
 }

@@ -60,7 +60,9 @@ public class SingleQueryResultActivity extends AppCompatActivity implements Prot
         queryFragment = (SingleQueryResultActivityFragment)
                 getSupportFragmentManager().findFragmentById(R.id.single_query_fragment);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // TODO implement safely with options menu item to disable
 //        if (new CockpitPreferenceManager(this).isPeriodicUpdateEnabled()) {

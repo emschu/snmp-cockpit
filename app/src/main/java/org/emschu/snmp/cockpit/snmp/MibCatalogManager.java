@@ -71,7 +71,7 @@ public class MibCatalogManager {
             createNewDefaultCatalog();
         }
         String catalogJson = sharedPreferences.getString(MIB_CATALOG_KEY, null);
-        Log.d(TAG, catalogJson);
+        Log.d(TAG, catalogJson != null ? catalogJson : "empty json catalog");
         try {
             return objectMapper.readValue(catalogJson, new TypeReference<List<MibCatalog>>() {
             });

@@ -56,7 +56,6 @@ public class CockpitQueryView extends ConstraintLayout {
 
     public static final String TAG = CockpitQueryView.class.getName();
     private static ThreadPoolExecutor THREAD_POOL_EXECUTOR = SnmpManager.getInstance().getThreadPoolExecutor();
-    private View view;
     private WebView webView;
     private ConcurrentHashMap<Integer, AbstractCockpitQuerySection> cockpitQuerySectionList = new ConcurrentHashMap<>();
     private String content = null;
@@ -86,7 +85,7 @@ public class CockpitQueryView extends ConstraintLayout {
     @SuppressLint("SetJavaScriptEnabled")
     private void initView() {
         Log.i(TAG, "init cockpit query view");
-        view = LayoutInflater.from(getContext()).inflate(R.layout.generic_query_view, this);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.generic_query_view, this);
         webView = view.findViewById(R.id.snmp_interface_table_view);
         webView.setNetworkAvailable(false);
         webView.setWebChromeClient(new WebChromeClient());

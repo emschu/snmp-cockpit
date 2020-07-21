@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.emschu.snmp.cockpit.query.json.JsonCatalogItem;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -56,7 +57,7 @@ public class MibCatalogArchiveManager {
     private final Uri locationToZip;
     private final String archiveName;
 
-    public MibCatalogArchiveManager(Activity context, Uri locationToZip) {
+    public MibCatalogArchiveManager(@NotNull Activity context, @NotNull Uri locationToZip) {
         this.context = context;
         this.locationToZip = locationToZip;
         this.archiveName = getArchiveName(locationToZip);
@@ -161,10 +162,10 @@ public class MibCatalogArchiveManager {
         }
     }
 
-    private String getArchiveName(Uri locationToZip) {
+    @NotNull
+    private String getArchiveName(@NotNull Uri locationToZip) {
         String detectedArchiveName = "";
-        if (locationToZip.getScheme() != null &&
-                locationToZip.getScheme().equals("content")) {
+        if (locationToZip.getScheme() != null && locationToZip.getScheme().equals("content")) {
             try (Cursor cursor = context.getContentResolver()
                     .query(locationToZip, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
@@ -172,7 +173,12 @@ public class MibCatalogArchiveManager {
                 }
             }
         } else {
-            detectedArchiveName = new File(locationToZip.getLastPathSegment()).getName();
+            String lastPathSegment = locationToZip.getLastPathSegment();
+            if (lastPathSegment != null) {
+                detectedArchiveName = new File(lastPathSegment).getName();
+            } else {
+                Log.w(TAG, "No last path segment in Uri found");
+            }
         }
         Log.i(TAG, String.format("import archive name '%s'", detectedArchiveName));
         return detectedArchiveName.replace(".zip", "");

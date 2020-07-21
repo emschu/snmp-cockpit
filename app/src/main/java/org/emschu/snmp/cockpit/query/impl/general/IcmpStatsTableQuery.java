@@ -33,8 +33,6 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
  */
 public class IcmpStatsTableQuery extends AbstractSnmpTableQuery {
 
-    public static final String TAG = IcmpStatsTableQuery.class.getName();
-
     @Override
     public Map<String, OID> getColumnDefinition() {
         Map<String, OID> columnDefinition = new HashMap<>();

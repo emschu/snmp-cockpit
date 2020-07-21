@@ -48,7 +48,7 @@ public class WifiNetworkManagerTest {
         edit.putBoolean(CockpitPreferenceManager.KEY_DEBUG_ALLOW_ALL_NETWORKS, false);
         edit.apply();
 
-        WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance(rule.getActivity());
+        WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance();
         wifiNetworkManager.updateMode();
         Assert.assertEquals("AndroidWifi", wifiNetworkManager.getCurrentSsid());
         Assert.assertEquals(4, wifiNetworkManager.getCurrentMode());

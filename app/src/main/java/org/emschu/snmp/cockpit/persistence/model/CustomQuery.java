@@ -19,6 +19,8 @@
 
 package org.emschu.snmp.cockpit.persistence.model;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +28,10 @@ import java.util.List;
  * custom query model class
  */
 public class CustomQuery {
-    private long id;
-    private String oid;
-    private String name;
-    private boolean isSingleQuery;
+    private final long id;
+    private final String oid;
+    private final String name;
+    private final boolean isSingleQuery;
     private List<Tag> tagList = new ArrayList<>();
 
     public CustomQuery(long id, String oid, String name, boolean isSingleQuery) {
@@ -63,6 +65,7 @@ public class CustomQuery {
         return tagList;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "CustomQuery{" +

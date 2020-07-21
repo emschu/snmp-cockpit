@@ -30,7 +30,6 @@ import org.snmp4j.TransportMapping;
 import org.snmp4j.UserTarget;
 import org.snmp4j.security.SecurityLevel;
 import org.snmp4j.security.UsmUser;
-import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
@@ -78,7 +77,7 @@ public class V3Adapter extends AbstractSnmpAdapter {
         OctetString securityName = new OctetString(deviceConfiguration.getUsername());
         userTarget.setSecurityName(securityName);
 
-        userTarget.setAddress(new UdpAddress(getAddress()));
+        userTarget.setAddress(new UdpAddress(getUdpAddress()));
         userTarget.setVersion(deviceConfiguration.getSnmpVersion());
         userTarget.setRetries(deviceConfiguration.getRetries());
         userTarget.setTimeout(deviceConfiguration.getTimeout());

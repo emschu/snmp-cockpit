@@ -30,7 +30,7 @@ import org.emschu.snmp.cockpit.R;
  */
 public class QrScannerActivityHelper {
 
-    private Activity activity;
+    private final Activity activity;
 
     public QrScannerActivityHelper(Activity activity) {
         this.activity = activity;

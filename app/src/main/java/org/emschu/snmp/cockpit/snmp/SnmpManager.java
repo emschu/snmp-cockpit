@@ -59,8 +59,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class SnmpManager {
     public static final String TAG = SnmpManager.class.getName();
-    private ConcurrentHashMap<String, TimeoutObservable> timeoutCounterMap = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, SnmpConnection> snmpConnectionPool = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, TimeoutObservable> timeoutCounterMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, SnmpConnection> snmpConnectionPool = new ConcurrentHashMap<>();
 
     private ThreadPoolExecutor threadPoolExecutor = null;
 

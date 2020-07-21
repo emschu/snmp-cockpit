@@ -58,6 +58,7 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
 import org.emschu.snmp.cockpit.util.PeriodicTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -338,10 +339,8 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isCollapsed = savedInstanceState.getBoolean(EXTRA_IS_COLLAPSED, false);
-        }
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
+        isCollapsed = savedInstanceState.getBoolean(EXTRA_IS_COLLAPSED, false);
         if (!isCollapsed) {
             findViewById(R.id.device_detail_row_1).callOnClick();
         }

@@ -28,8 +28,6 @@ import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
 import org.snmp4j.TransportMapping;
 import org.snmp4j.event.ResponseEvent;
-import org.snmp4j.smi.GenericAddress;
-import org.snmp4j.smi.IpAddress;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.UdpAddress;
 import org.snmp4j.smi.VariableBinding;
@@ -231,10 +229,17 @@ public abstract class AbstractSnmpAdapter {
      *
      * @return
      */
-    protected String getAddress() {
+    protected String getGenericAddress() {
         return String.format(
                 "%s:%s/%s",
                 deviceConfiguration.getNetworkProtocol(),
+                deviceConfiguration.getTargetIp(),
+                deviceConfiguration.getTargetPort()
+        );
+    }
+
+    protected String getUdpAddress() {
+        return String.format("%s/%s",
                 deviceConfiguration.getTargetIp(),
                 deviceConfiguration.getTargetPort()
         );

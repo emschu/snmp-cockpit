@@ -20,6 +20,7 @@
 package org.emschu.snmp.cockpit.snmp;
 
 
+import org.jetbrains.annotations.NotNull;
 import org.snmp4j.mp.SnmpConstants;
 import org.snmp4j.security.AuthHMAC128SHA224;
 import org.snmp4j.security.AuthHMAC192SHA256;
@@ -402,6 +403,7 @@ public class DeviceConfiguration {
         this.lastPingTime = lastPingTime;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "DeviceConfiguration{" +

@@ -122,7 +122,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
         snmpSpinner.setAdapter(adapter);
         snmpSpinner.setOnItemSelectedListener(this);
 
-        final String currentNetworkAddr = WifiNetworkManager.getInstance(this).getIpAddress();
+        final String currentNetworkAddr = WifiNetworkManager.getInstance().getIpAddress();
         hostField.setText(currentNetworkAddr.replace("-", ""));
         ipv6EnabledSwitch = findViewById(R.id.is_ipv6_enabled);
         ipv6EnabledSwitch.setOnClickListener(v -> {
@@ -160,10 +160,9 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
          */
         scanQrCode.setOnClickListener(view -> scan());
 
-
         // NOTE: do not commit the following lines UNCOMMENTED!
 
-        // use the following lines for debug
+        // use the following lines for debugging
 //        snmpSpinner.setSelection(1);
 //        portField.setText("162");
 //        hostField.setText("10.10.10.221");
@@ -234,7 +233,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
     private void setupActionBar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if (toolbar != null) {
+        if (toolbar != null && getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
@@ -367,7 +366,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
         ipv6EnabledSwitch.setChecked(isIpv6SwitchEnabled);
 
         if (deviceQrCode.getPw().isEmpty() && deviceQrCode.getEnc().isEmpty()) {
-            // if there is no password or encoder --> take SNMP V1/V2c.
+            // if there is no password and encoder --> take SNMP V1/V2c.
             snmpSpinner.setSelection(0);
             portField.setText(String.valueOf(endpoint.getPort()));
 

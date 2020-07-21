@@ -52,9 +52,9 @@ public class V1Adapter extends AbstractSnmpAdapter {
 
     /**
      * constructor
-     *  @param snmp
+     *
+     * @param snmp
      * @param udpAddressTransportMapping
-     * @param b
      */
     public V1Adapter(Snmp snmp, TransportMapping<UdpAddress> udpAddressTransportMapping, boolean isV1) {
         super(snmp, udpAddressTransportMapping);
@@ -72,7 +72,7 @@ public class V1Adapter extends AbstractSnmpAdapter {
         communityTarget.setCommunity(securityName);
         communityTarget.setSecurityLevel(SecurityLevel.NOAUTH_NOPRIV); // this is fix for v1!
 
-        communityTarget.setAddress(new UdpAddress(getAddress()));
+        communityTarget.setAddress(new UdpAddress(getUdpAddress()));
         communityTarget.setVersion(deviceConfiguration.getSnmpVersion());
         communityTarget.setRetries(deviceConfiguration.getRetries());
         communityTarget.setTimeout(deviceConfiguration.getTimeout());
