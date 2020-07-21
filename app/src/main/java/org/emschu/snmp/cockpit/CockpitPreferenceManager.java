@@ -38,6 +38,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import org.emschu.snmp.cockpit.network.WifiNetworkInformationService;
 import org.emschu.snmp.cockpit.network.WifiNetworkManager;
 import org.emschu.snmp.cockpit.query.OIDCatalog;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
@@ -59,7 +60,8 @@ import static java.lang.Integer.parseInt;
  */
 public class CockpitPreferenceManager {
     static final String KEY_IS_WIFI_SSID_LOCKED = "is_wifi_ssid_locked";
-    static final String KEY_SECURE_WIFI_SSID = "secure_wifi_ssid";
+    public static final String KEY_SECURE_WIFI_SSID = "secure_wifi_ssid";
+    public static final String KEY_USE_CURRENT_WIFI_SSID = "use_current_ssid_btn";
     static final String KEY_IS_SSID_MANUAL = "is_ssid_manual";
     static final String KEY_IS_WPA2_ONLY = "is_wpa2_only";
     static final String KEY_SHOW_FLASHLIGHT_HINT = "show_flash_light_hint";
@@ -530,7 +532,7 @@ public class CockpitPreferenceManager {
                 findPreference(KEY_BUILD_TIMESTAMP).setSummary(getString(R.string.timestamp, timestamp));
                 ListPreference mibCatalogSelection = (ListPreference) findPreference(KEY_MIB_CATALOG_SELECTION);
 
-                Context context = SnmpCockpitApp.getContext();
+                Context context = getActivity();
                 MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(context));
                 List<String> availableMibs = new ArrayList<>();
                 for (MibCatalog mc : mcm.getMibCatalog()) {
@@ -556,6 +558,17 @@ public class CockpitPreferenceManager {
                             })
                             .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss()).create().show();
                     return false;
+                });
+
+                final String currentSSID = new WifiNetworkInformationService().getCurrentSSID();
+                final EditTextPreference secureSSIDPref = (EditTextPreference) findPreference(KEY_SECURE_WIFI_SSID);
+
+                Preference setWifiSSIDToCurrent = findPreference(KEY_USE_CURRENT_WIFI_SSID);
+                bindPreferenceSummaryToValue(setWifiSSIDToCurrent);
+                setWifiSSIDToCurrent.setOnPreferenceClickListener(preference -> {
+                    secureSSIDPref.setText(currentSSID);
+                    secureSSIDPref.callChangeListener(currentSSID);
+                    return true;
                 });
             } catch (PackageManager.NameNotFoundException e) {
                 Log.e(TAG, "preference build timestamp name not found: " + e.getMessage());

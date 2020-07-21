@@ -45,8 +45,12 @@
             android:title="@string/pref_secure_wifi_ssid_label"
             android:icon="@drawable/ic_wifi_lock_black"
             android:selectAllOnFocus="true"
-            android:dependency="is_ssid_manual"
-            android:dialogLayout="@layout/pref_ssid_layout" />
+            android:dependency="is_ssid_manual" />
+
+        <Preference
+            android:key="use_current_ssid_btn"
+            android:title="@string/use_current_network"
+            android:dependency="is_ssid_manual" />
 
         <SwitchPreference
             android:key="is_wpa2_only"

@@ -207,10 +207,10 @@
     <string name="pref_general_use_v1_insteadv2c_title">SNMP Version 1 statt 2c</string>
     <string name="pref_is_ssid_manually_set_label">Manueller Modus</string>
     <string name="pref_is_ssid_manually_set_summary">Sichere SSID beim QR Code Scan nicht aktualisieren</string>
-    <string name="pref_is_wifi_ssid_locked_label">Fixe WLAN-SSID</string>
+    <string name="pref_is_wifi_ssid_locked_label">Feste WLAN-SSID</string>
     <string name="pref_session_timeout_summary">Nach einer gewissen Zeit an Inaktivität (in Minuten), läuft die Benutzersitzung ab und muss neu gestartet werden.</string>
     <string name="pref_session_timeout_dialog_title">Session-Ablaufzeit (Minuten)</string>
-    <string name="pref_secure_wifi_ssid_label">Fixe WLAN-SSID</string>
+    <string name="pref_secure_wifi_ssid_label">Feste WLAN-SSID</string>
     <string name="pref_periodic_update_summary">Zeitintervall für Aktualisierungen der Oberfläche</string>
     <string name="pref_periodic_update_interval_dialog_title">UI-Aktualisierungszeit (Sekunden)</string>
     <string name="pref_periodic_update_interval">Aktualisierungszeit</string>
