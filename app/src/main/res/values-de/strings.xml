@@ -66,6 +66,7 @@
     <string name="close">Schließen</string>
     <string name="community_label">Community:</string>
     <string name="connect_to_device_toast">Verbinde zum Netzwerk \'%s\'</string>
+    <string name="connect_to_device_toast_failed">Verbindung zum Netzwerk \'%s\' ist fehlgeschlagen</string>
     <string name="edit_queries">Bearbeiten</string>
     <string name="host">Host:</string>
     <string name="fragment_title_monitoring_info">Monitoring-Informationen</string>
@@ -77,7 +78,7 @@
     <string name="dialog_title_custom_query_add">Neue Abfrage hinzufügen</string>
     <string name="empty_device_list_message">Derzeit ist kein Gerät verbunden.\nDas Plus-Zeichen auswählen, um eine Verbindung herzustellen.</string>
     <string name="error_connecting_to_network">Keine erfolgreiche WLAN-Verbindung zum Netz \'%s\'. Zugangsdaten korrekt?</string>
-    <string name="fix_wifi_connection_ssid_list_item">\t• Feste SSID: \'%s\'</string>
+    <string name="fix_wifi_connection_ssid_list_item">\t• Erlaubte SSID: \'%s\'</string>
     <string name="flashlight_hint">Um die Taschenlampe zu aktivieren, können die Lautstärke-Tasten verwendet werden.</string>
     <string name="toast_no_valid_device_qr_code">Keinen gültigen Geräte-QR-Code erhalten.</string>
     <string name="title_network_details">Netzwerkdetails</string>
@@ -97,7 +98,6 @@
     <string name="nav_header_dns_server">DNS</string>
     <string name="nav_header_gateway_ip">Gateway</string>
     <string name="nav_header_ip_label">IP: %s</string>
-    <string name="nav_header_subnet_label">Subnetzmaske %s</string>
     <string name="navigate_up_content_description">Zurück navigieren</string>
     <string name="navigation_drawer_close">Menü schließen</string>
     <string name="navigation_drawer_open">Menü öffnen</string>
@@ -207,10 +207,10 @@
     <string name="pref_general_use_v1_insteadv2c_title">SNMP Version 1 statt 2c</string>
     <string name="pref_is_ssid_manually_set_label">Manueller Modus</string>
     <string name="pref_is_ssid_manually_set_summary">Sichere SSID beim QR Code Scan nicht aktualisieren</string>
-    <string name="pref_is_wifi_ssid_locked_label">Feste WLAN-SSID</string>
+    <string name="pref_is_wifi_ssid_locked_label">Erlaubte WLAN-SSID</string>
     <string name="pref_session_timeout_summary">Nach einer gewissen Zeit an Inaktivität (in Minuten), läuft die Benutzersitzung ab und muss neu gestartet werden.</string>
     <string name="pref_session_timeout_dialog_title">Session-Ablaufzeit (Minuten)</string>
-    <string name="pref_secure_wifi_ssid_label">Feste WLAN-SSID</string>
+    <string name="pref_secure_wifi_ssid_label">Erlaubte WLAN-SSID</string>
     <string name="pref_periodic_update_summary">Zeitintervall für Aktualisierungen der Oberfläche</string>
     <string name="pref_periodic_update_interval_dialog_title">UI-Aktualisierungszeit (Sekunden)</string>
     <string name="pref_periodic_update_interval">Aktualisierungszeit</string>
@@ -237,9 +237,6 @@
     <string name="not_secure_network_toast">SNMP-Cockpit: Kein sicheres Netzwerk!</string>
     <string name="net_details_refreshed_toast">Netzwerk-Informationen aktualisiert!</string>
     <string name="device_removal_toast">Das Gerät %s wurde entfernt</string>
-    <string name="nav_header_dns_server_label">DNS: %s</string>
-    <string name="nav_header_gateway_ip_label">Gateway: %s</string>
-    <string name="nav_header_subnet">Subnetzmaske</string>
     <string name="used_libraries">Verwendete Bibliotheken</string>
     <string name="app_build_time">Build time: %s</string>
     <string name="license_about_text">This project is licensed under GPL v3, except all third party components, MIBs and libraries and icons or unless stated otherwise.</string>
@@ -254,4 +251,8 @@
     <string name="send_email_title">E-Mail versenden</string>
     <string name="preference_reset_mibs">MIB-Kataloge zurücksetzen</string>
     <string name="use_current_network">Aktuelle SSID verwenden</string>
+    <string name="not_connected_label">Nicht verbunden</string>
+    <string name="pref_show_ipv6_link_local_addresses">IPv6 Link-Local Adressen anzeigen</string>
+    <string name="permission_required">Erlaubnis notwendig</string>
+    <string name="permission_location_info_text">Um präzise Netzwerkinformationen in dieser App verwenden zu können, werden Standort-Berechtigungen benötigt. Diese App wird keine dieser Informationen speichern oder weitergeben.</string>
 </resources>

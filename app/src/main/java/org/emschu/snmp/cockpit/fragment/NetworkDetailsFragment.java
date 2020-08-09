@@ -90,8 +90,8 @@ public class NetworkDetailsFragment extends Fragment {
                 .setText(wifiNetworkManager.getIpAddress());
         ((TextView) view.findViewById(R.id.net_details_ssid_textview_value))
                 .setText(wifiNetworkManager.getCurrentSsid());
-        ((TextView) view.findViewById(R.id.net_details_subnet_textview_value))
-                .setText(wifiNetworkManager.getSubnetMask());
+        ((TextView) view.findViewById(R.id.net_details_bssid_textview_value))
+                .setText(wifiNetworkManager.getCurrentBssid());
         ((TextView) view.findViewById(R.id.net_details_dns_textview_value))
                 .setText(wifiNetworkManager.getDNSServer());
         ((TextView) view.findViewById(R.id.net_details_gateway_textview_value))

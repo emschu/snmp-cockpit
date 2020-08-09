@@ -38,6 +38,7 @@ import org.emschu.snmp.cockpit.CockpitMainActivity;
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.CockpitStateManager;
 import org.emschu.snmp.cockpit.R;
+import org.emschu.snmp.cockpit.network.WifiConnectorService;
 import org.emschu.snmp.cockpit.network.WifiNetworkManager;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
@@ -49,13 +50,13 @@ import org.emschu.snmp.cockpit.snmp.SnmpManager;
  */
 public class AlertHelper {
     public static final int SETTINGS_ACTIVITY_REQUEST_CODE = 167;
+    private final Context context;
 
-    private Context context;
     private final CockpitPreferenceManager cockpitPreferenceManager;
-    private ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
-    private ArrayList<AlertDialog> welcomeDialogs = new ArrayList<>();
-    private ArrayList<AlertDialog> timeoutDialogs = new ArrayList<>();
-    private ArrayList<AlertDialog> sessionTimeoutDialogs = new ArrayList<>();
+    private final ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
+    private final ArrayList<AlertDialog> welcomeDialogs = new ArrayList<>();
+    private final ArrayList<AlertDialog> timeoutDialogs = new ArrayList<>();
+    private final ArrayList<AlertDialog> sessionTimeoutDialogs = new ArrayList<>();
     private static final String TAG = AlertHelper.class.getName();
 
     /**
@@ -126,7 +127,7 @@ public class AlertHelper {
             return;
         }
 
-        WifiNetworkManager cockpitWifiNetworkManager = WifiNetworkManager.getInstance(null);
+        WifiNetworkManager cockpitWifiNetworkManager = WifiNetworkManager.getInstance();
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setCancelable(false)
                 .setTitle(R.string.no_secure_environment)
@@ -148,7 +149,8 @@ public class AlertHelper {
             builder.setNegativeButton(R.string.menu_action_wifi_activate, (dialog, which) -> {
                 if (!androidWifiManager.isWifiEnabled()) {
                     Log.i(TAG, "Enable wifi with app");
-                    androidWifiManager.setWifiEnabled(true);
+                    WifiConnectorService wcs = new WifiConnectorService();
+                    wcs.suggestWifiEnabled();
                 }
             });
         } else {
@@ -448,5 +450,43 @@ public class AlertHelper {
 
         welcomeDialog.show();
         welcomeDialogs.add(welcomeDialog);
+    }
+
+    public void showPermissionLocationDialog(@NonNull SimpleDialogResult simpleDialogResult) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context)
+                .setTitle(R.string.permission_required)
+                .setMessage(R.string.permission_location_info_text)
+                .setIcon(R.drawable.ic_info_black)
+                .setPositiveButton(R.string.btn_ok, (dialog, which) -> {
+                    Log.d(TAG, "Permission screen finished");
+                    simpleDialogResult.setResult(true);
+                    simpleDialogResult.onApproval();
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, ((dialog, which) -> {
+                    Log.d(TAG, "Permission screen cancelled");
+                    simpleDialogResult.setResult(false);
+                    simpleDialogResult.onDenial();
+                    dialog.dismiss();
+                }));
+        builder.create().show();
+    }
+
+    /**
+     * class to handle simple dialog events. Supports "Yes" and "No".
+     */
+    public static abstract class SimpleDialogResult {
+        private boolean result = false;
+
+        // callbacks
+        public abstract void onApproval();
+        public abstract void onDenial();
+
+        public boolean isSuccess() {
+            return result;
+        }
+        private void setResult(boolean result) {
+            this.result = result;
+        }
     }
 }

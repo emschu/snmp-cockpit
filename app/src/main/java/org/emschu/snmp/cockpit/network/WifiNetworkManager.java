@@ -21,35 +21,26 @@ package org.emschu.snmp.cockpit.network;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.net.DhcpInfo;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.zxing.client.result.WifiParsedResult;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
 import org.emschu.snmp.cockpit.BuildConfig;
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.SnmpCockpitApp;
-import org.emschu.snmp.cockpit.util.Converter;
 
 /**
  * Singleton class to manage all network related actions of this app:
@@ -61,71 +52,62 @@ import org.emschu.snmp.cockpit.util.Converter;
  * change occurs. {@link #updateMode()}
  * <p>
  * This class defines the central check if the app should be functional in {@link #isNetworkSecure()}.
+ *
+ * https://issuetracker.google.com/issues/129738210
  */
 public class WifiNetworkManager {
 
-    public static final String UNKNOWN_SSID_KEY = "<unknown ssid>";
     public static final String WIFI_SSID_AUTO = "[auto]";
-    private static String TAG = WifiNetworkManager.class.getName();
-    private static WifiNetworkManager wifiNetworkManagerInstance = null;
-    private Context context;
-    private DhcpInfo dhcpInfo;
+    private static final String TAG = WifiNetworkManager.class.getName();
+    public static final String ANDROID_WIFI_NAME = "AndroidWifi";
+    @SuppressLint("StaticFieldLeak")
+    private static WifiNetworkManager instance = null;
+    private final Context context = SnmpCockpitApp.getContext();
     private final WifiManager wifiManager;
-    private static final int[] secureProtocols = new int[]{
-            WifiConfiguration.KeyMgmt.WPA_PSK,
-            WifiConfiguration.KeyMgmt.WPA_EAP,
-            WifiConfiguration.KeyMgmt.IEEE8021X
-    };
     private final ConnectivityManager cm;
     private final CockpitPreferenceManager cockpitPreferenceManager;
+    private MobileNetworkInformationService networkInfoService;
 
     // these execution modes of this manager exist: detect in in constructor.
     // can change during runtime.
-    private int MODE_WPA2_ONLY = 1;
-    private int MODE_FIXED_SSID = 2;
-    private int MODE_FIXED_SSID_WPA2_ONLY = 3;
-    private int MODE_DEFAULT_ANDROID_WIFI = 4;
+    private final int MODE_WPA2_ONLY = 1;
+    private final int MODE_FIXED_SSID = 2;
+    private final int MODE_FIXED_SSID_WPA2_ONLY = 3;
+    private final int MODE_DEFAULT_ANDROID_WIFI = 4;
     private int currentMode = 0;
 
     /**
      * constructor
-     *
-     * @param context
      */
-    @SuppressWarnings({"WifiManagerPotentialLeak"})
-    private WifiNetworkManager(Context context) {
-        this.context = context;
+    private WifiNetworkManager() {
         this.cockpitPreferenceManager = SnmpCockpitApp.getPreferenceManager();
 
         updateMode();
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_WIFI_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
-            wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (wifiManager != null) {
-                dhcpInfo = wifiManager.getDhcpInfo();
-            } else {
-                Log.w(TAG, "null wifi manager!");
-            }
+            this.networkInfoService = new WifiNetworkInformationService();
+            this.wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-            cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (cm == null) {
+            this.cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (this.cm == null) {
                 throw new IllegalStateException("could not get android connectivity manager " + ConnectivityManager.class.getName());
             }
         } else {
-            wifiManager = null;
-            cm = null;
+            this.wifiManager = null;
+            this.cm = null;
+            this.networkInfoService = null;
         }
     }
 
     /**
      * access method
      */
-    public static WifiNetworkManager getInstance(Context context) {
-        if (wifiNetworkManagerInstance == null) {
-            wifiNetworkManagerInstance = new WifiNetworkManager(context.getApplicationContext());
+    public synchronized static WifiNetworkManager getInstance() {
+        if (instance == null) {
+            instance = new WifiNetworkManager();
         }
-        return wifiNetworkManagerInstance;
+        return instance;
     }
 
     /**
@@ -146,10 +128,21 @@ public class WifiNetworkManager {
      * @return
      */
     public String getIpAddress() {
-        if (dhcpInfo != null && dhcpInfo.ipAddress != 0) {
-            return Converter.intToIp(dhcpInfo.ipAddress);
+        if (this.networkInfoService == null) {
+            return "-";
         }
-        return "-";
+        String[] ipv4Addr = this.networkInfoService.getIPv4Addresses();
+        if (ipv4Addr == null || ipv4Addr.length == 0) {
+            return "-";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ipv4Addr.length; i++) {
+            if (i != 0) {
+                sb.append("\n");
+            }
+            sb.append(ipv4Addr[i]);
+        }
+        return sb.toString();
     }
 
     /**
@@ -159,27 +152,6 @@ public class WifiNetworkManager {
      */
     public String getIpAddressLabel() {
         return String.format(context.getResources().getString(R.string.nav_header_ip_label), getIpAddress());
-    }
-
-    /**
-     * ip string of the current subnet
-     *
-     * @return
-     */
-    public String getSubnetMask() {
-        if (dhcpInfo != null && dhcpInfo.netmask != 0) {
-            return Converter.intToIp(dhcpInfo.netmask);
-        }
-        return "-";
-    }
-
-    /**
-     * get formatted current wifi ip subnet or null on failure
-     *
-     * @return
-     */
-    public String getSubnetMaskLabel() {
-        return String.format(context.getResources().getString(R.string.nav_header_subnet_label), getSubnetMask());
     }
 
     /**
@@ -197,11 +169,7 @@ public class WifiNetworkManager {
             Log.e(TAG, "invalid null parsed result given");
             return false;
         }
-        // enable wifi
-        if (!wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(true);
-            Toast.makeText(context, R.string.wifi_activated_toast_label, Toast.LENGTH_SHORT).show();
-        }
+
         if (cockpitPreferenceManager.isWifiSSidLocked()
                 && !cockpitPreferenceManager.isSSIDManuallyDefined()) {
             Log.d(TAG, "request update fixed ssid: " + parsedResult.getSsid());
@@ -209,17 +177,16 @@ public class WifiNetworkManager {
             cockpitPreferenceManager.updateFixedSSID(parsedResult.getSsid());
         }
 
-        WifiConnector connector = new WifiConnector(parsedResult);
-        if (connector.canConnect()) {
-            connector.connect(wifiManager);
+        WifiConnectorService wcs = new WifiConnectorService();
 
-            if (connector.isFailed()) {
-                return false;
-            }
-            return true;
-        } else {
-            Log.w(TAG, "invalid network type");
+        // enable wifi
+        if (!wifiManager.isWifiEnabled()) {
+            Log.w(TAG, "WIFI is not enabled!");
+            wcs.suggestWifiEnabled();
         }
+
+        wcs.connect(parsedResult);
+
         return false;
     }
 
@@ -252,11 +219,12 @@ public class WifiNetworkManager {
                 // we are not in wifi!
                 return false;
             }
+            boolean isSecureExpr = isConnectionSecure()
+                    && ensureNetworkIsActive(currentSsid, cockpitPreferenceManager.getFixedWifiSSID());
             if (currentMode == MODE_FIXED_SSID) {
-                return isConnectionSecure() && isThisSSIDTheCurrent(cockpitPreferenceManager.getFixedWifiSSID());
+                return isSecureExpr;
             }
-            return isConnectionSecure()
-                    && isThisSSIDTheCurrent(cockpitPreferenceManager.getFixedWifiSSID());
+            return isSecureExpr;
         } else {
             // not fixed ssid
             return isConnectionSecure();
@@ -264,32 +232,17 @@ public class WifiNetworkManager {
     }
 
     public boolean hasWifiConnection() {
-        // general check
-        if (!hasNetworkAccess()) {
-            Log.d(TAG, "no network access");
-            return false;
-        }
-        // wifi check
-        boolean isWifiConnected = false;
-
-        for (Network activeNetwork : cm.getAllNetworks()) {
-            if (activeNetwork != null) {
-                NetworkCapabilities networkCapabilities = cm.getNetworkCapabilities(activeNetwork);
-                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                    isWifiConnected = true;
-                }
-            }
-        }
-        if (!isWifiConnected) {
-            Log.d(TAG, "not a wifi network here!");
-            return false;
-        }
-        return true;
+        MobileNetworkInformationService wis = new WifiNetworkInformationService();
+        return wis.isConnectedToWifiNetwork();
     }
 
     public void refresh() {
-        Log.i(TAG, "refreshing dhcp information");
-        dhcpInfo = wifiManager.getDhcpInfo();
+        Log.d(TAG, "refreshing dhcp information");
+        if (this.networkInfoService != null) {
+            this.networkInfoService.refresh();
+        } else {
+            this.networkInfoService = new WifiNetworkInformationService();
+        }
     }
 
     /**
@@ -298,24 +251,17 @@ public class WifiNetworkManager {
      * @return
      */
     public String getCurrentSsid() {
-        if (!hasNetworkAccess()) {
-            Log.d(TAG, "no network access");
-            return "-";
+        String ssid = this.networkInfoService.getSSID();
+        if (ssid != null && !ssid.isEmpty()) {
+            return ssid;
         }
-        if (cm != null) {
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            if (info != null) {
-                String ssid = info.getExtraInfo();
-                Log.v(TAG, "WiFi SSID of android network info: " + ssid);
-                if (ssid == null || ssid.isEmpty()) {
-                    return "-";
-                }
-                if (ssid.equals("internet")) {
-                    Log.d(TAG, "no wifi network detected!");
-                    return "-";
-                }
-                return ssid.replace("\"", "");
-            }
+        return "-";
+    }
+
+    public String getCurrentBssid() {
+        String bssid = this.networkInfoService.getBSSID();
+        if (bssid != null && !bssid.isEmpty()) {
+            return bssid;
         }
         return "-";
     }
@@ -326,35 +272,22 @@ public class WifiNetworkManager {
      * @param fixedSSID valid wifi fixedSSID
      * @return
      */
-    private boolean isThisSSIDTheCurrent(String fixedSSID) {
+    private boolean ensureNetworkIsActive(String currentSSID, String fixedSSID) {
         if (fixedSSID == null || fixedSSID.trim().isEmpty()) {
             Log.d(TAG, "invalid empty or null fixed ssid");
             return false;
         }
-        String currentSsid = getCurrentSsid();
-        Log.d(TAG, "fixedSSID retrieved: " + currentSsid);
-        Log.d(TAG, "compare with: " + fixedSSID);
-        if ("\"AndroidWifi\"".equals(fixedSSID) && BuildConfig.DEBUG) {
-            Log.d(TAG, "allow android emulator wifi and define as secure");
+        Log.d(TAG, "fixedSSID retrieved: " + fixedSSID);
+        Log.d(TAG, "compare with: " + currentSSID);
+
+        if (BuildConfig.DEBUG && "\"AndroidWifi\"".equals(fixedSSID)) {
+            Log.d(TAG, "allow android emulator wifi and define as secure in debug mode");
             return true;
         }
-        if (currentSsid != null) {
-            return currentSsid.equals(fixedSSID);
+        if (currentSSID != null) {
+            return currentSSID.equals(fixedSSID);
         }
         return false;
-    }
-
-    /**
-     * check if network access exists for this app
-     *
-     * @return
-     */
-    public boolean hasNetworkAccess() {
-        if (cm == null) {
-            return false;
-        }
-        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
-        return (activeNetworkInfo != null && activeNetworkInfo.isConnected());
     }
 
     /**
@@ -366,7 +299,8 @@ public class WifiNetworkManager {
             return;
         }
         if (wifiManager.isWifiEnabled()) {
-            wifiManager.setWifiEnabled(false);
+            WifiConnectorService wcs = new WifiConnectorService();
+            wcs.suggestWifiDisabled();
         }
     }
 
@@ -384,7 +318,7 @@ public class WifiNetworkManager {
      *
      * @return
      */
-    private final boolean isConnectionSecure() {
+    private boolean isConnectionSecure() {
         String fixedSSID;
         if (currentMode == MODE_FIXED_SSID
                 || currentMode == MODE_FIXED_SSID_WPA2_ONLY) {
@@ -397,9 +331,9 @@ public class WifiNetworkManager {
             fixedSSID = getCurrentSsid();
         }
         // enables emulator network, where the checks below would not help
-        if (getCurrentSsid().equals("AndroidWifi") && BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG && fixedSSID.equals(ANDROID_WIFI_NAME)) {
             // generally allow android emulator default wifi name in app debug mode
-            Log.d(TAG, "allow android wifi");
+            Log.d(TAG, "always allow android wifi debug mode");
             return true;
         }
 
@@ -424,40 +358,14 @@ public class WifiNetworkManager {
                 }
             }
         }
-        return checkWithKnownNetworks(fixedSSID);
-    }
-
-    /**
-     * helper method
-     *
-     * @param fixedSSID
-     * @return
-     */
-    private boolean checkWithKnownNetworks(String fixedSSID) {
-        List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
-        if (wifiConfigurationList == null || wifiConfigurationList.isEmpty()) {
-            Log.d(TAG, "empty wifi config list");
-            return false;
-        }
-        for (WifiConfiguration config : wifiConfigurationList) {
-            if (fixedSSID.equals(config.SSID.replace("\"", ""))) {
-                // do checks here
-                Arrays.sort(secureProtocols);
-                for (int authType : secureProtocols) {
-                    if (config.allowedKeyManagement.get(authType)) {
-                        return true;
-                    }
-                }
-                break;
-            }
-        }
-        Log.d(TAG, "no network security check possible with ssid: " + fixedSSID);
+        Log.w(TAG, "Could not check network security settings successfully");
         return false;
     }
 
-
     /**
      * detect the wifi connection (security) level
+     *
+     * TODO: use enum?!
      *
      * @return
      */
@@ -496,6 +404,7 @@ public class WifiNetworkManager {
                 fixedWifiSSID = "";
             }
         }
+        // FIXME this ugly code
         if (currentMode == MODE_DEFAULT_ANDROID_WIFI) {
         } else if (currentMode == MODE_FIXED_SSID_WPA2_ONLY) {
             sb.append(context.getString(R.string.fix_wifi_connection_ssid_list_item, fixedWifiSSID));
@@ -526,29 +435,26 @@ public class WifiNetworkManager {
     }
 
     /**
+     * get string of dns server(s)
+     *
      * @return
      */
-    public String getDNSServerLabel() {
-        return context.getString(R.string.nav_header_dns_server_label, this.getDNSServer());
-    }
-
     public String getDNSServer() {
-        if (dhcpInfo == null) {
+        if (this.networkInfoService == null) {
             return "-";
         }
-        int dns1 = dhcpInfo.dns1;
-        int dns2 = dhcpInfo.dns2;
-        String dnsLabel = "";
-        if (dns1 != 0) {
-            dnsLabel += Converter.intToIp(dns1);
+        String[] dnsServers = this.networkInfoService.getDNSServers();
+        if (dnsServers == null || dnsServers.length == 0) {
+            return "-";
         }
-        if (dns2 != 0) {
-            dnsLabel += ",\n" + Converter.intToIp(dns2);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < dnsServers.length; i++) {
+            if (i != 0) {
+                sb.append("\n");
+            }
+            sb.append(dnsServers[i]);
         }
-        if (dnsLabel.isEmpty()) {
-            dnsLabel = "-";
-        }
-        return dnsLabel;
+        return sb.toString();
     }
 
     /**
@@ -561,19 +467,15 @@ public class WifiNetworkManager {
         return wifiManager;
     }
 
-    /**
-     * @return
-     */
-    public String getGatewayLabel() {
-        return context.getString(R.string.nav_header_gateway_ip_label, this.getGateway());
-    }
-
     public String getGateway() {
-        String gatewayIp = "-";
-        if (dhcpInfo != null && dhcpInfo.gateway != 0) {
-            gatewayIp = Converter.intToIp(dhcpInfo.gateway);
+        if (this.networkInfoService == null) {
+            return "-";
         }
-        return gatewayIp;
+        String gateway = this.networkInfoService.getGateway();
+        if (gateway == null || gateway.isEmpty()) {
+            return "-";
+        }
+        return gateway;
     }
 
     /**
@@ -583,50 +485,26 @@ public class WifiNetworkManager {
      * @return
      */
     public String getIpv6Addresses() {
-        try {
-            NetworkInterface wlan0Interface = null;
-            for (Enumeration<NetworkInterface> networks = NetworkInterface
-                    .getNetworkInterfaces(); networks.hasMoreElements(); ) {
-                NetworkInterface netInterface = networks.nextElement();
-                if (netInterface.getName().equals("wlan0")) {
-                    Log.v(TAG, "found wlan0 interface");
-                    wlan0Interface = netInterface;
-                    break;
-                }
-            }
-            if (wlan0Interface == null) {
-                return "-";
-            }
-            StringBuilder result = new StringBuilder();
-            for (Enumeration<InetAddress> enumIpAddr = wlan0Interface
-                    .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                InetAddress inetAddress = enumIpAddr.nextElement();
-                if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet6Address) {
-                    Log.d(TAG, "found ipv6 address: " + inetAddress.getHostAddress());
-                    if (!inetAddress.getHostAddress().startsWith("fe80")) {
-                        if (result.length() != 0) {
-                            result.append("\n");
-                        }
-                        result.append(inetAddress.getHostAddress());
-                    }
-                }
-            }
-            if (result.length() != 0) {
-                return result.toString();
-            }
+        if (this.networkInfoService == null) {
             return "-";
-        } catch (Exception ex) {
-            Log.e(TAG, "Error retrieving ipv6 address" + ex.toString());
         }
-        return "-";
+        String[] ipv6Addrs = this.networkInfoService.getIPv6Addresses();
+        if(ipv6Addrs == null || ipv6Addrs.length == 0) {
+            return "-";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < ipv6Addrs.length; i++) {
+            if (i != 0) {
+                sb.append("\n");
+            }
+            sb.append(ipv6Addrs[i]);
+        }
+        return sb.toString();
     }
 
     public String getIpv6AddressLabel() {
-        String ownIpv6 = getIpv6Addresses();
-        if (ownIpv6 == null || ownIpv6.isEmpty()) {
-            ownIpv6 = "-";
-        }
-        return context.getString(R.string.drawer_header_ipv6_address_label, ownIpv6);
+        String ipv6AddrsLabel = getIpv6Addresses();
+        return context.getString(R.string.drawer_header_ipv6_address_label, ipv6AddrsLabel);
     }
 
     /**
@@ -637,19 +515,20 @@ public class WifiNetworkManager {
     public boolean isTargetNetworkReachable() {
         if (!cockpitPreferenceManager.isWifiSSidLocked()) {
             // we know nothing about a SSID - if the user has not activated this preference
-            return false;
+            return true;
         }
         String fixedSSID = cockpitPreferenceManager.getFixedWifiSSID();
         if (fixedSSID == null || fixedSSID.isEmpty() || fixedSSID.equals(WIFI_SSID_AUTO)) {
             return false;
         }
-        List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
-        if (wifiConfigurationList == null || wifiConfigurationList.isEmpty()) {
-            return false;
-        }
-        for (WifiConfiguration config : wifiConfigurationList) {
-            if (fixedSSID.equals(config.SSID.replace("\"", ""))) {
-                return true;
+        if (this.wifiManager != null) {
+            List<ScanResult> scanResults = this.wifiManager.getScanResults();
+            for (ScanResult scanResult : scanResults) {
+                String ssid = scanResult.SSID.replace("\"", "");
+
+                if(ssid.equals(fixedSSID) || ssid.equals(ANDROID_WIFI_NAME)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -661,6 +540,7 @@ public class WifiNetworkManager {
     public void connectToTargetNetwork() {
         if (!cockpitPreferenceManager.isWifiSSidLocked()) {
             // we know nothing about a SSID - if the user has not activated this preference
+            // FIXME open generic wifi connection dialog
             return;
         }
         Log.d(TAG, "connect to target network with fixed ssid: " + cockpitPreferenceManager.getFixedWifiSSID());
@@ -670,21 +550,12 @@ public class WifiNetworkManager {
             return;
         }
 
-        List<WifiConfiguration> wifiConfigurationList = wifiManager.getConfiguredNetworks();
-        if (wifiConfigurationList == null || wifiConfigurationList.isEmpty()) {
-            return;
-        }
-        for (WifiConfiguration config : wifiConfigurationList) {
-            if (fixedSsid.equals(config.SSID.replace("\"", ""))) {
-                Log.d(TAG, "trying to set target network to active");
+        WifiConnectorService wcs = new WifiConnectorService();
+        wcs.connect(fixedSsid);
+    }
 
-                // notify network stuff to users
-                Toast.makeText(context,
-                        context.getString(R.string.connect_to_device_toast, fixedSsid), Toast.LENGTH_SHORT).show();
-                wifiManager.enableNetwork(config.networkId, true);
-                return;
-            }
-        }
-
+    @Nullable
+    public MobileNetworkInformationService getNetInfoProvider() {
+        return this.networkInfoService;
     }
 }

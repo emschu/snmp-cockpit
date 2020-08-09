@@ -33,7 +33,7 @@ android {
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 33
-        versionName "0.9.9"
+        versionName "0.9.10"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"

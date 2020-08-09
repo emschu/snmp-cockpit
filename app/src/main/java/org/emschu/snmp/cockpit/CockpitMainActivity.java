@@ -19,13 +19,20 @@
 
 package org.emschu.snmp.cockpit;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,6 +83,7 @@ import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.tasks.SNMPConnectivityAddDeviceTask;
 import org.emschu.snmp.cockpit.util.BooleanObservable;
 import org.emschu.snmp.cockpit.util.PeriodicTask;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * main activity of this app
@@ -127,6 +135,22 @@ public class CockpitMainActivity extends AppCompatActivity
     private boolean backPressState;
     private Long lastStateCheckAt = null;
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Permission is granted. Continue the action or workflow in your
+                    // app.
+                    Log.d(TAG, "Permission granted!");
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // features requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                    Log.e(TAG, "Permission missing!");
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,7 +158,8 @@ public class CockpitMainActivity extends AppCompatActivity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectNonSdkApiUsage()
+//                    .detectNonSdkApiUsage()
+                    .detectAll()
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
@@ -170,7 +195,7 @@ public class CockpitMainActivity extends AppCompatActivity
         SnmpManager.getInstance().setPreferenceManager(cockpitPreferenceManager);
         qrScannerActivityHelper = new QrScannerActivityHelper(this);
         // instantiate services which needs context
-        wifiNetworkManager = WifiNetworkManager.getInstance(this);
+        wifiNetworkManager = WifiNetworkManager.getInstance();
 
         OnSecurityStateChangeListener listener = new OnSecurityStateChangeListener() {
             @Override
@@ -226,8 +251,44 @@ public class CockpitMainActivity extends AppCompatActivity
         noDeviceText.setText(R.string.empty_device_list_message);
         setMainScreenVisible();
         initTasks();
+        // check for permissions
+        handlePermissions();
+
+        // show initial welcome screen
         if (!cockpitPreferenceManager.isWelcomeScreenShown()) {
             alertHelper.showWelcomeAlert(wifiNetworkManager);
+        }
+    }
+
+    private void handlePermissions() {
+        String[] requiredPermissions = new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.ACCESS_WIFI_STATE,
+        };
+
+        for (String permission : requiredPermissions) {
+            boolean permissionCheck = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+            if (permissionCheck) {
+                // continue if permission is granted already
+                continue;
+            }
+            if (shouldShowRequestPermissionRationale(permission)) {
+                this.alertHelper.showPermissionLocationDialog(new AlertHelper.SimpleDialogResult() {
+                    @Override
+                    public void onApproval() {
+                        requestPermissionLauncher.launch(permission);
+                    }
+
+                    @Override
+                    public void onDenial() {
+                        Toast.makeText(getApplicationContext(), "Missing required permissions!", Toast.LENGTH_LONG).show();
+                    }
+                });
+            } else {
+                this.requestPermissionLauncher.launch(permission);
+            }
         }
     }
 
@@ -276,6 +337,7 @@ public class CockpitMainActivity extends AppCompatActivity
         addDeviceMainFab = findViewById(R.id.fab_add_device);
         addDeviceMainFab.setOnClickListener(view -> {
             addDeviceMainFab.setEnabled(false);
+            System.gc();
             startActivityForResult(new Intent(this, SNMPLoginActivity.class), DEVICE_CONNECT_REQUEST);
         });
     }
@@ -370,15 +432,13 @@ public class CockpitMainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.d(TAG, "on restore");
-        if (savedInstanceState != null) {
-            int lastDisplayedScreen = savedInstanceState.getInt(KEY_LAST_SCREEN, -1);
-            if (lastDisplayedScreen != -1) {
-                Log.d(TAG, "show screen " + lastDisplayedScreen);
-                showScreen(CockpitScreens.values()[lastDisplayedScreen]);
-            }
+        int lastDisplayedScreen = savedInstanceState.getInt(KEY_LAST_SCREEN, -1);
+        if (lastDisplayedScreen != -1) {
+            Log.d(TAG, "show screen " + lastDisplayedScreen);
+            showScreen(CockpitScreens.values()[lastDisplayedScreen]);
         }
         updateNetworkInformation();
     }
@@ -421,7 +481,7 @@ public class CockpitMainActivity extends AppCompatActivity
             deviceMonitorViewFragment.refreshListAsync();
             // only show toast if there are entries..
             Log.d(TAG, "update adapter");
-            RecyclerView.Adapter adapter = deviceMonitorViewFragment.getRecyclerView().getAdapter();
+            RecyclerView.Adapter<?> adapter = deviceMonitorViewFragment.getRecyclerView().getAdapter();
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
@@ -455,8 +515,8 @@ public class CockpitMainActivity extends AppCompatActivity
      */
     public void checkState() {
         // prevent mass calling of state checks
-        if (this.lastStateCheckAt != null
-                && System.currentTimeMillis() - this.lastStateCheckAt < 500L) {
+        long minimalIntervalBetweenChecks = DeviceManager.getInstance().getDeviceList().size() == 0 ? 2500L : 500L;
+        if (this.lastStateCheckAt != null && System.currentTimeMillis() - this.lastStateCheckAt < minimalIntervalBetweenChecks) {
             return;
         }
         this.lastStateCheckAt = System.currentTimeMillis();
@@ -653,7 +713,7 @@ public class CockpitMainActivity extends AppCompatActivity
             progressRow.setVisibility(View.VISIBLE);
             cockpitStateManagerInstance.setConnecting(true);
             new Handler().post(() -> {
-                connectionTestTask = new SNMPConnectivityAddDeviceTask(this, config,
+                connectionTestTask = new SNMPConnectivityAddDeviceTask(config,
                         deviceMonitorViewFragment, progressRow);
                 cockpitStateManagerInstance.setConnectionTask(connectionTestTask);
                 connectionTestTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
