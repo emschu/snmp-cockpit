@@ -38,7 +38,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import org.emschu.snmp.cockpit.network.WifiNetworkInformationService;
+import org.emschu.snmp.cockpit.network.MobileNetworkInformationService;
 import org.emschu.snmp.cockpit.network.WifiNetworkManager;
 import org.emschu.snmp.cockpit.query.OIDCatalog;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
@@ -75,6 +75,7 @@ public class CockpitPreferenceManager {
     static final String KEY_IS_V1_INSTEAD_OF_V2C = "use_v1_instead_of_v2c";
     static final String KEY_PERIODIC_UI_UPDATE_ENABLED = "periodic_ui_update_enabled";
     static final String KEY_PERIODIC_UI_UPDATE_SECONDS = "ui_update_interval_seconds";
+    static final String KEY_IPV6_LINK_LOCAL_DISPLAYED = "is_ipv6_link_local_displayed";
     static final String KEY_REQUEST_COUNTER = "request_action_counter";
     static final String KEY_BUILD_TIMESTAMP = "build_timestamp";
     static final String KEY_VERSION = "version";
@@ -162,6 +163,10 @@ public class CockpitPreferenceManager {
         }
         // 3000 secs max
         return Math.min(value, 3000);
+    }
+
+    public boolean isIpv6LinkLocalAddressesDisplayed() {
+        return sharedPreferences.getBoolean(KEY_IPV6_LINK_LOCAL_DISPLAYED, true);
     }
 
     /**
@@ -560,14 +565,24 @@ public class CockpitPreferenceManager {
                     return false;
                 });
 
-                final String currentSSID = new WifiNetworkInformationService().getCurrentSSID();
-                final EditTextPreference secureSSIDPref = (EditTextPreference) findPreference(KEY_SECURE_WIFI_SSID);
+                final EditTextPreference secureSSIDPref = findPreference(KEY_SECURE_WIFI_SSID);
 
                 Preference setWifiSSIDToCurrent = findPreference(KEY_USE_CURRENT_WIFI_SSID);
                 bindPreferenceSummaryToValue(setWifiSSIDToCurrent);
+
                 setWifiSSIDToCurrent.setOnPreferenceClickListener(preference -> {
-                    secureSSIDPref.setText(currentSSID);
-                    secureSSIDPref.callChangeListener(currentSSID);
+                    MobileNetworkInformationService mobileNetworkInformationService = WifiNetworkManager.getInstance().getNetInfoProvider();
+                    if (mobileNetworkInformationService != null) {
+                        final String currentSSID = mobileNetworkInformationService.getSSID();
+                        if (currentSSID != null && !currentSSID.isEmpty()) {
+                            secureSSIDPref.setText(currentSSID);
+                            secureSSIDPref.callChangeListener(currentSSID);
+                        } else {
+                            Toast.makeText(getActivity(), R.string.not_connected_label, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), R.string.not_connected_label, Toast.LENGTH_LONG).show();
+                    }
                     return true;
                 });
             } catch (PackageManager.NameNotFoundException e) {

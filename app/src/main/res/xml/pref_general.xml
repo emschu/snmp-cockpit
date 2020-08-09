@@ -132,6 +132,12 @@
             android:title="@string/pref_allow_all_networks_label"
             android:summary="@string/pref_allow_all_networks_summary" />
 
+        <SwitchPreference
+            android:key="is_ipv6_link_local_displayed"
+            android:defaultValue="true"
+            android:title="@string/pref_show_ipv6_link_local_addresses"
+            />
+
         <EditTextPreference
             android:key="connection_timeout"
             android:title="@string/pref_general_connection_timeout_title"
