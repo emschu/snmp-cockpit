@@ -32,8 +32,8 @@ import org.emschu.snmp.cockpit.fragment.MibCatalogFragment;
 
 public class TreeNode<T extends LayoutItemType> {
     private T content;
-    private TreeNode parent;
-    private List<TreeNode> childList;
+    private TreeNode<? extends LayoutItemType> parent;
+    private List<TreeNode<? extends LayoutItemType>> childList;
     private boolean isExpand;
     private boolean isLocked;
     private String oidValue = null;
@@ -93,18 +93,18 @@ public class TreeNode<T extends LayoutItemType> {
         return content;
     }
 
-    public List<TreeNode> getChildList() {
+    public List<TreeNode<? extends LayoutItemType>> getChildList() {
         return childList;
     }
 
-    public void setChildList(List<TreeNode> childList) {
+    public void setChildList(List<TreeNode<? extends LayoutItemType>> childList) {
         this.childList.clear();
-        for (TreeNode treeNode : childList) {
+        for (TreeNode<? extends LayoutItemType> treeNode : childList) {
             addChild(treeNode);
         }
     }
 
-    public TreeNode addChild(TreeNode node) {
+    public TreeNode<? extends LayoutItemType> addChild(TreeNode<? extends LayoutItemType> node) {
         if (childList == null)
             childList = new ArrayList<>();
         childList.add(node);
@@ -135,7 +135,7 @@ public class TreeNode<T extends LayoutItemType> {
         if (childList == null || childList.isEmpty()) {
             return;
         }
-        for (TreeNode child : this.childList) {
+        for (TreeNode<? extends LayoutItemType> child : this.childList) {
             child.collapseAll();
         }
     }
@@ -151,7 +151,7 @@ public class TreeNode<T extends LayoutItemType> {
         if (childList == null || childList.isEmpty()) {
             return;
         }
-        for (TreeNode child : this.childList) {
+        for (TreeNode<? extends LayoutItemType> child : this.childList) {
             child.expandAll();
         }
     }
@@ -160,11 +160,11 @@ public class TreeNode<T extends LayoutItemType> {
         return isExpand;
     }
 
-    public void setParent(TreeNode parent) {
+    public void setParent(TreeNode<? extends LayoutItemType> parent) {
         this.parent = parent;
     }
 
-    public TreeNode getParent() {
+    public TreeNode<? extends LayoutItemType> getParent() {
         return parent;
     }
 
@@ -182,6 +182,7 @@ public class TreeNode<T extends LayoutItemType> {
         return isLocked;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TreeNode{" +
