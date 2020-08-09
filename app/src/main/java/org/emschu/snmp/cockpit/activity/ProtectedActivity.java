@@ -110,8 +110,6 @@ public interface ProtectedActivity {
      */
     default void stopProtection(Activity activity) {
         Log.d(ProtectedActivity.class.getName(), "stop cockpit service in " + this.getClass().getName());
-        Intent stateServiceIntent = new Intent(activity, CockpitStateService.class);
-        activity.stopService(stateServiceIntent);
     }
 
     /**
@@ -125,8 +123,7 @@ public interface ProtectedActivity {
             return;
         }
         Log.d(ProtectedActivity.class.getName(), "start cockpit service in " + this.getClass().getSimpleName());
-        Intent stateServiceIntent = new Intent(activity, CockpitStateService.class);
-        activity.startService(stateServiceIntent);
+        CockpitStateService.enqueueWork(activity, new Intent());
     }
 
     /**
