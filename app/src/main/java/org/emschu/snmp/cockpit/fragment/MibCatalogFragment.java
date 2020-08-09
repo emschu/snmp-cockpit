@@ -70,7 +70,7 @@ import tellh.com.recyclertreeview_lib.TreeViewBinder;
 /**
  * A fragment representing the mib.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link org.emschu.snmp.cockpit.fragment.DeviceMonitorViewFragment.OnListFragmentInteractionListener}
  * interface.
  */
 public class MibCatalogFragment extends Fragment {
@@ -108,7 +108,7 @@ public class MibCatalogFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_query_catalog, container, false);
 
-        List<TreeNode> nodes = new ArrayList<>();
+        List<TreeNode<? extends LayoutItemType>> nodes = new ArrayList<>();
         TreeNode<CatalogItem> catalogTree = new TreeNode<>(new CatalogItem(getString(R.string.mib_tree_title)));
         nodes.add(catalogTree);
 
@@ -135,15 +135,15 @@ public class MibCatalogFragment extends Fragment {
             return view;
         }
 
-        TreeNode firstNode = catalogTree.getChildList().get(0);
-        TreeNode secondNode = (TreeNode) firstNode.getChildList().get(0);
-        TreeNode thirdNode = (TreeNode) secondNode.getChildList().get(0);
+        TreeNode<? extends LayoutItemType> firstNode = catalogTree.getChildList().get(0);
+        TreeNode<? extends LayoutItemType> secondNode = firstNode.getChildList().get(0);
+        TreeNode<? extends LayoutItemType> thirdNode = secondNode.getChildList().get(0);
         catalogTree.expand(); // expand root
         firstNode.expand(); // 1.3
         secondNode.expand(); // 1.3.6
         thirdNode.expand(); // 1.3.6.1
-        TreeNode node4 = (TreeNode) thirdNode.getChildList().get(0);
-        TreeNode node5 = (TreeNode) thirdNode.getChildList().get(1);
+        TreeNode<? extends LayoutItemType> node4 = thirdNode.getChildList().get(0);
+        TreeNode<? extends LayoutItemType> node5 = thirdNode.getChildList().get(1);
         node4.expand(); // 1.3.6.1.2
         node5.expand(); // 1.3.6.1.6
         adapter.refresh(nodes);
@@ -291,8 +291,8 @@ public class MibCatalogFragment extends Fragment {
                 uri = data.getData();
                 Log.i(TAG, "URI of import archive: " + uri.toString());
 
-                MibCatalogArchiveManager fm = new MibCatalogArchiveManager(getActivity(), uri);
-                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                MibCatalogArchiveManager fm = new MibCatalogArchiveManager(requireActivity(), uri);
+                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireActivity()));
 
                 if (mcm.isDuplicate(fm.getArchiveName())) {
                     Toast.makeText(getActivity(), R.string.mib_catalog_duplicate_toast_message, Toast.LENGTH_LONG).show();
@@ -312,7 +312,7 @@ public class MibCatalogFragment extends Fragment {
                         Toast.makeText(getActivity(), String.format(getString(R.string.new_mib_catalog_created_toast_message),
                                 fm.getArchiveName()), Toast.LENGTH_LONG).show();
                         // refresh this fragment
-                        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction()
+                        requireActivity().getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, newInstance())
                                 .commit();
                     } else {
