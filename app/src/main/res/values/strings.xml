@@ -146,7 +146,7 @@
     <string name="navigation_drawer_close">Close menu</string>
     <string name="navigation_drawer_open">Open menu</string>
     <string name="no_information_available">No information retrievable.</string>
-    <string name="no_secure_environment">SNMP Cockpit: No secure environment!</string>
+    <string name="no_secure_environment">No secure environment!</string>
     <string name="password_label">Password:</string>
     <string name="please_wait_label">Please wait…</string>
     <string name="pref_allow_all_networks_label">Allow all networks</string>

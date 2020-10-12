@@ -103,7 +103,7 @@
     <string name="navigation_drawer_open">Menü öffnen</string>
     <string name="no_information_available">Keine Informationen vorhanden.</string>
     <string name="no_own_queries_message">Es sind keine eigenen Abfragen gepflegt.\nDas Plus-Zeichen auswählen, um eine neue Abfrage hinzuzufügen.</string>
-    <string name="no_secure_environment">SNMP Cockpit: Keine sichere Umgebung!</string>
+    <string name="no_secure_environment">Keine sichere Umgebung!</string>
     <string name="no_secure_environment_label">"Eine sichere Netzwerkverbindung muss hergestellt werden, um SNMP Cockpit weiter benutzen zu können.\n<b>Benötigt:</b> "</string>
     <string name="password_label">Passwort:</string>
     <string name="please_wait_label">Bitte warten…</string>
