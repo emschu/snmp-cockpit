@@ -95,7 +95,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         alertHelper = new AlertHelper(this);
-        initObservables(this, alertHelper, null);
+        initObservables(alertHelper, null);
         dbHelper = new CockpitDbHelper(this);
 
         List<ManagedDevice> managedDevices = DeviceManager.getInstance().getManagedDevices();

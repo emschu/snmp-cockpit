@@ -20,11 +20,14 @@
 package org.emschu.snmp.cockpit;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 
@@ -85,6 +88,10 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
 import org.emschu.snmp.cockpit.util.PeriodicTask;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 /**
  * main activity of this app
  * <p>
@@ -110,7 +117,6 @@ public class CockpitMainActivity extends AppCompatActivity
 
     // floating action buttons
     private FloatingActionButton addDeviceMainFab = null;
-    //TextView
     private TextView noDeviceText;
 
     // fragments
@@ -163,6 +169,8 @@ public class CockpitMainActivity extends AppCompatActivity
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
+
+            System.setErr(new PrintStreamThatDumpsHprofWhenStrictModeKillsUs(System.err));
         }
 
         if (savedInstanceState != null) {
@@ -175,7 +183,7 @@ public class CockpitMainActivity extends AppCompatActivity
         // init oid catalog async
         AsyncTask.execute(() -> {
             Log.d(TAG, "start oid catalog init");
-            OIDCatalog.getInstance(CockpitMainActivity.this, new MibCatalogManager(PreferenceManager.getDefaultSharedPreferences(this)));
+            OIDCatalog.getInstance(new MibCatalogManager(PreferenceManager.getDefaultSharedPreferences(this)));
             Log.d(TAG, "finished oid catalog init");
         });
 
@@ -210,7 +218,7 @@ public class CockpitMainActivity extends AppCompatActivity
         };
 
         // ensure only the following one observer is listening
-        initObservables(this, alertHelper, listener);
+        initObservables(alertHelper, listener);
 
         // set progress bar gone after init actions done
         if (progressBar == null) {
@@ -251,12 +259,47 @@ public class CockpitMainActivity extends AppCompatActivity
         noDeviceText.setText(R.string.empty_device_list_message);
         setMainScreenVisible();
         initTasks();
-        // check for permissions
-        handlePermissions();
 
         // show initial welcome screen
         if (!cockpitPreferenceManager.isWelcomeScreenShown()) {
             alertHelper.showWelcomeAlert(wifiNetworkManager);
+        }
+
+        // check for permissions
+        handlePermissions();
+
+        // handle display of "no-device"-text
+        BooleanObservable areDevicesConnectedObservable = CockpitStateManager.getInstance().getAreDevicesConnectedObservable();
+        areDevicesConnectedObservable.deleteObservers(); // ensure only one observer is registered
+        areDevicesConnectedObservable.addObserver((o, arg) -> {
+            boolean areDevicesConnected = ((BooleanObservable) o).getValue();
+            if (areDevicesConnected) {
+                noDeviceText.setVisibility(View.INVISIBLE);
+            } else {
+                noDeviceText.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private static class PrintStreamThatDumpsHprofWhenStrictModeKillsUs extends PrintStream {
+        public PrintStreamThatDumpsHprofWhenStrictModeKillsUs(OutputStream outs) {
+            super(outs);
+        }
+
+        @Override
+        public synchronized void println(String str) {
+            super.println(str);
+            if (str.startsWith("StrictMode VmPolicy violation with POLICY_DEATH;")) {
+                // StrictMode is about to terminate us... do a heap dump!
+                try {
+                    File dir = Environment.getExternalStorageDirectory();
+                    File file = new File(dir, "strictmode-violation.hprof");
+                    super.println("Dumping HPROF to: " + file);
+                    Debug.dumpHprofData(file.getAbsolutePath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -335,11 +378,53 @@ public class CockpitMainActivity extends AppCompatActivity
      */
     private void setupFloatingActionButtons() {
         addDeviceMainFab = findViewById(R.id.fab_add_device);
+
+        ActivityResultLauncher<Intent> activityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        DeviceManager deviceManager = DeviceManager.getInstance();
+                        DeviceConfiguration config = deviceManager.createDeviceConfiguration(data);
+
+                        // apply snmp version user pref
+                        if (config.getSnmpVersion() < 3) {
+                            if (cockpitPreferenceManager.isV1InsteadOfV3()) {
+                                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v1);
+                            } else {
+                                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v2c);
+                            }
+                        }
+
+                        config.setTimeout(cockpitPreferenceManager.getConnectionTimeout());
+                        config.setRetries(cockpitPreferenceManager.getConnectionRetries());
+                        Log.d(TAG, "set user defined connection timeout to "
+                                + config.getTimeout() + " with " + config.getRetries() + " retries");
+
+                        Log.i(TAG, "start connectivity check task and add device to list - if check does not fail");
+                        progressRow.setVisibility(View.VISIBLE);
+                        cockpitStateManagerInstance.setConnecting(true);
+                        new Handler().post(() -> {
+                            connectionTestTask = new SNMPConnectivityAddDeviceTask(config,
+                                    deviceMonitorViewFragment, progressRow);
+                            cockpitStateManagerInstance.setConnectionTask(connectionTestTask);
+                            connectionTestTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
+                            Toast.makeText(this,
+                                    R.string.connectivity_check_start_label, Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                });
+
         addDeviceMainFab.setOnClickListener(view -> {
-            addDeviceMainFab.setEnabled(false);
-            System.gc();
-            startActivityForResult(new Intent(this, SNMPLoginActivity.class), DEVICE_CONNECT_REQUEST);
+            this.openLoginActivity(activityLauncher);
         });
+    }
+
+    private void openLoginActivity(ActivityResultLauncher<Intent> activityLauncher) {
+        addDeviceMainFab.setEnabled(false);
+        System.gc();
+        Intent intent = new Intent(this, SNMPLoginActivity.class);
+        activityLauncher.launch(intent);
     }
 
     @Override
@@ -667,6 +752,11 @@ public class CockpitMainActivity extends AppCompatActivity
             Log.w(TAG, "cannot open device tab during removal event");
             return;
         }
+        // avoid InstanceCountViolation
+        if (BuildConfig.DEBUG) {
+            System.gc();
+        }
+
         Intent deviceDetailIntent = new Intent(this, TabbedDeviceActivity.class);
         deviceDetailIntent.putExtra(TabbedDeviceActivity.EXTRA_DEVICE_ID, item.deviceConfiguration.getUniqueDeviceId());
         startActivity(deviceDetailIntent);
@@ -689,39 +779,7 @@ public class CockpitMainActivity extends AppCompatActivity
             checkState();
             return;
         }
-
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == DEVICE_CONNECT_REQUEST) {
-            DeviceManager deviceManager = DeviceManager.getInstance();
-            DeviceConfiguration config = deviceManager.createDeviceConfiguration(data);
-
-            // apply snmp version user pref
-            if (config.getSnmpVersion() < 3) {
-                if (cockpitPreferenceManager.isV1InsteadOfV3()) {
-                    config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v1);
-                } else {
-                    config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v2c);
-                }
-            }
-
-            config.setTimeout(cockpitPreferenceManager.getConnectionTimeout());
-            config.setRetries(cockpitPreferenceManager.getConnectionRetries());
-            Log.d(TAG, "set user defined connection timeout to "
-                    + config.getTimeout() + " with " + config.getRetries() + " retries");
-
-            Log.i(TAG, "start connectivity check task and add device to list - if check does not fail");
-            progressRow.setVisibility(View.VISIBLE);
-            cockpitStateManagerInstance.setConnecting(true);
-            new Handler().post(() -> {
-                connectionTestTask = new SNMPConnectivityAddDeviceTask(config,
-                        deviceMonitorViewFragment, progressRow);
-                cockpitStateManagerInstance.setConnectionTask(connectionTestTask);
-                connectionTestTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
-                Toast.makeText(this,
-                        R.string.connectivity_check_start_label, Toast.LENGTH_SHORT).show();
-            });
-            return;
-        }
         if (result == null && data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             return;

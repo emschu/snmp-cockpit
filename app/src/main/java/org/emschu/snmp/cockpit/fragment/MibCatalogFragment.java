@@ -306,7 +306,7 @@ public class MibCatalogFragment extends Fragment {
                         mcm.storeCatalog();
                         mcm.activateCatalog(fm.getArchiveName());
 
-                        AsyncTask.execute(() -> OIDCatalog.getInstance(null, null).refresh());
+                        AsyncTask.execute(() -> OIDCatalog.getInstance(null).refresh());
 
                         Log.i(TAG, "added new MIB catalog and activated it");
                         Toast.makeText(getActivity(), String.format(getString(R.string.new_mib_catalog_created_toast_message),

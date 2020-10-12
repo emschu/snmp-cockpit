@@ -559,7 +559,7 @@ public class CockpitPreferenceManager {
                                 // refresh preferences
                                 setPreferenceScreen(null);
                                 addPreferencesFromResource(R.xml.pref_general);
-                                AsyncTask.execute(() -> OIDCatalog.getInstance(null, null).refresh());
+                                AsyncTask.execute(() -> OIDCatalog.getInstance(null).refresh());
                             })
                             .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss()).create().show();
                     return false;

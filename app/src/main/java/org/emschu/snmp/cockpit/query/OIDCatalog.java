@@ -51,7 +51,7 @@ public class OIDCatalog {
     // asn to catalog item
     private final ConcurrentHashMap<String, JsonCatalogItem> mapAsnKey = new ConcurrentHashMap<>();
 
-    private OIDCatalog(Context context, MibCatalogManager mibCatalogManager) {
+    private OIDCatalog(MibCatalogManager mibCatalogManager) {
         this.mibCatalogManager = mibCatalogManager;
         initData();
     }
@@ -59,15 +59,11 @@ public class OIDCatalog {
     /**
      * singleton access method
      *
-     * @param context
      * @return
      */
-    public static OIDCatalog getInstance(Context context, MibCatalogManager mibCatalogManager) {
+    public static OIDCatalog getInstance(MibCatalogManager mibCatalogManager) {
         if (instance == null) {
-            if (context == null || mibCatalogManager == null) {
-                throw new IllegalArgumentException("null context or mib catalog manager given!");
-            }
-            instance = new OIDCatalog(context, mibCatalogManager);
+            instance = new OIDCatalog(mibCatalogManager);
         }
         return instance;
     }
@@ -155,6 +151,6 @@ public class OIDCatalog {
     public void refresh() {
         // reload the whole stuff with proper files
         instance = null;
-        OIDCatalog.getInstance(SnmpCockpitApp.getContext(), mibCatalogManager);
+        OIDCatalog.getInstance(mibCatalogManager);
     }
 }

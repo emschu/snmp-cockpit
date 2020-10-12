@@ -83,7 +83,7 @@ abstract class AbstractCockpitQuerySection {
     protected void addQueryResponseRow(StringBuilder sb, QueryResponse qr) {
         String asnName;
         try {
-            asnName = OIDCatalog.getInstance(null, null).getAsnByOidStripLast(qr.getOid());
+            asnName = OIDCatalog.getInstance(null).getAsnByOidStripLast(qr.getOid());
         } catch (OIDNotInCatalogException e) {
             Log.d(TAG, "unknown oid '" + qr.getOid() + "' use 'unknown' as fallback and skipunknown: " + skipUnknown);
             if (skipUnknown) {

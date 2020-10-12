@@ -67,7 +67,7 @@ public class TagManagementActivity extends AppCompatActivity implements Protecte
         recyclerView.setLayoutManager(layoutManager);
 
 
-        initObservables(this, new AlertHelper(this), null);
+        initObservables(new AlertHelper(this), null);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

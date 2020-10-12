@@ -46,7 +46,7 @@ public class SingleQueryResultActivity extends AppCompatActivity implements Prot
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        initObservables(this, new AlertHelper(this), null);
+        initObservables(new AlertHelper(this), null);
 
         String deviceId = getIntent().getStringExtra(EXTRA_DEVICE_ID);
         String oidQuery = getIntent().getStringExtra(EXTRA_OID_QUERY);
