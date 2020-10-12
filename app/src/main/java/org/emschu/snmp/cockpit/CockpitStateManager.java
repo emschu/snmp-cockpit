@@ -35,6 +35,7 @@ public class CockpitStateManager {
     private final BooleanObservable networkSecurityBooleanObservable = new BooleanObservable(false);
     private final BooleanObservable isInTimeoutsObservable = new BooleanObservable(false);
     private final BooleanObservable isInSessionTimeoutObservable = new BooleanObservable(false);
+    private final BooleanObservable areDevicesConnectedObservable = new BooleanObservable(false);
 
     private boolean isConnecting = false;
     private boolean isInRemoval = false;
@@ -65,6 +66,10 @@ public class CockpitStateManager {
 
     public BooleanObservable getIsInSessionTimeoutObservable() {
         return isInSessionTimeoutObservable;
+    }
+
+    public BooleanObservable getAreDevicesConnectedObservable() {
+        return areDevicesConnectedObservable;
     }
 
     public void setConnecting(boolean connecting) {

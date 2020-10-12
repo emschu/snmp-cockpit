@@ -86,7 +86,6 @@ public class SplashScreen extends Activity {
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashScreen.this,
                     CockpitMainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
             SplashScreen.this.finish();
         }, 2000);

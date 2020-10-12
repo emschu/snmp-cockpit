@@ -82,11 +82,9 @@ public interface ProtectedActivity {
         BooleanObservable isInTimeoutObservable = CockpitStateManager.getInstance().getIsInTimeoutsObservable();
         BooleanObservable isInSessionTimeoutObservable = CockpitStateManager.getInstance().getIsInSessionTimeoutObservable();
         // ensure only one observer at the same time
-        if (activity instanceof CockpitMainActivity) {
-            isNetworkSecureObservable.deleteObservers();
-            isInTimeoutObservable.deleteObservers();
-            isInSessionTimeoutObservable.deleteObservers();
-        }
+        isNetworkSecureObservable.deleteObservers();
+        isInTimeoutObservable.deleteObservers();
+        isInSessionTimeoutObservable.deleteObservers();
 
         isNetworkSecureObservable.addObserver(getNetworkSecurityObserver(activity, alertHelper, listener));
         isInTimeoutObservable.addObserver(getConnectionTimeoutObserver(alertHelper));

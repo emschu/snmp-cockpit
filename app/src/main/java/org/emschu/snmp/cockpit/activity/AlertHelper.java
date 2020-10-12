@@ -27,6 +27,7 @@ import android.os.Process;
 import android.util.Log;
 import android.view.View;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,7 @@ import org.emschu.snmp.cockpit.snmp.SnmpManager;
  */
 public class AlertHelper {
     public static final int SETTINGS_ACTIVITY_REQUEST_CODE = 167;
-    private final Context context;
+    private final WeakReference<Context> context;
 
     private final CockpitPreferenceManager cockpitPreferenceManager;
     private final ArrayList<AlertDialog> alertDialogs = new ArrayList<>();
@@ -65,8 +66,8 @@ public class AlertHelper {
      * @param context
      */
     public AlertHelper(Context context) {
-        this.context = context;
-        this.cockpitPreferenceManager = new CockpitPreferenceManager(this.context);
+        this.context = new WeakReference<>(context);
+        this.cockpitPreferenceManager = new CockpitPreferenceManager(this.context.get());
     }
 
     /**
@@ -77,7 +78,7 @@ public class AlertHelper {
      */
     public void showFlashlightHintDialog(QrScannerActivityHelper qrScannerActivityHelper, boolean isWifi) {
         // show alert and start scanner on dismiss event
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context.get())
                 .setCancelable(true)
                 .setMessage(R.string.flashlight_hint)
                 .setPositiveButton(R.string.btn_ok, (dialog, which) -> dialog.dismiss())
@@ -97,9 +98,9 @@ public class AlertHelper {
      * @param wifiSSid
      */
     public void showUnsuccessfulWifiConnectionAlert(String wifiSSid) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(context.get())
                 .setCancelable(true)
-                .setMessage(String.format(context.getString(R.string.error_connecting_to_network), wifiSSid)).show();
+                .setMessage(String.format(context.get().getString(R.string.error_connecting_to_network), wifiSSid)).show();
     }
 
     private void cleanupDialogList(@NonNull List<AlertDialog> dialogList) {
@@ -128,20 +129,20 @@ public class AlertHelper {
         }
 
         WifiNetworkManager cockpitWifiNetworkManager = WifiNetworkManager.getInstance();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+        AlertDialog.Builder builder = new AlertDialog.Builder(context.get())
                 .setCancelable(false)
                 .setTitle(R.string.no_secure_environment)
-                .setMessage(context.getString(R.string.no_secure_environment_label)
+                .setMessage(context.get().getString(R.string.no_secure_environment_label)
                         + cockpitWifiNetworkManager.getCurrentModeLabel())
                 .setPositiveButton(R.string.menu_settings_label, (dialog, which) -> {
                     alertDialogs.clear();
-                    CockpitMainActivity mainActivity = (CockpitMainActivity) context;
-                    ((CockpitMainActivity) context)
-                            .startActivityForResult(new Intent(context, BlockedSettingsActivity.class), SETTINGS_ACTIVITY_REQUEST_CODE);
+                    CockpitMainActivity mainActivity = (CockpitMainActivity) context.get();
+                    ((CockpitMainActivity) context.get())
+                            .startActivityForResult(new Intent(context.get(), BlockedSettingsActivity.class), SETTINGS_ACTIVITY_REQUEST_CODE);
                     mainActivity.checkState();
                 })
                 .setNeutralButton(R.string.menu_action_qr_code_label,
-                        (dialog, which) -> new QrScannerActivityHelper((CockpitMainActivity) context).startWifiScanner());
+                        (dialog, which) -> new QrScannerActivityHelper((CockpitMainActivity) context.get()).startWifiScanner());
 
         // if wifi is disabled - we show the button "enable wifi"
         WifiManager androidWifiManager = cockpitWifiNetworkManager.getAndroidWifiManager();
@@ -164,8 +165,8 @@ public class AlertHelper {
         }
         builder.setIcon(R.drawable.ic_warning_black_48_dp);
 
-        if (context instanceof Activity && !((Activity) context).isFinishing()) {
-            ((Activity) context).runOnUiThread(() -> {
+        if (context.get() instanceof Activity && !((Activity) context.get()).isFinishing()) {
+            ((Activity) context.get()).runOnUiThread(() -> {
                 AlertDialog dialog = builder.create();
                 alertDialogs.add(dialog);
                 dialog.show();
@@ -210,7 +211,7 @@ public class AlertHelper {
             Log.d(TAG, "dialog is already shown");
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context.get());
 
         final ManagedDevice[] devicesInTimeout = SnmpManager.getInstance().getDevicesInTimeout();
         if (devicesInTimeout.length == 0) {
@@ -219,13 +220,13 @@ public class AlertHelper {
         }
         StringBuilder sb = new StringBuilder();
         boolean isSingular = devicesInTimeout.length == 1;
-        String positiveButtonLabel = context.getString(R.string.alert_connection_timeout_multi_remove);
+        String positiveButtonLabel = context.get().getString(R.string.alert_connection_timeout_multi_remove);
         if (isSingular) {
-            sb.append(context.getString(R.string.alert_connection_timeout_single_message)).append("\n");
+            sb.append(context.get().getString(R.string.alert_connection_timeout_single_message)).append("\n");
             sb.append(devicesInTimeout[0].getDeviceLabel());
-            positiveButtonLabel = context.getString(R.string.alert_connection_timeout_single_remove);
+            positiveButtonLabel = context.get().getString(R.string.alert_connection_timeout_single_remove);
         } else {
-            sb.append(context.getString(R.string.alert_connection_timeout_multiple_devices)).append("\n");
+            sb.append(context.get().getString(R.string.alert_connection_timeout_multiple_devices)).append("\n");
             for (ManagedDevice dc : devicesInTimeout) {
                 sb.append("\t• ").append(dc.getDeviceLabel()).append("\n");
             }
@@ -240,8 +241,8 @@ public class AlertHelper {
                     for (ManagedDevice md : devicesInTimeout) {
                         SnmpManager.getInstance().resetTimeout(md.getDeviceConfiguration());
                     }
-                    if (context instanceof ProtectedActivity) {
-                        ((ProtectedActivity) context).restartQueryCall();
+                    if (context.get() instanceof ProtectedActivity) {
+                        ((ProtectedActivity) context.get()).restartQueryCall();
                     }
                     dialog.cancel();
                 })
@@ -252,11 +253,11 @@ public class AlertHelper {
                         DeviceManager.getInstance().removeItem(md.getDeviceConfiguration().getUniqueDeviceId());
                     }
                     // only close
-                    if (context instanceof TabbedDeviceActivity
-                            || context instanceof SingleQueryResultActivity) {
-                        ((Activity) context).finish();
-                    } else if (context instanceof Activity) {
-                        ((Activity) context).recreate();
+                    if (context.get() instanceof TabbedDeviceActivity
+                            || context.get() instanceof SingleQueryResultActivity) {
+                        ((Activity) context.get()).finish();
+                    } else if (context.get() instanceof Activity) {
+                        ((Activity) context.get()).recreate();
                     }
                     dialog.cancel();
                 })
@@ -265,8 +266,8 @@ public class AlertHelper {
                     Process.killProcess(Process.myPid());
                 });
 
-        if (context instanceof Activity && !((Activity) context).isFinishing()) {
-            ((Activity) context).runOnUiThread(() -> {
+        if (context.get() instanceof Activity && !((Activity) context.get()).isFinishing()) {
+            ((Activity) context.get()).runOnUiThread(() -> {
                 AlertDialog dialog = builder.create();
                 timeoutDialogs.add(dialog);
                 dialog.show();
@@ -283,21 +284,21 @@ public class AlertHelper {
             Log.d(TAG, "session timeout dialog is already shown");
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context.get());
         builder.setTitle(R.string.alert_session_timeout_title)
                 .setMessage(R.string.alert_session_timeout_message)
                 .setCancelable(false)
                 .setPositiveButton(R.string.btn_ok, (dialog, which) -> {
                     dialog.cancel();
-                    if (context instanceof CockpitMainActivity) {
-                        ((CockpitMainActivity) context).restartView();
+                    if (context.get() instanceof CockpitMainActivity) {
+                        ((CockpitMainActivity) context.get()).restartView();
                     } else {
-                        if (context instanceof Activity) {
-                            ((Activity) context).finish();
+                        if (context.get() instanceof Activity) {
+                            ((Activity) context.get()).finish();
                         }
                     }
-                    if (context instanceof ProtectedActivity) {
-                        ((ProtectedActivity) context).restartQueryCall();
+                    if (context.get() instanceof ProtectedActivity) {
+                        ((ProtectedActivity) context.get()).restartQueryCall();
                     }
                 })
                 .setOnDismissListener(dialog -> {
@@ -307,8 +308,8 @@ public class AlertHelper {
                 });
         builder.setIcon(R.drawable.ic_warning_black_48_dp);
 
-        if (context instanceof Activity && !((Activity) context).isFinishing()) {
-            ((Activity) context).runOnUiThread(() -> {
+        if (context.get() instanceof Activity && !((Activity) context.get()).isFinishing()) {
+            ((Activity) context.get()).runOnUiThread(() -> {
                 AlertDialog alertDialog = builder.create();
                 sessionTimeoutDialogs.add(alertDialog);
                 alertDialog.show();
@@ -327,7 +328,7 @@ public class AlertHelper {
         if (items.isEmpty()) {
             Log.d(TAG, "do not show dialog - no devices listed");
 
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(context.get())
                     .setMessage(R.string.alert_please_add_device_first)
                     .setCancelable(true)
                     .create().show();
@@ -342,8 +343,8 @@ public class AlertHelper {
             deviceLabels[i] = deviceItem.getValue();
             i++;
         }
-        new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.alert_select_device_dialog_title) + " '" + oidValue + "'")
+        new AlertDialog.Builder(context.get())
+                .setTitle(context.get().getString(R.string.alert_select_device_dialog_title) + " '" + oidValue + "'")
                 .setCancelable(true)
                 .setSingleChoiceItems(deviceLabels, 0, null)
                 .setNeutralButton(R.string.alert_open_query_in_new_device_tab, (dialog, which) -> {
@@ -379,17 +380,17 @@ public class AlertHelper {
         Log.d(TAG, "show new query " + oidQuery);
         if (!isNewTab) {
             // show new activity
-            Intent deviceDetailIntent = new Intent(context, SingleQueryResultActivity.class);
+            Intent deviceDetailIntent = new Intent(context.get(), SingleQueryResultActivity.class);
             deviceDetailIntent.putExtra(SingleQueryResultActivity.EXTRA_DEVICE_ID, deviceConfiguration.getUniqueDeviceId());
             deviceDetailIntent.putExtra(SingleQueryResultActivity.EXTRA_OID_QUERY, oidQuery);
-            context.startActivity(deviceDetailIntent);
+            context.get().startActivity(deviceDetailIntent);
         } else {
             // show default device detail activity
             DeviceManager.getInstance().addNewDeviceTab(deviceConfiguration.getUniqueDeviceId(), oidQuery);
-            Intent deviceDetailIntent = new Intent(context, TabbedDeviceActivity.class);
+            Intent deviceDetailIntent = new Intent(context.get(), TabbedDeviceActivity.class);
             deviceDetailIntent.putExtra(TabbedDeviceActivity.EXTRA_DEVICE_ID, deviceConfiguration.getUniqueDeviceId());
             deviceDetailIntent.putExtra(TabbedDeviceActivity.EXTRA_OPEN_TAB_OID, oidQuery);
-            context.startActivity(deviceDetailIntent);
+            context.get().startActivity(deviceDetailIntent);
         }
     }
 
@@ -397,13 +398,13 @@ public class AlertHelper {
      * confirmation dialog before connection test is closed
      */
     public void showCancelConnectionConfirmationDialog() {
-        new AlertDialog.Builder(context).setTitle(R.string.dialog_cancel_connection_dialog_title)
+        new AlertDialog.Builder(context.get()).setTitle(R.string.dialog_cancel_connection_dialog_title)
                 .setMessage(R.string.dialog_cancel_connection_test_message)
                 .setPositiveButton(R.string.btn_ok, (dialog, which) -> {
                     Log.d(TAG, "cancel connection attempt");
-                    if (context instanceof CockpitMainActivity) {
-                        ((CockpitMainActivity) context).cancelConnectionTestTask();
-                        ((CockpitMainActivity) context).getProgressRow().setVisibility(View.GONE);
+                    if (context.get() instanceof CockpitMainActivity) {
+                        ((CockpitMainActivity) context.get()).cancelConnectionTestTask();
+                        ((CockpitMainActivity) context.get()).getProgressRow().setVisibility(View.GONE);
                     }
                     dialog.dismiss();
                 })
@@ -425,7 +426,7 @@ public class AlertHelper {
             return;
         }
         
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context.get())
                 .setTitle(R.string.welcome_dialog_title)
                 .setMessage(R.string.welcome_dialog_message)
                 .setIcon(R.drawable.ic_info_black)
@@ -453,7 +454,7 @@ public class AlertHelper {
     }
 
     public void showPermissionLocationDialog(@NonNull SimpleDialogResult simpleDialogResult) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.context)
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context.get())
                 .setTitle(R.string.permission_required)
                 .setMessage(R.string.permission_location_info_text)
                 .setIcon(R.drawable.ic_info_black)
