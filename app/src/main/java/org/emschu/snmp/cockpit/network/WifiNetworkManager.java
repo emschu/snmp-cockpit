@@ -64,7 +64,6 @@ public class WifiNetworkManager {
     private static WifiNetworkManager instance = null;
     private final Context context = SnmpCockpitApp.getContext();
     private final WifiManager wifiManager;
-    private final ConnectivityManager cm;
     private final CockpitPreferenceManager cockpitPreferenceManager;
     private MobileNetworkInformationService networkInfoService;
 
@@ -84,18 +83,19 @@ public class WifiNetworkManager {
 
         updateMode();
 
+        ConnectivityManager cm;
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_WIFI_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
             this.networkInfoService = new WifiNetworkInformationService();
             this.wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-            this.cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (this.cm == null) {
+            cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) {
                 throw new IllegalStateException("could not get android connectivity manager " + ConnectivityManager.class.getName());
             }
         } else {
             this.wifiManager = null;
-            this.cm = null;
+            cm = null;
             this.networkInfoService = null;
         }
     }

@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -179,7 +180,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
 
     /**
      * alertHelper method which handles head table folding + icon changes
-     *
+     * <p>
      * method {@link #updateDeviceInformation()} should run AFTER this method vor visibility issues
      */
     private void initHeadTable() {
@@ -197,7 +198,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
             boolean isShowing = tableRow2.getVisibility() == View.VISIBLE;
             if (isShowing) {
                 isCollapsed = true;
-                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.drawable.ic_keyboard_arrow_right_black),
+                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_right_black),
                         null, null, null);
                 tableRow2.setVisibility(View.GONE);
                 tableRow3.setVisibility(View.GONE);
@@ -207,7 +208,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
                 tableRow7.setVisibility(View.GONE);
             } else {
                 isCollapsed = false;
-                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.drawable.ic_keyboard_arrow_down_black),
+                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_down_black),
                         null, null, null);
                 tableRow2.setVisibility(View.VISIBLE);
                 tableRow3.setVisibility(View.VISIBLE);

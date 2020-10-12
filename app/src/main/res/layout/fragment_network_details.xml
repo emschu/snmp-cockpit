@@ -57,7 +57,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/net_details_bssid_textview"
@@ -77,7 +78,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/net_details_ip_textview"
@@ -97,7 +99,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/net_details_dns_textview"
@@ -117,7 +120,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
 
             <TextView
@@ -138,7 +142,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
 
             <TextView
@@ -161,7 +166,8 @@
                 android:lineSpacingExtra="4dp"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
     </ScrollView>

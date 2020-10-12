@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     tools:context="org.emschu.snmp.cockpit.activity.BlockedSettingsActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_settings_blocked"
         android:name="org.emschu.snmp.cockpit.CockpitPreferenceManager$GeneralPreferenceFragment"
         android:layout_width="match_parent"

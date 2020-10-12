@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ SNMP Cockpit Android App
   ~
   ~ Copyright (C) 2018-2019
@@ -62,6 +61,7 @@
                         android:id="@+id/editText_SNMP_Version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/snmp_spinner"
                         android:text="@string/snmp_version" />
 
                     <Spinner
@@ -79,6 +79,7 @@
                         android:id="@+id/editText_ipv6_enabled"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/is_ipv6_enabled"
                         android:text="@string/ipv6_enabled" />
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -96,6 +97,7 @@
                         android:id="@+id/textView_Host"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextHost"
                         android:text="@string/host" />
 
                     <EditText
@@ -117,6 +119,7 @@
                         android:id="@+id/textView_Port"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextPort"
                         android:text="@string/port" />
 
                     <EditText
@@ -139,6 +142,7 @@
                         android:id="@+id/textview_community"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextCommunity"
                         android:text="@string/community_label" />
 
                     <EditText
@@ -161,6 +165,7 @@
                         android:id="@+id/textview_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextUsername"
                         android:text="@string/user" />
 
                     <EditText
@@ -183,6 +188,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:labelFor="@id/editTextPassword"
                         android:text="@string/password_label" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -209,6 +215,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:labelFor="@id/textview_encrypt"
                     android:visibility="invisible">
 
                     <TextView

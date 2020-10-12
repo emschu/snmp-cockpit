@@ -72,7 +72,7 @@
 
                 <TextView
                     android:id="@+id/device_detail_device_label"
-                    android:drawableStart="@drawable/ic_keyboard_arrow_right_black"
+                    app:drawableStartCompat="@drawable/ic_keyboard_arrow_right_black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
@@ -119,7 +119,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/tab_head_text_size"
                     android:text="sysDescr:"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/device_detail_sys_descr"
@@ -142,7 +143,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/tab_head_text_size"
                     android:text="sysLocation:"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/device_detail_sys_location"
@@ -165,7 +167,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/tab_head_text_size"
                     android:text="sysUpTime:"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/device_detail_sys_uptime"
@@ -188,7 +191,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/tab_head_text_size"
                     android:text="sysContact:"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/device_detail_sys_contact"
@@ -211,7 +215,8 @@
                     android:layout_height="wrap_content"
                     android:text="sysObjectID:"
                     android:textSize="@dimen/tab_head_text_size"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/device_detail_sys_object_id"
