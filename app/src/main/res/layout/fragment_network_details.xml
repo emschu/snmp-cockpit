@@ -165,7 +165,7 @@
                 android:singleLine="false"
                 android:lineSpacingExtra="4dp"
                 android:text="-"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
                 android:textColor="@color/colorViolet"
                 tools:ignore="HardcodedText" />
 

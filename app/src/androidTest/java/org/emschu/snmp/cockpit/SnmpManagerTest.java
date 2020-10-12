@@ -24,7 +24,6 @@ import android.content.Intent;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import org.emschu.snmp.cockpit.CockpitMainActivity;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;

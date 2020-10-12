@@ -612,7 +612,7 @@ public class CockpitMainActivity extends AppCompatActivity
 
         if (!networkSecure) {
             Log.d(TAG, "show not secure alert");
-            alertHelper.showNotSecureAlert();
+            alertHelper.showNotSecureAlert(this);
         }
     }
 

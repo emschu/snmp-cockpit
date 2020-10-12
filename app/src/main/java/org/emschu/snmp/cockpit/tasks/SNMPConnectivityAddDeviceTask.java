@@ -134,6 +134,7 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
             }
         }
         if (!connector.canPing(usedDeviceConfiguration)) {
+            connector.close();
             return false;
         }
         return true;

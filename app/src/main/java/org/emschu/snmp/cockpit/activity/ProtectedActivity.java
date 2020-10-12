@@ -170,7 +170,9 @@ public interface ProtectedActivity {
                     List<Runnable> runnables = threadPoolExecutor.shutdownNow();
                     Log.d(ProtectedActivity.class.getName(), "stopped thread pool with jobs: " + runnables.toString());
                 }
-                alertHelper.showNotSecureAlert();
+                if (this instanceof Activity) {
+                    alertHelper.showNotSecureAlert((Activity) this);
+                }
             } else {
                 if (listener != null) {
                     listener.onSecureState();

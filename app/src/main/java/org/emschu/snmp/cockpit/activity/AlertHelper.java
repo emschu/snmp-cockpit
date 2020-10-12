@@ -117,7 +117,7 @@ public class AlertHelper {
      * builds the network security blocking overlay dialog
      * NOTE: only 3 buttons possible
      */
-    public void showNotSecureAlert() {
+    public void showNotSecureAlert(Activity protectedActivity) {
         cleanupDialogList(alertDialogs);
         if (!alertDialogs.isEmpty()) {
             Log.i(TAG, "security dialog is already shown");
@@ -129,17 +129,18 @@ public class AlertHelper {
         }
 
         WifiNetworkManager cockpitWifiNetworkManager = WifiNetworkManager.getInstance();
-        AlertDialog.Builder builder = new AlertDialog.Builder(context.get())
+        AlertDialog.Builder builder = new AlertDialog.Builder(protectedActivity)
                 .setCancelable(false)
                 .setTitle(R.string.no_secure_environment)
                 .setMessage(context.get().getString(R.string.no_secure_environment_label)
                         + cockpitWifiNetworkManager.getCurrentModeLabel())
                 .setPositiveButton(R.string.menu_settings_label, (dialog, which) -> {
                     alertDialogs.clear();
-                    CockpitMainActivity mainActivity = (CockpitMainActivity) context.get();
-                    ((CockpitMainActivity) context.get())
+                    protectedActivity
                             .startActivityForResult(new Intent(context.get(), BlockedSettingsActivity.class), SETTINGS_ACTIVITY_REQUEST_CODE);
-                    mainActivity.checkState();
+                    if (protectedActivity instanceof ProtectedActivity) {
+                        ((ProtectedActivity) protectedActivity).restartTrigger(protectedActivity);
+                    }
                 })
                 .setNeutralButton(R.string.menu_action_qr_code_label,
                         (dialog, which) -> new QrScannerActivityHelper((CockpitMainActivity) context.get()).startWifiScanner());

@@ -166,7 +166,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
                 hostField.setText(currentNetworkAddrV4);
             }
         });
-        initObservables(this, new AlertHelper(this), null);
+        initObservables(new AlertHelper(this), null);
 
         /*
          * By pressing the addDevice Button, it opens the class ConnectDevice.
@@ -179,8 +179,8 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
 
         // use the following lines for debugging
 //        snmpSpinner.setSelection(1);
-//        portField.setText("162");
-//        hostField.setText("10.10.10.221");
+//        portField.setText("161");
+//        hostField.setText("10.10.10.102");
 //        userField.setText("batmanuser");
 //        passwordField.setText("batmankey3");
 //        encryptField.setText("batmankey3");
