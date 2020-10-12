@@ -162,6 +162,7 @@ public class CockpitMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // configure very strict policies in debug mode to get bugs pop up early
         if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
 //                    .detectNonSdkApiUsage()
@@ -169,7 +170,6 @@ public class CockpitMainActivity extends AppCompatActivity
                     .penaltyLog()
                     .penaltyDeath()
                     .build());
-
             System.setErr(new PrintStreamThatDumpsHprofWhenStrictModeKillsUs(System.err));
         }
 
@@ -279,28 +279,6 @@ public class CockpitMainActivity extends AppCompatActivity
                 noDeviceText.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    private static class PrintStreamThatDumpsHprofWhenStrictModeKillsUs extends PrintStream {
-        public PrintStreamThatDumpsHprofWhenStrictModeKillsUs(OutputStream outs) {
-            super(outs);
-        }
-
-        @Override
-        public synchronized void println(String str) {
-            super.println(str);
-            if (str.startsWith("StrictMode VmPolicy violation with POLICY_DEATH;")) {
-                // StrictMode is about to terminate us... do a heap dump!
-                try {
-                    File dir = Environment.getExternalStorageDirectory();
-                    File file = new File(dir, "strictmode-violation.hprof");
-                    super.println("Dumping HPROF to: " + file);
-                    Debug.dumpHprofData(file.getAbsolutePath());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     private void handlePermissions() {
@@ -974,6 +952,30 @@ public class CockpitMainActivity extends AppCompatActivity
         @Override
         public void onDrawerStateChanged(int newState) {
             // do nothing
+        }
+    }
+
+    // helper class which is used in debug mode to create a java heap dump if an android policy is violated
+    // original source: http://www.codeka.com.au/blog/2014/06/detecting-leaked-activities-in-android
+    private static class PrintStreamThatDumpsHprofWhenStrictModeKillsUs extends PrintStream {
+        public PrintStreamThatDumpsHprofWhenStrictModeKillsUs(OutputStream outs) {
+            super(outs);
+        }
+
+        @Override
+        public synchronized void println(String str) {
+            super.println(str);
+            if (str.startsWith("StrictMode VmPolicy violation with POLICY_DEATH;")) {
+                // StrictMode is about to terminate us... do a heap dump!
+                try {
+                    File dir = Environment.getExternalStorageDirectory();
+                    File file = new File(dir, "strictmode-violation.hprof");
+                    super.println("Dumping HPROF to: " + file);
+                    Debug.dumpHprofData(file.getAbsolutePath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
