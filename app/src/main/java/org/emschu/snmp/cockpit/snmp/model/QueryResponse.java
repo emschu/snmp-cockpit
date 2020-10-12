@@ -19,6 +19,7 @@
 
 package org.emschu.snmp.cockpit.snmp.model;
 
+import org.jetbrains.annotations.NotNull;
 import org.snmp4j.smi.VariableBinding;
 
 /**
@@ -26,8 +27,8 @@ import org.snmp4j.smi.VariableBinding;
  * query with one oid.
  */
 public class QueryResponse {
-    private String oid;
-    private VariableBinding variableBinding;
+    private final String oid;
+    private final VariableBinding variableBinding;
 
     /**
      * note: we should not store the whole pdu object, extract what you need in constructor to new class vars
@@ -52,6 +53,7 @@ public class QueryResponse {
         return variableBinding;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "QueryResponse{" +

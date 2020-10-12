@@ -19,9 +19,9 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/tree_view_item_height"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -30,12 +30,13 @@
         android:layout_height="@dimen/text_view_node_arrow_side"
         android:layout_gravity="center_vertical"
         android:contentDescription="arrow"
-        app:srcCompat="@drawable/ic_keyboard_arrow_right_black" />
+        app:srcCompat="@drawable/ic_keyboard_arrow_right_black"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/query_catalog_list_item_text"
         android:layout_marginStart="12dp"
-        android:drawableStart="@drawable/ic_view_list_black"
+        app:drawableStartCompat="@drawable/ic_view_list_black"
         android:drawablePadding="@dimen/tree_view_padding"
         android:gravity="center_vertical"
         android:textSize="@dimen/tree_view_text_size"

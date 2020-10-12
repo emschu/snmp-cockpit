@@ -34,9 +34,9 @@ public class QueryCache {
     public static final int CACHE_TIMEOUT_MS = 180 * 1000;
     public static final String TAG = QueryCache.class.getName();
 
-    private ConcurrentHashMap<String, SnmpQuery> queryConcurrentHashMap =
+    private final ConcurrentHashMap<String, SnmpQuery> queryConcurrentHashMap =
             new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, Long> accessHashMap =
+    private final ConcurrentHashMap<String, Long> accessHashMap =
             new ConcurrentHashMap<>();
 
     public boolean has(String key) {

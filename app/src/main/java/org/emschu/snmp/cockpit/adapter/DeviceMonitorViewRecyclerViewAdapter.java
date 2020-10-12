@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.fragment.DeviceMonitorViewFragment.OnListFragmentInteractionListener;
 import org.emschu.snmp.cockpit.fragment.items.DeviceMonitorItemContent.DeviceMonitorItem;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DeviceMonitorItem} and makes a call to the
@@ -50,6 +51,7 @@ public class DeviceMonitorViewRecyclerViewAdapter extends RecyclerView.Adapter<D
         mListener = listener;
     }
 
+    @NotNull
     @Override
     public DeviceItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -160,6 +162,7 @@ public class DeviceMonitorViewRecyclerViewAdapter extends RecyclerView.Adapter<D
             tableRow10sysServices = view.findViewById(R.id.tablerow_item_10_sysServices);
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "DeviceItemViewHolder{" +

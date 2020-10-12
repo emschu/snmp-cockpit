@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * representing "nadr" object of device qr code
  * using jackson databind 2 annotations
@@ -58,6 +60,7 @@ public class QrCodeAddressPart {
         this.iPv6 = iPv6;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "QrCodeAddressPart{" +

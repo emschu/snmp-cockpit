@@ -44,7 +44,7 @@ public class HardwareQueryTask extends AsyncTask<Void, Void, Void> implements Ta
     public static final String TAG = HardwareQueryTask.class.getName();
 
     private final AtomicReference<CockpitQueryView> queryView = new AtomicReference<>();
-    private DeviceConfiguration deviceConfiguration;
+    private final DeviceConfiguration deviceConfiguration;
     // query tasks
     private QueryTask<SensorTableQuery> sensorTableQueryTask;
     private QueryTask<DskTableQuery> dskQueryTask;

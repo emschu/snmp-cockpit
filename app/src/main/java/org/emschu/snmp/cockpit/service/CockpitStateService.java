@@ -25,10 +25,10 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
-import android.os.IBinder;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
 
 import org.emschu.snmp.cockpit.CockpitStateManager;
 import org.emschu.snmp.cockpit.network.WifiNetworkManager;
@@ -37,24 +37,19 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
 /**
  * observes network security
  */
-public class CockpitStateService extends android.app.Service {
+public class CockpitStateService extends JobIntentService {
     public static final String TAG = CockpitStateService.class.getName();
-    private ConnectivityManager.NetworkCallback callback;
-    private ConnectivityManager cm;
+    public static final int JOB_ID = 1;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        // we don't bind sth
-        return null;
+    public static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, CockpitStateService.class, JOB_ID, work);
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void onHandleWork(@NonNull Intent intent) {
         Log.d(TAG, "starting cockpit state service");
 
-        cm = (ConnectivityManager) getApplicationContext()
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm == null) {
             throw new IllegalStateException("no connectivity manager available");
@@ -65,18 +60,18 @@ public class CockpitStateService extends android.app.Service {
         builder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI);
 
         final BooleanObservable isNetworkSecureObservable = CockpitStateManager.getInstance().getNetworkSecurityObservable();
-        final WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance(this);
+        final WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance();
 
-        callback = new ConnectivityManager.NetworkCallback() {
+        ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
             @Override
-            public void onAvailable(Network network) {
+            public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
                 Log.w(TAG, "onAvailable()");
                 checkState();
             }
 
             @Override
-            public void onLost(Network network) {
+            public void onLost(@NonNull Network network) {
                 super.onLost(network);
                 Log.w(TAG, "onLost()");
                 checkState();
@@ -105,6 +100,6 @@ public class CockpitStateService extends android.app.Service {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "finishing cockpit state service");
-        cm.unregisterNetworkCallback(callback);
+//        cm.unregisterNetworkCallback(callback);
     }
 }

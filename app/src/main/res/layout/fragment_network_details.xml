@@ -19,7 +19,6 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
@@ -58,7 +57,29 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/net_details_bssid_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:text="@string/drawer_header_bssid"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorViolet"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/net_details_bssid_textview_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="-"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/net_details_ip_textview"
@@ -78,27 +99,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
-
-            <TextView
-                android:id="@+id/net_details_subnet_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:text="@string/nav_header_subnet"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/colorViolet"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/net_details_subnet_textview_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="-"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/net_details_dns_textview"
@@ -118,7 +120,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
 
             <TextView
@@ -139,7 +142,8 @@
                 android:layout_gravity="center"
                 android:text="-"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
 
             <TextView
@@ -161,8 +165,9 @@
                 android:singleLine="false"
                 android:lineSpacingExtra="4dp"
                 android:text="-"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/colorViolet" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/colorViolet"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
     </ScrollView>

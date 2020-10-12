@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import org.emschu.snmp.cockpit.snmp.SnmpEndpoint;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * this class represents a device qr code and is used by jackson json databind to encode qr code input
@@ -120,6 +121,9 @@ public class DeviceQrCode {
 
     @Nullable
     public SnmpEndpoint getEndpoint() {
+        if (naddr.getIPv4() == null || naddr.getIPv6() == null) {
+            return null;
+        }
         if (naddr.getIPv4().isEmpty() && naddr.getIPv6().isEmpty()) {
             return null;
         }
@@ -145,6 +149,7 @@ public class DeviceQrCode {
         return null;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "DeviceQrCode{" +

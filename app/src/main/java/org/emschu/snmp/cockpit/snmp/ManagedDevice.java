@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import org.emschu.snmp.cockpit.fragment.items.DeviceMonitorItemContent;
 import org.emschu.snmp.cockpit.query.impl.general.SystemQuery;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * this class represents a currently managed device by the app
@@ -111,6 +112,7 @@ public class ManagedDevice {
         return initialSystemQuery;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "ManagedDevice{" +

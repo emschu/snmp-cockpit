@@ -40,7 +40,7 @@ public abstract class AbstractSnmpTableQuery implements TableQuery {
 
     @Override
     public void processResult(List<QueryResponse> results) {
-        OIDCatalog catalog = OIDCatalog.getInstance(null, null);
+        OIDCatalog catalog = OIDCatalog.getInstance(null);
         rowList.clear();
         for (QueryResponse qr : results) {
             // strip last oid node - its the counter number
@@ -53,7 +53,10 @@ public abstract class AbstractSnmpTableQuery implements TableQuery {
             } else {
                 currentRow = rowList.get(rowIndex);
             }
-            String key = null;
+            if (currentRow == null) {
+                continue;
+            }
+            String key;
             try {
                 key = catalog.getAsnByOidStripLast(qr.getOid());
             } catch (OIDNotInCatalogException e) {

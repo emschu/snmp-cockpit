@@ -178,6 +178,3 @@ Icon made by [becris](https://www.flaticon.com/authors/becris) from [www.flatico
 
 * Disconnect (*ic_disconnect.xml*):
 Icon made by [Freepik](https://www.freepik.com/) from [www.flaticon.com](www.flaticon.com), CC 3.0 BY
-
-* Add-device (*ic_add_device.xml*):
-Icon made by [xnimrodx](https://www.flaticon.com/authors/xnimrodx) from [www.flaticon.com](www.flaticon.com), CC 3.0 BY

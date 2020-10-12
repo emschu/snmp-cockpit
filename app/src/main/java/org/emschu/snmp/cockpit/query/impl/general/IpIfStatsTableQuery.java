@@ -91,7 +91,7 @@ public class IpIfStatsTableQuery extends AbstractSnmpTableQuery {
 
         Map<String, OID> columnDefinition = new HashMap<>();
 
-        OIDCatalog oidCatalog = OIDCatalog.getInstance(null, null);
+        OIDCatalog oidCatalog = OIDCatalog.getInstance(null);
         for (String asnName : columns) {
             columnDefinition.put(asnName, new OID(oidCatalog.getOidByAsn(asnName)));
         }

@@ -27,7 +27,7 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
  *
  */
 public class ListQuerySection extends AbstractCockpitQuerySection {
-    private ListQuery abstractListQuery;
+    private final ListQuery abstractListQuery;
     private boolean collapsible = false;
 
     public ListQuerySection(String title, ListQuery abstractListQuery) {

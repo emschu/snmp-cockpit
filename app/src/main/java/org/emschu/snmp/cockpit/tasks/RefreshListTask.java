@@ -41,7 +41,7 @@ public class RefreshListTask extends AsyncTask<Void, Void, Void> {
 
     public static final String TAG = RefreshListTask.class.getName();
 
-    private ArrayList<QueryTask<SystemQuery>> queryTaskList = new ArrayList<>();
+    private final ArrayList<QueryTask<SystemQuery>> queryTaskList = new ArrayList<>();
     private final AtomicReference<RecyclerView> recyclerViewAtomicReference = new AtomicReference<>();
 
     public RefreshListTask(RecyclerView recyclerView) {
@@ -71,7 +71,7 @@ public class RefreshListTask extends AsyncTask<Void, Void, Void> {
         for (DeviceMonitorItemContent.DeviceMonitorItem deviceItem : tmpDeviceList) {
             SystemQuery systemQuery = null;
             if (!deviceItem.deviceConfiguration.isDummy()) {
-                for (QueryTask qt : queryTaskList) {
+                for (QueryTask<?> qt : queryTaskList) {
                     if (deviceItem.getDeviceConfiguration().getUniqueDeviceId().equals(qt.getDeviceConfiguration().getUniqueDeviceId())) {
                         systemQuery = (SystemQuery) qt.getQuery();
                     }

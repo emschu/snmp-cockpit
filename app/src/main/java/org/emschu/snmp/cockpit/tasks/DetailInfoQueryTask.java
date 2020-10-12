@@ -50,23 +50,23 @@ public class DetailInfoQueryTask extends AsyncTask<Void, Void, Void> implements 
     public static final String TAG = DetailInfoQueryTask.class.getName();
 
     private final AtomicReference<CockpitQueryView> queryView = new AtomicReference<>();
-    private DeviceConfiguration deviceConfiguration;
+    private final DeviceConfiguration deviceConfiguration;
 
     // start and send queries
-    private QueryTask<NetInterfaceTableQuery> netInterfaceTableQueryTask = new QueryTask<>();
-    private QueryTask<IpAddressTableQuery> ipQueryTask = new QueryTask<>();
-    private QueryTask<IpRouteTableQuery> ipRouteTableTask = new QueryTask<>();
-    private QueryTask<IpNetToMediaTableQuery> ipNetToMediaTask = new QueryTask<>();
-    private QueryTask<AtTableQuery> atTask = new QueryTask<>();
-    private QueryTask<TcpConnectionTableQuery> tcpConnectionTask = new QueryTask<>();
-    private QueryTask<UdpTableQuery> udpConnectionTask = new QueryTask<>();
-    private QueryTask<EgpNeighTableQuery> egpNeighTableQuery = new QueryTask<>();
-    private QueryTask<IpDefaultRouterTableQuery> ipDefaultRouterQueryTask = new QueryTask<>();
-    private QueryTask<DefaultListQuery> ipInfoTask = new QueryTask<>();
-    private QueryTask<DefaultListQuery> icmpInfoTask = new QueryTask<>();
-    private QueryTask<DefaultListQuery> tcpInfoTask = new QueryTask<>();
-    private QueryTask<DefaultListQuery> udpInfoTask = new QueryTask<>();
-    private QueryTask<DefaultListQuery> egpInfoTask = new QueryTask<>();
+    private final QueryTask<NetInterfaceTableQuery> netInterfaceTableQueryTask = new QueryTask<>();
+    private final QueryTask<IpAddressTableQuery> ipQueryTask = new QueryTask<>();
+    private final QueryTask<IpRouteTableQuery> ipRouteTableTask = new QueryTask<>();
+    private final QueryTask<IpNetToMediaTableQuery> ipNetToMediaTask = new QueryTask<>();
+    private final QueryTask<AtTableQuery> atTask = new QueryTask<>();
+    private final QueryTask<TcpConnectionTableQuery> tcpConnectionTask = new QueryTask<>();
+    private final QueryTask<UdpTableQuery> udpConnectionTask = new QueryTask<>();
+    private final QueryTask<EgpNeighTableQuery> egpNeighTableQuery = new QueryTask<>();
+    private final QueryTask<IpDefaultRouterTableQuery> ipDefaultRouterQueryTask = new QueryTask<>();
+    private final QueryTask<DefaultListQuery> ipInfoTask = new QueryTask<>();
+    private final QueryTask<DefaultListQuery> icmpInfoTask = new QueryTask<>();
+    private final QueryTask<DefaultListQuery> tcpInfoTask = new QueryTask<>();
+    private final QueryTask<DefaultListQuery> udpInfoTask = new QueryTask<>();
+    private final QueryTask<DefaultListQuery> egpInfoTask = new QueryTask<>();
 
     /**
      * constructor

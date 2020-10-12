@@ -23,6 +23,7 @@ import java.util.List;
 import org.emschu.snmp.cockpit.query.impl.general.SystemQuery;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * device monitor item content class
@@ -71,6 +72,7 @@ public class DeviceMonitorItemContent {
             return deviceConfiguration;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "DeviceMonitorItem{" +

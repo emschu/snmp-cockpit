@@ -23,7 +23,7 @@
     android:id="@+id/device_detail_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.emschu.snmp.cockpit.activity.TabbedDeviceActivity$SnmpUsageQueryFragment">
+    tools:context=".fragment.tabs.SnmpUsageQueryFragment">
 
     <ScrollView
         android:id="@+id/nested_device_info_screen_usage_queries"

@@ -21,11 +21,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/tree_view_item_height"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:id="@+id/query_catalog_list_item_text"
         android:layout_marginStart="24dp"
-        android:drawableStart="@drawable/ic_linear_scale_light"
+        app:drawableStartCompat="@drawable/ic_linear_scale_light"
         android:drawablePadding="@dimen/tree_view_padding"
         android:gravity="center_vertical"
         android:textSize="@dimen/tree_view_text_size"

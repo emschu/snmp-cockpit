@@ -70,7 +70,7 @@ public class DeviceQrCodeJsonTokenTest {
     @Test(expected = IOException.class)
     public void testInvalidJsonDoesntWork() throws IOException {
         ObjectMapper om = new ObjectMapper();
-        DeviceQrCode code2 = null;
+        DeviceQrCode code2;
         code2 = om.readValue(incorrectQrCodeString1, DeviceQrCode.class);
         Assert.assertNull(code2);
 

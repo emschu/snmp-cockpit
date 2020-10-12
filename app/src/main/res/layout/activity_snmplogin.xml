@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ SNMP Cockpit Android App
   ~
   ~ Copyright (C) 2018-2019
@@ -22,7 +21,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -30,7 +29,8 @@
         android:layout_height="?attr/actionBarSize"
         android:paddingTop="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
-        <include layout="@layout/toolbar"/>
+
+        <include layout="@layout/toolbar" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -61,6 +61,7 @@
                         android:id="@+id/editText_SNMP_Version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/snmp_spinner"
                         android:text="@string/snmp_version" />
 
                     <Spinner
@@ -78,9 +79,10 @@
                         android:id="@+id/editText_ipv6_enabled"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/is_ipv6_enabled"
                         android:text="@string/ipv6_enabled" />
 
-                    <Switch
+                    <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/is_ipv6_enabled"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -95,6 +97,7 @@
                         android:id="@+id/textView_Host"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextHost"
                         android:text="@string/host" />
 
                     <EditText
@@ -103,18 +106,20 @@
                         android:layout_height="wrap_content"
                         android:digits="0123456789."
                         android:ems="7"
-                        android:minWidth="200dp"
                         android:hint="@string/ip_address"
-                        android:inputType="number|text" />
+                        android:inputType="number|text"
+                        android:minWidth="200dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:id="@+id/textView_Port"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextPort"
                         android:text="@string/port" />
 
                     <EditText
@@ -122,9 +127,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="7"
-                        android:minWidth="200dp"
                         android:hint="161"
-                        android:inputType="number|text" />
+                        android:inputType="number|text"
+                        android:minWidth="200dp"
+                        tools:ignore="HardcodedText" />
                 </TableRow>
 
                 <TableRow
@@ -136,6 +142,7 @@
                         android:id="@+id/textview_community"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextCommunity"
                         android:text="@string/community_label" />
 
                     <EditText
@@ -143,9 +150,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="7"
-                        android:minWidth="200dp"
                         android:hint="@string/public_default_community"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:minWidth="200dp" />
                 </TableRow>
 
                 <TableRow
@@ -158,6 +165,7 @@
                         android:id="@+id/textview_username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:labelFor="@id/editTextUsername"
                         android:text="@string/user" />
 
                     <EditText
@@ -165,8 +173,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ems="7"
-                        android:minWidth="200dp"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:minWidth="200dp" />
                 </TableRow>
 
                 <TableRow
@@ -177,9 +185,10 @@
 
                     <TextView
                         android:id="@+id/textview_password"
-                        android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:labelFor="@id/editTextPassword"
                         android:text="@string/password_label" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -194,24 +203,26 @@
                             android:id="@+id/editTextPassword"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minWidth="200dp"
                             android:ems="7"
-                            android:inputType="textPassword" />
+                            android:importantForAutofill="no"
+                            android:inputType="textPassword"
+                            android:minWidth="200dp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tablerow_encrypt"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:labelFor="@id/textview_encrypt"
                     android:visibility="invisible">
 
                     <TextView
                         android:id="@+id/textview_encrypt"
-                        android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="@string/snmpv3_key" />
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -227,30 +238,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="7"
-                            android:minWidth="200dp"
-                            android:inputType="textPassword" />
+                            android:importantForAutofill="no"
+                            android:inputType="textPassword"
+                            android:minWidth="200dp" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </TableRow>
             </TableLayout>
-
-            <Button
-                android:id="@+id/scan_qr_code"
-                android:layout_gravity="center"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/btn_autofill_qr_code"
-                android:drawableStart="@drawable/ic_qr_code"
-                android:text="@string/btn_autofill_qr_code" />
-
-            <Button
-                android:id="@+id/add_device"
-                android:layout_gravity="center"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/btn_device_connect"
-                android:drawableStart="@drawable/ic_add_device"
-                android:text="@string/btn_device_connect" />
         </LinearLayout>
     </ScrollView>
 

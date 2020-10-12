@@ -30,7 +30,7 @@ import org.emschu.snmp.cockpit.util.EncodingStringPartial;
  */
 public class AuthEncodingParserTest {
 
-    private String[] wrongCodes = new String[]{
+    private final String[] wrongCodes = new String[]{
         ";;;testpw",
         ";;testpw",
         ";testpw"

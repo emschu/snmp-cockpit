@@ -30,7 +30,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
+        classpath 'com.android.tools.build:gradle:4.0.2'
         classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.7.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -42,6 +42,7 @@ allprojects {
     gradle.projectsEvaluated {
         // use this place to define compiler arguments of the app
         tasks.withType(JavaCompile) {
+            // NOTE: add ',unchecked' to see unchecked warnings
             options.compilerArgs << "-Xlint:deprecation"
         }
     }

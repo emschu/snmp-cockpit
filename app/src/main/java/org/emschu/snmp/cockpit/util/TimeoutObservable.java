@@ -25,7 +25,7 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
  * class to observe timeout events of single devices
  */
 public class TimeoutObservable extends BooleanObservable {
-    private DeviceConfiguration deviceConfiguration;
+    private final DeviceConfiguration deviceConfiguration;
 
     /**
      * constructor

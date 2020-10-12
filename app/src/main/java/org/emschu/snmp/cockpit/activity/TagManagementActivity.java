@@ -33,6 +33,7 @@ import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.adapter.TagListAdapter;
 import org.emschu.snmp.cockpit.persistence.CockpitDbHelper;
 import org.emschu.snmp.cockpit.persistence.model.Tag;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * activity to manage tags of this app
@@ -66,8 +67,10 @@ public class TagManagementActivity extends AppCompatActivity implements Protecte
         recyclerView.setLayoutManager(layoutManager);
 
 
-        initObservables(this, new AlertHelper(this), null);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initObservables(new AlertHelper(this), null);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -99,18 +102,16 @@ public class TagManagementActivity extends AppCompatActivity implements Protecte
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            String currentInput = savedInstanceState.getString(CURRENT_TAG_INPUT_KEY);
-            long currentId = savedInstanceState.getLong(CURRENT_TAG_ID);
+        String currentInput = savedInstanceState.getString(CURRENT_TAG_INPUT_KEY);
+        long currentId = savedInstanceState.getLong(CURRENT_TAG_ID);
 
-            if (alertHelper == null) {
-                alertHelper = new TagAlertHelper(this);
-            }
-            alertHelper.showTagEditDialog(new Tag(currentId, currentInput), currentId != 0);
+        if (alertHelper == null) {
+            alertHelper = new TagAlertHelper(this);
         }
+        alertHelper.showTagEditDialog(new Tag(currentId, currentInput), currentId != 0);
     }
 
     @Override

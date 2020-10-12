@@ -37,8 +37,8 @@ import org.emschu.snmp.cockpit.persistence.model.Tag;
  */
 public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.QueryAdapterViewHolder> {
     // get table information
-    private CockpitDbHelper cockpitDbHelper;
-    private TagAlertHelper tagAlertHelper;
+    private final CockpitDbHelper cockpitDbHelper;
+    private final TagAlertHelper tagAlertHelper;
 
     /**
      * constructor
@@ -46,8 +46,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.QueryAda
      * @param cockpitDbHelper
      * @param tagAlertHelper
      */
-    public TagListAdapter(CockpitDbHelper cockpitDbHelper,
-                          TagAlertHelper tagAlertHelper) {
+    public TagListAdapter(CockpitDbHelper cockpitDbHelper, TagAlertHelper tagAlertHelper) {
         //Initialising the sql table
         this.cockpitDbHelper = cockpitDbHelper;
         this.tagAlertHelper = tagAlertHelper;

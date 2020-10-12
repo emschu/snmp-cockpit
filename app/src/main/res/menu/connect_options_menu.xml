@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ SNMP Cockpit Android App
   ~
-  ~ Copyright (C) 2018-2019
+  ~ Copyright (C) 2018-2020
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -17,12 +18,18 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/single_query_fragment"
-    android:name="org.emschu.snmp.cockpit.fragment.SingleQueryResultActivityFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/fragment_single_query_result" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_scan_qr_code"
+        android:icon="@drawable/ic_qr_code_white"
+        android:contentDescription="@string/btn_autofill_qr_code"
+        android:title="@string/btn_autofill_qr_code"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_connect"
+        android:icon="@drawable/ic_baseline_send_white"
+        android:contentDescription=""
+        android:title="@string/btn_device_connect"
+        app:showAsAction="always" />
+</menu>

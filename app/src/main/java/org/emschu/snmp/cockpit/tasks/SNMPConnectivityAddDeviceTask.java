@@ -59,12 +59,10 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
     private final DeviceMonitorViewFragment deviceMonitorViewFragment;
     private final int connectionTestTimeout;
     private final int connectionTestRetries;
-    private DeviceConfiguration usedDeviceConfiguration;
+    private final DeviceConfiguration usedDeviceConfiguration;
     private WeakReference<LinearLayout> progressRow;
     private boolean doesConnectionExist = false;
     private int connectionTestTotal = 0;
-    private SnmpConnection connector;
-    private Context context;
 
     /**
      * constructor
@@ -72,7 +70,7 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
      * @param deviceMonitorViewFragment
      * @param progressRow
      */
-    public SNMPConnectivityAddDeviceTask(Context context, DeviceConfiguration deviceConfiguration,
+    public SNMPConnectivityAddDeviceTask(DeviceConfiguration deviceConfiguration,
                                          DeviceMonitorViewFragment deviceMonitorViewFragment, LinearLayout progressRow) {
         this.usedDeviceConfiguration = deviceConfiguration;
         this.deviceMonitorViewFragment = deviceMonitorViewFragment;
@@ -81,7 +79,6 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
 
         this.connectionTestRetries = SnmpCockpitApp.getPreferenceManager().getConnectionTestRetries();
         this.connectionTestTimeout = SnmpCockpitApp.getPreferenceManager().getConnectionTestTimeout();
-        this.context = context;
     }
 
     /**
@@ -127,7 +124,7 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
             usedDeviceConfiguration.setAuthProtocol(firstCombination.first);
             usedDeviceConfiguration.setPrivProtocol(firstCombination.second);
         }
-        connector = SnmpManager.getInstance().getOrCreateConnection(usedDeviceConfiguration);
+        SnmpConnection connector = SnmpManager.getInstance().getOrCreateConnection(usedDeviceConfiguration);
         // try it 2 times
         if (connector == null) {
             connector = SnmpManager.getInstance().getOrCreateConnection(usedDeviceConfiguration);
@@ -137,6 +134,7 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
             }
         }
         if (!connector.canPing(usedDeviceConfiguration)) {
+            connector.close();
             return false;
         }
         return true;
@@ -175,26 +173,26 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
         if (s == null || !s) {
             Log.e(TAG, "Connection test NOT successful! Could not connect!");
             if (doesConnectionExist) {
-                Toast.makeText(context,
+                Toast.makeText(SnmpCockpitApp.getContext(),
                         R.string.connection_already_exists, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(context,
+                Toast.makeText(SnmpCockpitApp.getContext(),
                         R.string.connection_test_not_successful_label, Toast.LENGTH_LONG).show();
             }
 //            AsyncTask.execute(() -> SnmpManager.getInstance().removeConnection(usedDeviceConfiguration));
         } else {
             Log.i(TAG, "Connection test successful");
-            Toast.makeText(context,
-                    context.getString(R.string.connection_test_successful_label), Toast.LENGTH_SHORT).show();
+            Toast.makeText(SnmpCockpitApp.getContext(),
+                    SnmpCockpitApp.getContext().getString(R.string.connection_test_successful_label), Toast.LENGTH_SHORT).show();
 
             DeviceManager.getInstance().add(usedDeviceConfiguration, false);
             // refresh ui on list change!
-            RecyclerView.Adapter adapter = deviceMonitorViewFragment.getRecyclerView().getAdapter();
+            RecyclerView.Adapter<?> adapter = deviceMonitorViewFragment.getRecyclerView().getAdapter();
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
-            if (context instanceof CockpitMainActivity) {
-                CockpitMainActivity cockpitMainActivity = (CockpitMainActivity) context;
+            if (SnmpCockpitApp.getContext() instanceof CockpitMainActivity) {
+                CockpitMainActivity cockpitMainActivity = (CockpitMainActivity) SnmpCockpitApp.getContext();
                 cockpitMainActivity.checkNoData();
             } else {
                 Log.w(TAG, "CockpitMainActivity context expected!");
@@ -202,11 +200,9 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
         }
         progressRow.get().setVisibility(View.GONE);
         TextView infoTextView = this.progressRow.get().findViewById(R.id.connection_attempt_count_label);
-        infoTextView.setText(context.getString(R.string.connection_attempt_label));
+        infoTextView.setText(SnmpCockpitApp.getContext().getString(R.string.connection_attempt_label));
         CockpitStateManager.getInstance().setConnecting(false);
         CockpitStateManager.getInstance().setConnectionTask(null);
-
-        context = null;
     }
 
     public void setProgressRow(LinearLayout progressRow) {

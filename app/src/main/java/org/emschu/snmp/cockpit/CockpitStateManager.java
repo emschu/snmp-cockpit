@@ -32,20 +32,17 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
 public class CockpitStateManager {
     private static CockpitStateManager instance;
     // observables
-    private BooleanObservable networkSecurityBooleanObservable = new BooleanObservable(false);
-    private BooleanObservable isInTimeoutsObservable = new BooleanObservable(false);
-    private BooleanObservable isInSessionTimeoutObservable = new BooleanObservable(false);
+    private final BooleanObservable networkSecurityBooleanObservable = new BooleanObservable(false);
+    private final BooleanObservable isInTimeoutsObservable = new BooleanObservable(false);
+    private final BooleanObservable isInSessionTimeoutObservable = new BooleanObservable(false);
+    private final BooleanObservable areDevicesConnectedObservable = new BooleanObservable(false);
 
     private boolean isConnecting = false;
     private boolean isInRemoval = false;
     private boolean isInTestMode = false;
     private SNMPConnectivityAddDeviceTask connectionTask = null;
     private OctetString localEngineId = null;
-    private QueryCache queryCache;
-
-    private CockpitStateManager() {
-        queryCache = new QueryCache();
-    }
+    private final QueryCache queryCache = new QueryCache();
 
     /**
      * singleton access method
@@ -69,6 +66,10 @@ public class CockpitStateManager {
 
     public BooleanObservable getIsInSessionTimeoutObservable() {
         return isInSessionTimeoutObservable;
+    }
+
+    public BooleanObservable getAreDevicesConnectedObservable() {
+        return areDevicesConnectedObservable;
     }
 
     public void setConnecting(boolean connecting) {

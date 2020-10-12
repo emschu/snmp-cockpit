@@ -22,6 +22,8 @@ package org.emschu.snmp.cockpit.query;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,9 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.emschu.snmp.cockpit.SnmpCockpitApp;
 import org.emschu.snmp.cockpit.query.json.JsonCatalogItem;
 import org.emschu.snmp.cockpit.snmp.MibCatalogManager;
 
@@ -41,15 +45,13 @@ import org.emschu.snmp.cockpit.snmp.MibCatalogManager;
 public class OIDCatalog {
     public static final String TAG = OIDCatalog.class.getName();
     private static OIDCatalog instance;
-    private final Context context;
     private final MibCatalogManager mibCatalogManager;
     // oid to catalog item
-    private ConcurrentHashMap<String, JsonCatalogItem> mapOidKey = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, JsonCatalogItem> mapOidKey = new ConcurrentHashMap<>();
     // asn to catalog item
-    private ConcurrentHashMap<String, JsonCatalogItem> mapAsnKey = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, JsonCatalogItem> mapAsnKey = new ConcurrentHashMap<>();
 
-    private OIDCatalog(Context context, MibCatalogManager mibCatalogManager) {
-        this.context = context;
+    private OIDCatalog(MibCatalogManager mibCatalogManager) {
         this.mibCatalogManager = mibCatalogManager;
         initData();
     }
@@ -57,15 +59,11 @@ public class OIDCatalog {
     /**
      * singleton access method
      *
-     * @param context
      * @return
      */
-    public static OIDCatalog getInstance(Context context, MibCatalogManager mibCatalogManager) {
+    public static OIDCatalog getInstance(MibCatalogManager mibCatalogManager) {
         if (instance == null) {
-            if (context == null || mibCatalogManager == null) {
-                throw new IllegalArgumentException("null context or mib catalog manager given!");
-            }
-            instance = new OIDCatalog(context, mibCatalogManager);
+            instance = new OIDCatalog(mibCatalogManager);
         }
         return instance;
     }
@@ -79,7 +77,7 @@ public class OIDCatalog {
         om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try (BufferedInputStream resourceAsStream
-                     = new BufferedInputStream(mibCatalogManager.getCatalogFileInputStream(context))) {
+                     = new BufferedInputStream(mibCatalogManager.getCatalogFileInputStream(SnmpCockpitApp.getContext()))) {
             Map<String, JsonCatalogItem> map
                     = om.readValue(resourceAsStream, new TypeReference<Map<String, JsonCatalogItem>>() {
             });
@@ -89,7 +87,7 @@ public class OIDCatalog {
             }
             Log.d(TAG, "filled oid catalog with " + mapAsnKey.size() + " values");
         } catch (IOException e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(TAG, e.getMessage() != null ? e.getMessage() : "undefined IOException found");
         }
     }
 
@@ -107,6 +105,7 @@ public class OIDCatalog {
      * @param oid
      * @return
      */
+    @Nullable
     public String getAsnByOidStripLast(String oid) throws OIDNotInCatalogException {
         String key = oid.substring(0, oid.lastIndexOf('.'));
         if (!mapOidKey.containsKey(key)) {
@@ -115,7 +114,7 @@ public class OIDCatalog {
             key = oid.substring(0, oid.lastIndexOf('.'));
             key = oid.substring(0, key.lastIndexOf('.'));
             if (mapOidKey.containsKey(key)) {
-                return mapOidKey.get(key).getName();
+                return Objects.requireNonNull(mapOidKey.get(key)).getName();
             }
             key = oid.substring(0, key.lastIndexOf('.'));
             key = oid.substring(0, key.lastIndexOf('.'));
@@ -127,7 +126,10 @@ public class OIDCatalog {
             }
         }
         JsonCatalogItem jsonCatalogItem = mapOidKey.get(key);
-        return jsonCatalogItem.getName();
+        if (jsonCatalogItem != null) {
+            return jsonCatalogItem.getName();
+        }
+        return null;
     }
 
     /**
@@ -138,7 +140,10 @@ public class OIDCatalog {
      */
     public String getOidByAsn(String asnName) {
         if (mapAsnKey.containsKey(asnName)) {
-            return mapAsnKey.get(asnName).getOid();
+            JsonCatalogItem jsonCatalogItem = mapAsnKey.get(asnName);
+            if (jsonCatalogItem != null) {
+                return jsonCatalogItem.getOid();
+            }
         }
         return null;
     }
@@ -146,6 +151,6 @@ public class OIDCatalog {
     public void refresh() {
         // reload the whole stuff with proper files
         instance = null;
-        OIDCatalog.getInstance(context, mibCatalogManager);
+        OIDCatalog.getInstance(mibCatalogManager);
     }
 }

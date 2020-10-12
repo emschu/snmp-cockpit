@@ -37,7 +37,7 @@ abstract class AbstractCockpitQuerySection {
 
     public static final String TAG = AbstractCockpitQuerySection.class.getName();
     private String title;
-    private SectionType type;
+    private final SectionType type;
     private int unkownOIDCounter = -1;
     private boolean skipUnknown = true;
 
@@ -78,13 +78,12 @@ abstract class AbstractCockpitQuerySection {
      * helper method to display a line of a component of a single query response
      *
      * @param sb
-     * @param catalog
      * @param qr
      */
     protected void addQueryResponseRow(StringBuilder sb, QueryResponse qr) {
-        String asnName = null;
+        String asnName;
         try {
-            asnName = OIDCatalog.getInstance(null, null).getAsnByOidStripLast(qr.getOid());
+            asnName = OIDCatalog.getInstance(null).getAsnByOidStripLast(qr.getOid());
         } catch (OIDNotInCatalogException e) {
             Log.d(TAG, "unknown oid '" + qr.getOid() + "' use 'unknown' as fallback and skipunknown: " + skipUnknown);
             if (skipUnknown) {

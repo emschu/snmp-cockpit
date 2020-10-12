@@ -21,6 +21,8 @@ package org.emschu.snmp.cockpit.snmp;
 
 import android.util.Log;
 
+
+import org.jetbrains.annotations.NotNull;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.Snmp;
@@ -49,7 +51,7 @@ public abstract class AbstractSnmpAdapter {
     public static final String TAG = AbstractSnmpAdapter.class.getName();
     protected Snmp snmp;
     protected TransportMapping<UdpAddress> udpAddressTransportMapping;
-    protected AbstractTarget target = null;
+    protected AbstractTarget<UdpAddress> target = null;
     // can be set in subclasses
     protected DeviceConfiguration deviceConfiguration = null;
 
@@ -71,7 +73,8 @@ public abstract class AbstractSnmpAdapter {
      *
      * @return
      */
-    public abstract AbstractTarget getTarget();
+    @NotNull
+    public abstract AbstractTarget<UdpAddress> getTarget();
 
     /**
      * method to query a single oid
@@ -226,10 +229,23 @@ public abstract class AbstractSnmpAdapter {
      *
      * @return
      */
-    protected String getAddress() {
+    protected String getGenericAddress() {
         return String.format(
                 "%s:%s/%s",
                 deviceConfiguration.getNetworkProtocol(),
+                deviceConfiguration.getTargetIp(),
+                deviceConfiguration.getTargetPort()
+        );
+    }
+
+    protected String getUdpAddress() {
+        if (deviceConfiguration.isIpv6()) {
+            return String.format("[%s]/%s",
+                    deviceConfiguration.getTargetIp(),
+                    deviceConfiguration.getTargetPort()
+            );
+        }
+        return String.format("%s/%s",
                 deviceConfiguration.getTargetIp(),
                 deviceConfiguration.getTargetPort()
         );

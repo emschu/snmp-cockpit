@@ -55,9 +55,9 @@ import static org.emschu.snmp.cockpit.activity.SNMPLoginActivity.USER_PASSPHRASE
 public class DeviceManager {
 
     public static final String TAG = DeviceManager.class.getName();
-    private List<DeviceMonitorItemContent.DeviceMonitorItem> fragmentItemList = Collections.synchronizedList(new ArrayList<>());
-    private List<ManagedDevice> managedDevices = Collections.synchronizedList(new ArrayList<>());
-    private Map<String, List<String>> deviceTabs = new ConcurrentHashMap<>();
+    private final List<DeviceMonitorItemContent.DeviceMonitorItem> fragmentItemList = Collections.synchronizedList(new ArrayList<>());
+    private final List<ManagedDevice> managedDevices = Collections.synchronizedList(new ArrayList<>());
+    private final Map<String, List<String>> deviceTabs = new ConcurrentHashMap<>();
 
     private static DeviceManager instance;
 
@@ -119,6 +119,11 @@ public class DeviceManager {
             Log.d(TAG, "Managed devices: " + managedDevices.toString());
         } else {
             Log.e(TAG, "no system query response received! Skip adding device.");
+        }
+        if (managedDevices.isEmpty()) {
+            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(false);
+        } else {
+            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(true);
         }
     }
 
@@ -271,6 +276,7 @@ public class DeviceManager {
 
         fragmentItemList.clear();
         managedDevices.clear();
+        CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(false);
         CockpitStateManager.getInstance().setRemovalOngoing(false);
     }
 
@@ -313,6 +319,11 @@ public class DeviceManager {
                 break;
             }
         }
+        if (managedDevices.isEmpty()) {
+            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(false);
+        } else {
+            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(true);
+        }
         CockpitStateManager.getInstance().setRemovalOngoing(false);
     }
 
@@ -346,14 +357,16 @@ public class DeviceManager {
      * @param oidQuery
      */
     public void addNewDeviceTab(String deviceId, String oidQuery) {
-        List<String> tabList = null;
+        List<String> tabList;
         if (deviceTabs.containsKey(deviceId)) {
             tabList = deviceTabs.get(deviceId);
         } else {
             tabList = new ArrayList<>();
             deviceTabs.put(deviceId, tabList);
         }
-        tabList.add(oidQuery);
+        if (tabList != null) {
+            tabList.add(oidQuery);
+        }
     }
 
     /**

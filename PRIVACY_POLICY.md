@@ -5,7 +5,7 @@ This app follows several principles:
 - Completely advertising free
 - No tracking
 - No non-free dependencies/assets/resources
-- no transmission of your data, any data keeps on your device
+- no transmission of your data, any data stays on your device
 - no external (network) services
 - Android's camera permission is used **exclusively** to scan your QR codes exclusively via the Open Source **zxing library**. The app does *never* store WIFI credentials or SNMP device connection credentials.
 

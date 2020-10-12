@@ -22,7 +22,6 @@
     <string name="close">Close</string>
     <string name="nav_header_ip_label">IP: %s</string>
     <string name="nav_header_ip">IP</string>
-    <string name="nav_header_gateway_ip_label">Gateway: %s</string>
 
     <string name="title_activity_tabbed_device">Device detail view</string>
 
@@ -58,6 +57,7 @@
     <string name="port">Port:</string>
     <string name="drawer_header_ssid_label">SSID: %s</string>
     <string name="drawer_header_ssid">SSID</string>
+    <string name="drawer_header_bssid">BSSID</string>
     <string name="drawer_header_ipv6_address_label">IPv6-Address:\n%s</string>
     <string name="drawer_header_ipv6_address">IPv6-Address</string>
     <string name="preference_version" translatable="false">%1$s (%2$d)</string>
@@ -102,7 +102,7 @@
     <string name="view_query_label">Execute</string>
     <string name="welcome_dialog_message">This app is working in WIFI networks only by default. Please configure the app in settings menu.</string>
     <string name="welcome_dialog_take_current_ssid_btn">Use current WIFI SSID</string>
-    <string name="welcome_dialog_title">Welcome to SNMP Cockpit APP!</string>
+    <string name="welcome_dialog_title">Welcome to SNMP Cockpit App!</string>
     <string name="wifi_activated_toast_label">WLAN activated</string>
     <string name="wifi_connection_list_item">\t• WLAN connection</string>
     <string name="wifi_connection_wpa_needed_list_item">\t• Connection security: WPA2-PSK or WPA2-EAP</string>
@@ -123,32 +123,30 @@
     <string name="btn_device_connect">Connect device</string>
     <string name="btn_no_longer_show">Do not show again</string>
     <string name="connect_to_device_toast">Connect to network \'%s\'</string>
+    <string name="connect_to_device_toast_failed">Connecting to network \'%s\' failed</string>
     <string name="disconnect_all_devices_success">Disconnected from all devices</string>
     <string name="dialog_title_custom_query_edit">Edit query</string>
     <string name="dialog_title_custom_query_add">Add new query</string>
     <string name="empty_device_list_message">Actually no device is connected.\n Select the plus-button in the lower right corner to setup a new connection.</string>
     <string name="error_connecting_to_network">No successful WIFI-Connection possible for network \'%s\'. Access data correct?</string>
-    <string name="fix_wifi_connection_ssid_list_item">\t• Fix SSID: \'%s\'</string>
+    <string name="fix_wifi_connection_ssid_list_item">\t• Allowed SSID: \'%s\'</string>
     <string name="flashlight_hint">For flash light, press volume buttons.</string>
     <string name="toast_no_valid_device_qr_code">No valid QR code received.</string>
     <string name="title_network_details">Network details</string>
-    <string name="title_activity_snmplogin">Connect to SNMP device</string>
+    <string name="title_activity_snmplogin">Connect to a device</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_single_query_result">Query view</string>
-    <string name="title_activity_own_queries">Custom SNMP queries</string>
+    <string name="title_activity_own_queries">Custom queries</string>
     <string name="title_activity_about">About the app</string>
     <string name="snmpv3_key">Key:</string>
     <string name="snmp_usage_tab_content_title">Usage</string>
     <string name="show_password_label">Show password</string>
-    <string name="nav_header_dns_server_label">DNS: %s</string>
     <string name="nav_header_dns_server">DNS</string>
-    <string name="nav_header_subnet_label">Subnet mask: %s</string>
-    <string name="nav_header_subnet">Subnet mask</string>
     <string name="navigate_up_content_description">Navigate back</string>
     <string name="navigation_drawer_close">Close menu</string>
     <string name="navigation_drawer_open">Open menu</string>
     <string name="no_information_available">No information retrievable.</string>
-    <string name="no_secure_environment">SNMP Cockpit: No secure environment!</string>
+    <string name="no_secure_environment">No secure environment!</string>
     <string name="password_label">Password:</string>
     <string name="please_wait_label">Please wait…</string>
     <string name="pref_allow_all_networks_label">Allow all networks</string>
@@ -232,9 +230,9 @@
     <string name="pref_general_use_v1_insteadv2c_title">SNMP version 1 instead of 2c</string>
     <string name="pref_is_ssid_manually_set_label">Manual mode</string>
     <string name="pref_is_ssid_manually_set_summary">Do not update app\'s secure SSID during QR code scan</string>
-    <string name="pref_is_wifi_ssid_locked_label">Fix WIFI SSID</string>
+    <string name="pref_is_wifi_ssid_locked_label">Allowed WIFI SSID</string>
     <string name="pref_session_timeout_dialog_title">Session timeout (minutes)</string>
-    <string name="pref_secure_wifi_ssid_label">Fix WIFI SSID</string>
+    <string name="pref_secure_wifi_ssid_label">Allowed WIFI SSID</string>
     <string name="pref_periodic_update_summary">Time interval for user interface updates</string>
     <string name="pref_periodic_update_interval_dialog_title">UI update interval (seconds)</string>
     <string name="pref_periodic_update_interval">Refresh interval</string>
@@ -242,7 +240,7 @@
     <string name="pref_periodic_update_enabled_summary">Refreshes the user interface (tab contents need to be refreshed manually)</string>
     <string name="pref_is_wpa2_only_summary">Use only WPA2-PSK or WPA2-EAP WIFI connections</string>
     <string name="pref_is_wpa2_only_label">Only WPA2-PSK and WPA2-EAP WIFI connections</string>
-    <string name="pref_is_wifi_ssid_locked_summary">The app is usable in a single WIFI network only (fix WIFI SSID) which is defined in another setting. Specify manually or update during WIFI QR code scan (default).</string>
+    <string name="pref_is_wifi_ssid_locked_summary">The app is configured to be usable in a single WIFI network only (by SSID-filtering) which is defined in another setting. Specify manually or update during WIFI QR code scan (default).</string>
     <string name="fragment_title_monitoring_info">Monitoring information</string>
     <string name="hardware_info_label">Hardware information</string>
     <string name="pref_mib_configuration_title">MIB configuration</string>
@@ -274,4 +272,9 @@
     <string name="preference_mib_catalog_reset_summary">Use this action to delete imported MIB catalogs and use default</string>
     <string name="send_email_title">Send Mail</string>
     <string name="preference_reset_mibs">Reset MIB catalogs</string>
+    <string name="use_current_network">Use current network</string>
+    <string name="not_connected_label">Not connected</string>
+    <string name="pref_show_ipv6_link_local_addresses">Show IPv6 Link-Local Addresses</string>
+    <string name="permission_required">Permission required</string>
+    <string name="permission_location_info_text">To use detailed data of your network (like WIFI SSID etc.), this app requires access to your location. Note that this app will never store or hand over this information.</string>
 </resources>

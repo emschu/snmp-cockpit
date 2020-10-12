@@ -33,8 +33,6 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
  */
 public class HrPartitionTableQuery extends AbstractSnmpTableQuery {
 
-    public static final String TAG = HrPartitionTableQuery.class.getName();
-
     @Override
     public Map<String, OID> getColumnDefinition() {
         Map<String, OID> columnDefinition = new HashMap<>();

@@ -31,6 +31,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import org.emschu.snmp.cockpit.activity.TabbedDeviceActivity;
 import org.emschu.snmp.cockpit.fragment.SingleQueryResultActivityFragment;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * view pager for tabs of single device view
@@ -50,6 +51,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         return POSITION_NONE;
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);

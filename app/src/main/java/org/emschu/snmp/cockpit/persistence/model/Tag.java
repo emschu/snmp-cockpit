@@ -19,6 +19,8 @@
 
 package org.emschu.snmp.cockpit.persistence.model;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * this class represents a category/tag record of category table
  */
@@ -47,6 +49,7 @@ public class Tag {
         this.name = name;
     }
 
+    @NotNull
     @Override
     public String toString() {
         return "Tag{" +

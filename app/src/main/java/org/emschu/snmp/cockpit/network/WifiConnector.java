@@ -19,15 +19,19 @@
 
 package org.emschu.snmp.cockpit.network;
 
-import android.net.wifi.WifiConfiguration;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.wifi.WifiEnterpriseConfig;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.zxing.client.result.WifiParsedResult;
 
 import java.util.Arrays;
 
+import org.emschu.snmp.cockpit.SnmpCockpitApp;
 import org.emschu.snmp.cockpit.util.Converter;
 
 /**
@@ -35,8 +39,8 @@ import org.emschu.snmp.cockpit.util.Converter;
  *
  * inspiration: https://github.com/zxing/zxing/blob/master/android/src/com/google/zxing/client/android/wifi/WifiConfigManager.java
  *
- * TODO implement more wifi connection types, not only wpa2 and wpa2-eap?
  */
+@SuppressWarnings("deprecation")
 public class WifiConnector {
     private static final String TAG = WifiConnector.class.getName();
     public static final String WPA2_KEY = "WPA2";
@@ -98,28 +102,28 @@ public class WifiConnector {
 
     // Adding a WPA or WPA2 network
     private void connectToWpa2Network(WifiManager wifiManager, WifiParsedResult wifiResult) {
-        WifiConfiguration config = initWifiConfiguration(wifiResult);
+        android.net.wifi.WifiConfiguration config = initWifiConfiguration(wifiResult);
         config.preSharedKey = Converter.quoteNonHex(wifiResult.getPassword(), 64);
-        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+        config.allowedAuthAlgorithms.set(android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN);
         //config.allowedProtocols.set(WifiConfiguration.Protocol.WPA); // For WPA
-        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN); // For WPA2
-        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        config.allowedProtocols.set(android.net.wifi.WifiConfiguration.Protocol.RSN); // For WPA2
+        config.allowedKeyManagement.set(android.net.wifi.WifiConfiguration.KeyMgmt.WPA_PSK);
+        config.allowedPairwiseCiphers.set(android.net.wifi.WifiConfiguration.PairwiseCipher.CCMP);
+        config.allowedGroupCiphers.set(android.net.wifi.WifiConfiguration.GroupCipher.TKIP);
+        config.allowedGroupCiphers.set(android.net.wifi.WifiConfiguration.GroupCipher.CCMP);
         updateNetwork(wifiManager, config);
     }
 
     private void connectToWpa2EAPNetwork(WifiManager wifiManager, WifiParsedResult wifiResult) {
-        WifiConfiguration config = initWifiConfiguration(wifiResult);
+        android.net.wifi.WifiConfiguration config = initWifiConfiguration(wifiResult);
         // Hex passwords that are 64 bits long are not to be quoted.
         config.preSharedKey = Converter.quoteNonHex(wifiResult.getPassword(), 64);
-        config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
-        config.allowedProtocols.set(WifiConfiguration.Protocol.RSN); // For WPA2
-        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_EAP);
-        config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-        config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+        config.allowedAuthAlgorithms.set(android.net.wifi.WifiConfiguration.AuthAlgorithm.OPEN);
+        config.allowedProtocols.set(android.net.wifi.WifiConfiguration.Protocol.RSN); // For WPA2
+        config.allowedKeyManagement.set(android.net.wifi.WifiConfiguration.KeyMgmt.WPA_EAP);
+        config.allowedPairwiseCiphers.set(android.net.wifi.WifiConfiguration.PairwiseCipher.CCMP);
+        config.allowedGroupCiphers.set(android.net.wifi.WifiConfiguration.GroupCipher.TKIP);
+        config.allowedGroupCiphers.set(android.net.wifi.WifiConfiguration.GroupCipher.CCMP);
         config.enterpriseConfig.setIdentity(wifiResult.getIdentity());
         config.enterpriseConfig.setAnonymousIdentity(wifiResult.getAnonymousIdentity());
         config.enterpriseConfig.setPassword(wifiResult.getPassword());
@@ -128,8 +132,8 @@ public class WifiConnector {
         updateNetwork(wifiManager, config);
     }
 
-    private WifiConfiguration initWifiConfiguration(WifiParsedResult wifiResult) {
-        WifiConfiguration config = new WifiConfiguration();
+    private android.net.wifi.WifiConfiguration initWifiConfiguration(WifiParsedResult wifiResult) {
+        android.net.wifi.WifiConfiguration config = new android.net.wifi.WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
         config.allowedKeyManagement.clear();
@@ -186,7 +190,7 @@ public class WifiConnector {
      * @param wifiManager
      * @param config
      */
-    private void updateNetwork(WifiManager wifiManager, WifiConfiguration config) {
+    private void updateNetwork(WifiManager wifiManager, android.net.wifi.WifiConfiguration config) {
         Integer foundNetworkID = findNetworkInExistingConfig(wifiManager, config.SSID);
         if (foundNetworkID != null) {
             Log.i(TAG, "Removing old configuration for network " + config.SSID);
@@ -214,12 +218,15 @@ public class WifiConnector {
      * @return
      */
     private Integer findNetworkInExistingConfig(WifiManager wifiManager, String ssid) {
-        Iterable<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
-        if (existingConfigs != null) {
-            for (WifiConfiguration existingConfig : existingConfigs) {
-                String existingSSID = existingConfig.SSID;
-                if (existingSSID != null && existingSSID.equals(ssid)) {
-                    return existingConfig.networkId;
+        if (ActivityCompat.checkSelfPermission(SnmpCockpitApp.getContext().getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Iterable<android.net.wifi.WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
+            if (existingConfigs != null) {
+                for (android.net.wifi.WifiConfiguration existingConfig : existingConfigs) {
+                    String existingSSID = existingConfig.SSID;
+                    if (existingSSID != null && existingSSID.equals(ssid)) {
+                        return existingConfig.networkId;
+                    }
                 }
             }
         }

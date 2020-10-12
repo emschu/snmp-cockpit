@@ -19,6 +19,7 @@
 
 package org.emschu.snmp.cockpit.snmp;
 
+import android.net.TrafficStats;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -76,10 +77,12 @@ public class SnmpConnection {
     private AbstractSnmpAdapter adapter = null;
 
     // device specific:
-    private OctetString localEngineId = CockpitStateManager.getInstance().getLocalEngineId();
+    private final OctetString localEngineId = CockpitStateManager.getInstance().getLocalEngineId();
     private static boolean isInited = false;
     private static USM usm;
     private static int engineBoots = -1;
+    private static final int SOCKET_ID = 10000;
+
 
     /**
      * for single connections
@@ -350,6 +353,7 @@ public class SnmpConnection {
     private void startupSnmp() {
         if (transport == null) {
             try {
+                TrafficStats.setThreadStatsTag(SOCKET_ID);
                 transport = new DefaultUdpTransportMapping(new UdpAddress("0.0.0.0/0"), false);
                 transport.setAsyncMsgProcessingSupported(false);
                 transport.setSocketTimeout(5000);
@@ -412,7 +416,7 @@ public class SnmpConnection {
             Log.d(TAG, "ping: " + canPing);
             if (canPing) {
                 deviceConfiguration.setLastPingTime(System.currentTimeMillis());
-                return canPing;
+                return true;
             }
             thresholdCounter++;
         }
@@ -439,19 +443,18 @@ public class SnmpConnection {
     /**
      * checks transport is listening
      */
-    public boolean startListening() {
+    public void startListening() {
         try {
             if (!transport.isListening()) {
                 snmp.listen();
                 Log.d(TAG, "transport starts listening on udp socket: " + transport.getListenAddress().toString());
-                return true;
+                return;
             }
             Log.d(TAG, "transport already listening at: " + transport.getListenAddress().toString());
-            return false;
         } catch (IOException ioException) {
             Log.e(TAG, "problem with connection socket: " + ioException.getMessage());
-            return false;
         }
+        return;
     }
 
     /**

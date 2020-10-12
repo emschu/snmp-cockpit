@@ -30,7 +30,7 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
  *
  */
 public class SimpleSnmpListRequest extends AbstractQueryRequest<DefaultListQuery> {
-    private OID oid;
+    private final OID oid;
 
     public SimpleSnmpListRequest(DeviceConfiguration deviceConfiguration, String oid) {
         super(deviceConfiguration);

@@ -84,7 +84,7 @@ public class EncodingStringPartial {
         AUTH_NO_PRIV(org.snmp4j.security.SecurityLevel.authNoPriv),
         NOAUTH_NOPRIV(org.snmp4j.security.SecurityLevel.noAuthNoPriv);
 
-        private org.snmp4j.security.SecurityLevel snmp4jSecLevel;
+        private final org.snmp4j.security.SecurityLevel snmp4jSecLevel;
 
         SecurityLevel(org.snmp4j.security.SecurityLevel snmp4jSecLevel) {
             this.snmp4jSecLevel = snmp4jSecLevel;

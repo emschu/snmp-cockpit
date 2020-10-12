@@ -46,7 +46,7 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
  * This class should be called a trait.
  *
  * Usage:
- *  - {@link #initObservables(Activity, AlertHelper, OnSecurityStateChangeListener)} in #onCreate of your activity.
+ *  - {@link #initObservables(AlertHelper, OnSecurityStateChangeListener)} in #onCreate of your activity.
  *  - and add this to your activity:
  *     \@Override
  *     protected void onStart() {
@@ -66,11 +66,10 @@ public interface ProtectedActivity {
     /**
      * magic init method to setup alert window handling for an activity
      *
-     * @param activity
      * @param alertHelper
      * @param listener
      */
-    default void initObservables(@NonNull Activity activity, @NonNull AlertHelper alertHelper,
+    default void initObservables(@NonNull AlertHelper alertHelper,
                                  @Nullable OnSecurityStateChangeListener listener) {
         Log.d(ProtectedActivity.class.getName(), "observables inited for " + this.getClass().getSimpleName());
         if (CockpitStateManager.getInstance().isInTestMode()) {
@@ -82,13 +81,11 @@ public interface ProtectedActivity {
         BooleanObservable isInTimeoutObservable = CockpitStateManager.getInstance().getIsInTimeoutsObservable();
         BooleanObservable isInSessionTimeoutObservable = CockpitStateManager.getInstance().getIsInSessionTimeoutObservable();
         // ensure only one observer at the same time
-        if (activity instanceof CockpitMainActivity) {
-            isNetworkSecureObservable.deleteObservers();
-            isInTimeoutObservable.deleteObservers();
-            isInSessionTimeoutObservable.deleteObservers();
-        }
+        isNetworkSecureObservable.deleteObservers();
+        isInTimeoutObservable.deleteObservers();
+        isInSessionTimeoutObservable.deleteObservers();
 
-        isNetworkSecureObservable.addObserver(getNetworkSecurityObserver(activity, alertHelper, listener));
+        isNetworkSecureObservable.addObserver(getNetworkSecurityObserver(alertHelper, listener));
         isInTimeoutObservable.addObserver(getConnectionTimeoutObserver(alertHelper));
         isInSessionTimeoutObservable.addObserver(getIsInSessionTimeoutObserver(alertHelper));
 
@@ -110,8 +107,6 @@ public interface ProtectedActivity {
      */
     default void stopProtection(Activity activity) {
         Log.d(ProtectedActivity.class.getName(), "stop cockpit service in " + this.getClass().getName());
-        Intent stateServiceIntent = new Intent(activity, CockpitStateService.class);
-        activity.stopService(stateServiceIntent);
     }
 
     /**
@@ -125,8 +120,7 @@ public interface ProtectedActivity {
             return;
         }
         Log.d(ProtectedActivity.class.getName(), "start cockpit service in " + this.getClass().getSimpleName());
-        Intent stateServiceIntent = new Intent(activity, CockpitStateService.class);
-        activity.startService(stateServiceIntent);
+        CockpitStateService.enqueueWork(activity, new Intent());
     }
 
     /**
@@ -153,14 +147,16 @@ public interface ProtectedActivity {
      * @param listener
      * @return
      */
-    default Observer getNetworkSecurityObserver(Activity activity, AlertHelper alertHelper, OnSecurityStateChangeListener listener) {
+    default Observer getNetworkSecurityObserver(AlertHelper alertHelper, OnSecurityStateChangeListener listener) {
         return (booleanObservable, arg) -> {
             boolean isNetworkSecureState = ((BooleanObservable) booleanObservable).getValue();
             Log.d(ProtectedActivity.class.getName(), "observable changed! new value: " + isNetworkSecureState);
-            if (((BooleanObservable) booleanObservable).getValue()) {
-                Toast.makeText(activity, R.string.secure_network_toast, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(activity, R.string.not_secure_network_toast, Toast.LENGTH_SHORT).show();
+            if (SnmpCockpitApp.getContext().getApplicationContext() != null) {
+                if (((BooleanObservable) booleanObservable).getValue()) {
+                    Toast.makeText(SnmpCockpitApp.getContext().getApplicationContext(), R.string.secure_network_toast, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SnmpCockpitApp.getContext().getApplicationContext(), R.string.not_secure_network_toast, Toast.LENGTH_SHORT).show();
+                }
             }
 
             if (!isNetworkSecureState) {
@@ -174,7 +170,9 @@ public interface ProtectedActivity {
                     List<Runnable> runnables = threadPoolExecutor.shutdownNow();
                     Log.d(ProtectedActivity.class.getName(), "stopped thread pool with jobs: " + runnables.toString());
                 }
-                alertHelper.showNotSecureAlert();
+                if (this instanceof Activity) {
+                    alertHelper.showNotSecureAlert((Activity) this);
+                }
             } else {
                 if (listener != null) {
                     listener.onSecureState();

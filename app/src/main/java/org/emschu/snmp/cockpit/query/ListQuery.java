@@ -28,5 +28,5 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
  */
 public interface ListQuery extends SnmpQuery {
 
-    public abstract List<QueryResponse> getListItems();
+    public List<QueryResponse> getListItems();
 }

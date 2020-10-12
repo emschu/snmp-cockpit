@@ -21,6 +21,7 @@ package org.emschu.snmp.cockpit.snmp.adapter;
 
 import android.util.Log;
 
+import org.jetbrains.annotations.NotNull;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.PDU;
 import org.snmp4j.ScopedPDU;
@@ -29,7 +30,6 @@ import org.snmp4j.TransportMapping;
 import org.snmp4j.UserTarget;
 import org.snmp4j.security.SecurityLevel;
 import org.snmp4j.security.UsmUser;
-import org.snmp4j.smi.GenericAddress;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.UdpAddress;
@@ -61,12 +61,13 @@ public class V3Adapter extends AbstractSnmpAdapter {
         super(snmp, udpAddressTransportMapping);
     }
 
+    @NotNull
     @Override
-    public AbstractTarget getTarget() {
+    public AbstractTarget<UdpAddress> getTarget() {
         if (target != null) {
             return target;
         }
-        UserTarget userTarget = new UserTarget();
+        UserTarget<UdpAddress> userTarget = new UserTarget<>();
         int secLevel = SecurityLevel.AUTH_PRIV;
         if (deviceConfiguration.getSecurityLevel() != null) {
             secLevel = deviceConfiguration.getSecurityLevel().getSnmpValue();
@@ -76,9 +77,7 @@ public class V3Adapter extends AbstractSnmpAdapter {
         OctetString securityName = new OctetString(deviceConfiguration.getUsername());
         userTarget.setSecurityName(securityName);
 
-        final String udpIpAddress = getAddress();
-
-        userTarget.setAddress(GenericAddress.parse(udpIpAddress));
+        userTarget.setAddress(new UdpAddress(getUdpAddress()));
         userTarget.setVersion(deviceConfiguration.getSnmpVersion());
         userTarget.setRetries(deviceConfiguration.getRetries());
         userTarget.setTimeout(deviceConfiguration.getTimeout());

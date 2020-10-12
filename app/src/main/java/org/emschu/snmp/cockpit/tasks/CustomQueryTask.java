@@ -48,7 +48,7 @@ public class CustomQueryTask extends AsyncTask<Void, Void, Void> implements TabT
     private DeviceConfiguration deviceConfiguration = null;
     private CockpitDbHelper cockpitDbHelper = null;
 
-    private List<TaskWrapper> taskList = Collections.synchronizedList(new ArrayList<>());
+    private final List<TaskWrapper> taskList = Collections.synchronizedList(new ArrayList<>());
 
     /**
      * constructor

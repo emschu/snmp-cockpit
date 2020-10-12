@@ -58,15 +58,14 @@ public class AboutHelperFragment extends AppCompatActivity {
         String myURL = getIntent().getStringExtra("File");
         String selectedItem = getIntent().getStringExtra("Message");
 
-        if (selectedItem.equals("version")) {
+        if (selectedItem != null && selectedItem.equals("version")) {
             String html = htmlFileToString();
             if (html != null) {
                 html = html.replace("&lt;VERSION&gt;", getVersionNumber());
                 html = html.replace("&lt;BUILD&gt;", getBuildTimestamp());
                 webView.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
-
+                Log.d(TAG, html);
             }
-            Log.d(TAG, html);
         } else {
             webView.loadUrl(myURL);
         }

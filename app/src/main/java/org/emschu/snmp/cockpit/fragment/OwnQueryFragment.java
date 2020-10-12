@@ -76,7 +76,7 @@ public class OwnQueryFragment extends Fragment {
     private final List<Tag> currentTagSelection = new ArrayList<>();
     private CockpitDbHelper cockpitDbHelper;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter adapter;
+    private RecyclerView.Adapter<?> adapter;
     private View dialogView;
     private EditText oidTextField;
     private EditText queryNameField;
@@ -160,7 +160,7 @@ public class OwnQueryFragment extends Fragment {
         dialogView = inflater.inflate(R.layout.dialog_custom_query, null, false);
 
         initTagField(dialogView);
-        initFormField(customQuery, isEditMode);
+        initFormField(customQuery);
 
         String dialogTitle = null;
         if (isEditMode) {
@@ -231,7 +231,7 @@ public class OwnQueryFragment extends Fragment {
      * @param customQuery
      * @return
      */
-    public boolean initFormField(@Nullable CustomQuery customQuery, final boolean isEditMode) {
+    public void initFormField(@Nullable CustomQuery customQuery) {
         lastQuery = customQuery;
         oidTextField = dialogView.findViewById(R.id.dialog_custom_query_oid_edittext);
         queryNameField = dialogView.findViewById(R.id.dialog_custom_query_name_edittext);
@@ -264,7 +264,6 @@ public class OwnQueryFragment extends Fragment {
         } else {
             deleteTagsButton.setVisibility(View.GONE);
         }
-        return isEditMode;
     }
 
     /**
@@ -450,7 +449,7 @@ public class OwnQueryFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.main_custom_query_options_menu, menu);
     }
@@ -530,7 +529,7 @@ public class OwnQueryFragment extends Fragment {
                 long id = savedInstanceState.getLong(LAST_QUERY_ID_FORM_KEY, 0);
                 String oid = savedInstanceState.getString(CURRENT_OID_FORM_KEY, null);
                 String name = savedInstanceState.getString(CURRENT_NAME_FORM_KEY, null);
-                boolean isSingleQuery = savedInstanceState.getString(QUESTION_MODE_FORM_KEY).equals("1");
+                boolean isSingleQuery = savedInstanceState.getString(QUESTION_MODE_FORM_KEY, "").equals("1");
 
                 CustomQuery customQuery = new CustomQuery(id, oid, name, isSingleQuery);
                 customQuery.setTagList(selectedTagList);

@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -58,6 +59,7 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
 import org.emschu.snmp.cockpit.util.PeriodicTask;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -93,7 +95,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         alertHelper = new AlertHelper(this);
-        initObservables(this, alertHelper, null);
+        initObservables(alertHelper, null);
         dbHelper = new CockpitDbHelper(this);
 
         List<ManagedDevice> managedDevices = DeviceManager.getInstance().getManagedDevices();
@@ -178,7 +180,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
 
     /**
      * alertHelper method which handles head table folding + icon changes
-     *
+     * <p>
      * method {@link #updateDeviceInformation()} should run AFTER this method vor visibility issues
      */
     private void initHeadTable() {
@@ -196,7 +198,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
             boolean isShowing = tableRow2.getVisibility() == View.VISIBLE;
             if (isShowing) {
                 isCollapsed = true;
-                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.drawable.ic_keyboard_arrow_right_black),
+                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_right_black),
                         null, null, null);
                 tableRow2.setVisibility(View.GONE);
                 tableRow3.setVisibility(View.GONE);
@@ -206,7 +208,7 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
                 tableRow7.setVisibility(View.GONE);
             } else {
                 isCollapsed = false;
-                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(getDrawable(R.drawable.ic_keyboard_arrow_down_black),
+                deviceDetailLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(ContextCompat.getDrawable(this, R.drawable.ic_keyboard_arrow_down_black),
                         null, null, null);
                 tableRow2.setVisibility(View.VISIBLE);
                 tableRow3.setVisibility(View.VISIBLE);
@@ -338,10 +340,8 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isCollapsed = savedInstanceState.getBoolean(EXTRA_IS_COLLAPSED, false);
-        }
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
+        isCollapsed = savedInstanceState.getBoolean(EXTRA_IS_COLLAPSED, false);
         if (!isCollapsed) {
             findViewById(R.id.device_detail_row_1).callOnClick();
         }
