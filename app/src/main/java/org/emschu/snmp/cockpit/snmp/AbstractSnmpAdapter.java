@@ -239,6 +239,12 @@ public abstract class AbstractSnmpAdapter {
     }
 
     protected String getUdpAddress() {
+        if (deviceConfiguration.isIpv6()) {
+            return String.format("[%s]/%s",
+                    deviceConfiguration.getTargetIp(),
+                    deviceConfiguration.getTargetPort()
+            );
+        }
         return String.format("%s/%s",
                 deviceConfiguration.getTargetIp(),
                 deviceConfiguration.getTargetPort()

@@ -156,7 +156,7 @@ public class CockpitMainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
 //                    .detectNonSdkApiUsage()
                     .detectAll()

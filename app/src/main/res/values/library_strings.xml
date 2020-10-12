@@ -47,10 +47,10 @@
     <string name="library_RecyclerTreeView_repositoryLink" translatable="false">https://github.com/TellH/RecyclerTreeView/</string>
 
     <string name="define_FlaticonIcons" translatable="false"></string>
-    <string name="library_FlaticonIcons_author" translatable="false">Smashicons, freepik, becris, xnimrodx</string>
+    <string name="library_FlaticonIcons_author" translatable="false">Smashicons, freepik, becris</string>
     <string name="library_FlaticonIcons_authorWebsite" translatable="false">https://www.flaticon.com/authors/</string>
     <string name="library_FlaticonIcons_libraryName" translatable="false">Flaticons</string>
-    <string name="library_FlaticonIcons_libraryDescription" translatable="false">Affected icons: ic_add_device, ic_disconnect, ic_qr_code, ic_eject, ic_list, ic_devices, ic_settings</string>
+    <string name="library_FlaticonIcons_libraryDescription" translatable="false">Affected icons: ic_disconnect, ic_qr_code, ic_eject, ic_list, ic_devices, ic_settings</string>
     <string name="library_FlaticonIcons_libraryWebsite" translatable="false">http://www.flaticon.com</string>
     <!-- possible fields for a custom license: *_licenseVersion, *_licenseLink, *_licenseContent -->
     <string name="library_FlaticonIcons_isOpenSource" translatable="false">true</string>

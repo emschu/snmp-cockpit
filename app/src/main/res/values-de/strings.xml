@@ -232,6 +232,7 @@
     <string name="new_mib_catalog_created_toast_message">Ein neuer MIB-Katalog \'%s\' wurde importiert und aktiviert.</string>
     <string name="drawer_header_ipv6_address">IPv6-Adresse</string>
     <string name="drawer_header_ssid">SSID</string>
+    <string name="drawer_header_bssid">BSSID</string>
     <string name="nav_header_ip">IP</string>
     <string name="secure_network_toast">SNMP-Cockpit: Im sicheren Netzwerk!</string>
     <string name="not_secure_network_toast">SNMP-Cockpit: Kein sicheres Netzwerk!</string>

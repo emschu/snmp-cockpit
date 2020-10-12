@@ -24,15 +24,15 @@ import android.os.Bundle;
 import android.text.method.DigitsKeyListener;
 import android.text.method.TextKeyListener;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TableRow;
 import android.widget.Toast;
 
@@ -42,6 +42,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -84,7 +85,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
     EditText userField; //Username
     EditText passwordField; //Password
     EditText encryptField; //Encryption
-    Switch ipv6EnabledSwitch;
+    SwitchMaterial ipv6EnabledSwitch;
 
     private static final String TAG = SNMPLoginActivity.class.getName();
 
@@ -122,20 +123,47 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
         snmpSpinner.setAdapter(adapter);
         snmpSpinner.setOnItemSelectedListener(this);
 
-        final String currentNetworkAddr = WifiNetworkManager.getInstance().getIpAddress();
-        hostField.setText(currentNetworkAddr.replace("-", ""));
+        // get default host ips for ipv4 and v6
+        final String currentNetworkAddrV4;
+        if (WifiNetworkManager.getInstance().getNetInfoProvider() != null) {
+            String[] ipv4AddressesRaw = WifiNetworkManager.getInstance().getNetInfoProvider().getIpv4AddressesRaw();
+            if (ipv4AddressesRaw != null && ipv4AddressesRaw.length > 0) {
+                currentNetworkAddrV4 = ipv4AddressesRaw[0];
+            } else {
+                currentNetworkAddrV4 = "";
+            }
+        } else {
+            currentNetworkAddrV4 = "";
+        }
+        final String currentNetworkAddrV6;
+        if (WifiNetworkManager.getInstance().getNetInfoProvider() != null) {
+            String[] ipv6AddressesRaw = WifiNetworkManager.getInstance().getNetInfoProvider().getIpv6AddressesRaw();
+            if (ipv6AddressesRaw != null && ipv6AddressesRaw.length > 0) {
+                if (ipv6AddressesRaw[0].contains("%")) {
+                    currentNetworkAddrV6 = ipv6AddressesRaw[0].substring(0, ipv6AddressesRaw[0].indexOf("%"));
+                } else {
+                    currentNetworkAddrV6 = ipv6AddressesRaw[0];
+                }
+            } else {
+                currentNetworkAddrV6 = "";
+            }
+        } else {
+            currentNetworkAddrV6 = "";
+        }
+
+        hostField.setText(currentNetworkAddrV4.replace("-", ""));
         ipv6EnabledSwitch = findViewById(R.id.is_ipv6_enabled);
         ipv6EnabledSwitch.setOnClickListener(v -> {
             Log.d(TAG, "change host field input mode");
             if (ipv6EnabledSwitch.isChecked()) {
                 // enable ip v6 input mode
                 hostField.setKeyListener(TextKeyListener.getInstance());
-                hostField.setText(null);
+                hostField.setText(currentNetworkAddrV6);
             } else {
                 // enable ip v4 input mode (= default)
                 hostField.setKeyListener(DigitsKeyListener.getInstance("1234567890."));
                 // replace char for empty "-"
-                hostField.setText(currentNetworkAddr.replace("-", ""));
+                hostField.setText(currentNetworkAddrV4);
             }
         });
         initObservables(this, new AlertHelper(this), null);
@@ -146,19 +174,6 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
          * Also provides all the information (not decided on which typ, maybe as a String) to the class,
          * which the class recalls and connects with. For that just delete the commentent lines.
          */
-        Button addDevice = findViewById(R.id.add_device);
-        addDevice.setOnClickListener(view -> {
-            onDeviceAddClicked(addDevice);
-        });
-
-        //"Autofill per QR Code" Button and its set-on-click-method.
-        Button scanQrCode = findViewById(R.id.scan_qr_code);
-
-        /*
-        Click method for the button "Autofill per QR-Code", which opens the scanner, encrypts the
-        code and fills each EditView, so you can connect to the device afterwards.
-         */
-        scanQrCode.setOnClickListener(view -> scan());
 
         // NOTE: do not commit the following lines UNCOMMENTED!
 
@@ -173,10 +188,8 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
 
     /**
      * helper method to check if connection can be started and how
-     *
-     * @param addDevice
      */
-    private void onDeviceAddClicked(Button addDevice) {
+    private void onConnect() {
         //If the input is correct, try to connect to the device
         if (isInputValid()) {
             if (CockpitStateManager.getInstance().isConnecting()) {
@@ -188,7 +201,6 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
                         .create().show();
                 return;
             }
-            addDevice.setEnabled(false);
             while (CockpitStateManager.getInstance().isInRemoval()) {
                 Log.d(TAG, "wait for removal event is finished");
             }
@@ -293,7 +305,7 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
     /**
      * QR-scanner-method show flashlight - if preferences say to do so
      */
-    public void scan() {
+    public void onScan() {
         CockpitPreferenceManager cockpit = SnmpCockpitApp.getPreferenceManager();
         QrScannerActivityHelper scannerActivityHelper = new QrScannerActivityHelper(this);
         if (cockpit.showFlashlightHint()) {
@@ -456,6 +468,31 @@ public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.
     @Override
     public void restartQueryCall() {
         // do nothing
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.connect_options_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_connect) {
+            item.setEnabled(false);
+            // start connection
+            this.onConnect();
+            item.setEnabled(true);
+            return true;
+        } else if (item.getItemId() == R.id.action_scan_qr_code) {
+            // start qr code scanning
+            item.setEnabled(false);
+            this.onScan();
+            item.setEnabled(true);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
 

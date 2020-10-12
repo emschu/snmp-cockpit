@@ -121,6 +121,9 @@ public class DeviceQrCode {
 
     @Nullable
     public SnmpEndpoint getEndpoint() {
+        if (naddr.getIPv4() == null || naddr.getIPv6() == null) {
+            return null;
+        }
         if (naddr.getIPv4().isEmpty() && naddr.getIPv6().isEmpty()) {
             return null;
         }
