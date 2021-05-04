@@ -98,20 +98,16 @@ public class CustomQueryAdapter extends RecyclerView.Adapter<CustomQueryAdapter.
             popupMenu.getMenuInflater().inflate(R.menu.custom_query_single_menu, popupMenu.getMenu());
 
             popupMenu.setOnMenuItemClickListener(item -> {
-                switch (item.getItemId()) {
-                    case R.id.edit_query:
-                        if (context instanceof CockpitMainActivity) {
-                            OwnQueryFragment ownQueryFragment = ((CockpitMainActivity) context).getOwnQueryFragment();
-                            ownQueryFragment.showCustomQueryDialog(customQuery, true);
-                        }
-                        break;
-                    case R.id.show_query:
-                        if (context instanceof CockpitMainActivity) {
-                            new AlertHelper(context).showQueryTargetDialog(customQuery.getOid());
-                        }
-                        break;
-                    default:
-                        break;
+                if (item.getItemId() == R.id.edit_query) {
+                    if (context instanceof CockpitMainActivity) {
+                        OwnQueryFragment ownQueryFragment = ((CockpitMainActivity) context).getOwnQueryFragment();
+                        ownQueryFragment.showCustomQueryDialog(customQuery, true);
+                    }
+                }
+                if (item.getItemId() == R.id.show_query) {
+                    if (context instanceof CockpitMainActivity) {
+                        new AlertHelper(context).showQueryTargetDialog(customQuery.getOid());
+                    }
                 }
                 return true;
             });

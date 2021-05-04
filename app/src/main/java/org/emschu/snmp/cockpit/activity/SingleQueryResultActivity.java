@@ -33,7 +33,7 @@ import org.emschu.snmp.cockpit.fragment.SingleQueryResultActivityFragment;
  * Activity to display a single oid query
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class SingleQueryResultActivity extends AppCompatActivity implements ProtectedActivity {
+public class SingleQueryResultActivity extends ProtectedActivity {
     public static final String EXTRA_DEVICE_ID = "device_id";
     public static final String EXTRA_OID_QUERY = "oid_query";
     public static final String TAG = SingleQueryResultActivity.class.getName();

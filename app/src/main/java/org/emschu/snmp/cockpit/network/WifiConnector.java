@@ -48,7 +48,7 @@ public class WifiConnector {
 
     private static final String[] allowedWifiTypes = {WPA2_KEY, WPA2_EAP_KEY};
     private WifiParsedResult parsedWifiResult;
-    private String networkType = null;
+    private String networkType;
     private boolean canConnect = false;
     protected boolean isFailed = false;
 

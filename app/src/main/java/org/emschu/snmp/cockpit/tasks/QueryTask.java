@@ -116,7 +116,7 @@ public class QueryTask<T extends SnmpQuery> extends AsyncTask<QueryRequest<? ext
         if (queryResponses == null) {
             return null;
         }
-        SnmpQuery queryResponseClass = null;
+        SnmpQuery queryResponseClass;
         try {
             queryResponseClass = (SnmpQuery) queryRequest.getQueryClass().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

@@ -162,7 +162,7 @@ public class OwnQueryFragment extends Fragment {
         initTagField(dialogView);
         initFormField(customQuery);
 
-        String dialogTitle = null;
+        String dialogTitle;
         if (isEditMode) {
             dialogTitle = getContext().getString(R.string.dialog_title_custom_query_edit);
         } else {
@@ -456,16 +456,15 @@ public class OwnQueryFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_query:
-                showCustomQueryDialog(null, false);
-                return true;
-            case R.id.action_manage_tags:
-                Intent tagManagement = new Intent(getActivity(), TagManagementActivity.class);
-                startActivity(tagManagement);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add_query) {
+            showCustomQueryDialog(null, false);
+            return true;
+        } else if (item.getItemId() == R.id.action_manage_tags) {
+            Intent tagManagement = new Intent(getActivity(), TagManagementActivity.class);
+            startActivity(tagManagement);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

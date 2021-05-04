@@ -62,7 +62,7 @@ public class SnmpManager {
     private final ConcurrentHashMap<String, TimeoutObservable> timeoutCounterMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, SnmpConnection> snmpConnectionPool = new ConcurrentHashMap<>();
 
-    private ThreadPoolExecutor threadPoolExecutor = null;
+    private ThreadPoolExecutor threadPoolExecutor;
 
     private static SnmpManager instance = null;
 

@@ -39,7 +39,7 @@ import org.jetbrains.annotations.NotNull;
  * activity to manage tags of this app
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class TagManagementActivity extends AppCompatActivity implements ProtectedActivity {
+public class TagManagementActivity extends ProtectedActivity {
 
     private TagListAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -81,15 +81,13 @@ public class TagManagementActivity extends AppCompatActivity implements Protecte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add_tag:
-                if (alertHelper != null) {
-                    alertHelper.showTagEditDialog(null, false);
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add_tag) {
+            if (alertHelper != null) {
+                alertHelper.showTagEditDialog(null, false);
+            }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

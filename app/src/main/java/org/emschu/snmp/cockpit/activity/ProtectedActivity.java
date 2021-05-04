@@ -30,7 +30,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import org.emschu.snmp.cockpit.CockpitMainActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.CockpitStateManager;
 import org.emschu.snmp.cockpit.R;
@@ -44,24 +45,23 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
  * this interface adds security mechanism of the app to an activity.
  * We use an interface to spread our security mechanisms through the app.
  * This class should be called a trait.
- *
+ * <p>
  * Usage:
- *  - {@link #initObservables(AlertHelper, OnSecurityStateChangeListener)} in #onCreate of your activity.
- *  - and add this to your activity:
- *     \@Override
- *     protected void onStart() {
- *         super.onStart();
- *         startProtection(this);
- *     }
- *
- *     \@Override
- *     protected void onRestart() {
- *         super.onRestart();
- *         restartTrigger(this);
- *     }
- *
+ * - {@link #initObservables(AlertHelper, OnSecurityStateChangeListener)} in #onCreate of your activity.
+ * - and add this to your activity:
+ * \@Override
+ * protected void onStart() {
+ * super.onStart();
+ * startProtection(this);
+ * }
+ * <p>
+ * \@Override
+ * protected void onRestart() {
+ * super.onRestart();
+ * restartTrigger(this);
+ * }
  */
-public interface ProtectedActivity {
+public abstract class ProtectedActivity extends AppCompatActivity {
 
     /**
      * magic init method to setup alert window handling for an activity
@@ -69,8 +69,8 @@ public interface ProtectedActivity {
      * @param alertHelper
      * @param listener
      */
-    default void initObservables(@NonNull AlertHelper alertHelper,
-                                 @Nullable OnSecurityStateChangeListener listener) {
+    public void initObservables(@NonNull AlertHelper alertHelper,
+                                @Nullable OnSecurityStateChangeListener listener) {
         Log.d(ProtectedActivity.class.getName(), "observables inited for " + this.getClass().getSimpleName());
         if (CockpitStateManager.getInstance().isInTestMode()) {
             Log.d(ProtectedActivity.class.getName(), "Test mode detected - security disabled");
@@ -95,7 +95,7 @@ public interface ProtectedActivity {
     /**
      * method to check session timeout state
      */
-    default void checkSessionTimeout() {
+    void checkSessionTimeout() {
         CockpitPreferenceManager cockpitPreferenceManager = SnmpCockpitApp.getPreferenceManager();
         cockpitPreferenceManager.checkSessionTimeout();
     }
@@ -105,7 +105,7 @@ public interface ProtectedActivity {
      *
      * @param activity
      */
-    default void stopProtection(Activity activity) {
+    public void stopProtection(Activity activity) {
         Log.d(ProtectedActivity.class.getName(), "stop cockpit service in " + this.getClass().getName());
     }
 
@@ -114,7 +114,7 @@ public interface ProtectedActivity {
      *
      * @param activity
      */
-    default void startProtection(Activity activity) {
+    public void startProtection(Activity activity) {
         if (CockpitStateManager.getInstance().isInTestMode()) {
             Log.d(ProtectedActivity.class.getName(), "Test mode detected - security disabled");
             return;
@@ -128,7 +128,7 @@ public interface ProtectedActivity {
      *
      * @param activity
      */
-    default void restartTrigger(Activity activity) {
+    public void restartTrigger(Activity activity) {
         Log.d(ProtectedActivity.class.getName(), "restart trigger called");
         startProtection(activity);
         checkSessionTimeout();
@@ -137,27 +137,27 @@ public interface ProtectedActivity {
     /**
      * this method is called when use has clicked "retry connection" after connection timeout
      */
-    public void restartQueryCall();
+    public abstract void restartQueryCall();
 
     /**
      * Generic method of network security observer
      *
-     * @param activity
      * @param alertHelper
      * @param listener
      * @return
      */
-    default Observer getNetworkSecurityObserver(AlertHelper alertHelper, OnSecurityStateChangeListener listener) {
+    Observer getNetworkSecurityObserver(AlertHelper alertHelper, OnSecurityStateChangeListener listener) {
         return (booleanObservable, arg) -> {
             boolean isNetworkSecureState = ((BooleanObservable) booleanObservable).getValue();
             Log.d(ProtectedActivity.class.getName(), "observable changed! new value: " + isNetworkSecureState);
-            if (SnmpCockpitApp.getContext().getApplicationContext() != null) {
+
+            runOnUiThread(() -> {
                 if (((BooleanObservable) booleanObservable).getValue()) {
-                    Toast.makeText(SnmpCockpitApp.getContext().getApplicationContext(), R.string.secure_network_toast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.secure_network_toast, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SnmpCockpitApp.getContext().getApplicationContext(), R.string.not_secure_network_toast, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.not_secure_network_toast, Toast.LENGTH_SHORT).show();
                 }
-            }
+            });
 
             if (!isNetworkSecureState) {
                 // immediately stop running connection tasks
@@ -188,7 +188,7 @@ public interface ProtectedActivity {
      * @param alertHelper
      * @return
      */
-    default Observer getConnectionTimeoutObserver(AlertHelper alertHelper) {
+    Observer getConnectionTimeoutObserver(AlertHelper alertHelper) {
         return (observable, arg) -> {
             boolean isInTimeouts = ((BooleanObservable) observable).getValue();
             Log.d(ProtectedActivity.class.getName(), "timeout observable changed: " + isInTimeouts);
@@ -206,7 +206,7 @@ public interface ProtectedActivity {
      * @param alertHelper
      * @return
      */
-    default Observer getIsInSessionTimeoutObserver(AlertHelper alertHelper) {
+    Observer getIsInSessionTimeoutObserver(AlertHelper alertHelper) {
         return (observable, arg) -> {
             boolean isInSessionTimeout = ((BooleanObservable) observable).getValue();
             Log.d(ProtectedActivity.class.getName(), "session timeout observable changed: " + isInSessionTimeout);
@@ -227,7 +227,7 @@ public interface ProtectedActivity {
     /**
      * helper interface to hook into network security alert actions
      */
-    interface OnSecurityStateChangeListener {
+    public interface OnSecurityStateChangeListener {
         public void onInsecureState();
 
         public void onSecureState();

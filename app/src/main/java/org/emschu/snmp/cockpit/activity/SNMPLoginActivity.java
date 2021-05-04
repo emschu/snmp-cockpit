@@ -63,8 +63,7 @@ import java.util.regex.Pattern;
  * A login screen that offers login via email/password.
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class SNMPLoginActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
-        ProtectedActivity {
+public class SNMPLoginActivity extends ProtectedActivity implements AdapterView.OnItemSelectedListener {
     public static final String HOST_KEY = "host";
     public static final String PORT_KEY = "port";
     public static final String COMMUNITY_KEY = "v1_community";

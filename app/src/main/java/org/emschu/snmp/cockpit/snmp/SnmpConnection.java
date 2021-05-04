@@ -454,7 +454,6 @@ public class SnmpConnection {
         } catch (IOException ioException) {
             Log.e(TAG, "problem with connection socket: " + ioException.getMessage());
         }
-        return;
     }
 
     /**

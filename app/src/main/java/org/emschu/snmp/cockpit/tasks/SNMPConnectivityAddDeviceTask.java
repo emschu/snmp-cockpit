@@ -62,7 +62,7 @@ public class SNMPConnectivityAddDeviceTask extends AsyncTask<Void, Void, Boolean
     private final DeviceConfiguration usedDeviceConfiguration;
     private WeakReference<LinearLayout> progressRow;
     private boolean doesConnectionExist = false;
-    private int connectionTestTotal = 0;
+    private int connectionTestTotal;
 
     /**
      * constructor

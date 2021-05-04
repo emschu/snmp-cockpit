@@ -67,7 +67,7 @@ import java.util.List;
  * Activity for single device view
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class TabbedDeviceActivity extends AppCompatActivity implements ProtectedActivity {
+public class TabbedDeviceActivity extends ProtectedActivity {
 
     public static final String EXTRA_DEVICE_ID = "device_id";
     public static final String EXTRA_IS_COLLAPSED = "is_collapsed";
@@ -403,7 +403,6 @@ public class TabbedDeviceActivity extends AppCompatActivity implements Protected
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_device_disconnect) {
             if (managedDevice != null) {
                 DeviceManager.getInstance()

@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -551,7 +550,7 @@ public class CockpitPreferenceManager {
                     new AlertDialog.Builder(context)
                             .setTitle(R.string.mib_catalog_reset_dialog_title)
                             .setMessage(R.string.mib_catalog_reset_confirmation_message)
-                            .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                 dialog.dismiss();
                                 mcm.resetToDefault(context.getFilesDir());
                                 Toast.makeText(getActivity(), R.string.mib_catalog_reset_success_toast_message, Toast.LENGTH_LONG).show();
@@ -559,9 +558,9 @@ public class CockpitPreferenceManager {
                                 // refresh preferences
                                 setPreferenceScreen(null);
                                 addPreferencesFromResource(R.xml.pref_general);
-                                AsyncTask.execute(() -> OIDCatalog.getInstance(null).refresh());
+                                new Thread(() -> OIDCatalog.getInstance(null).refresh()).start();
                             })
-                            .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss()).create().show();
+                            .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss()).create().show();
                     return false;
                 });
 
