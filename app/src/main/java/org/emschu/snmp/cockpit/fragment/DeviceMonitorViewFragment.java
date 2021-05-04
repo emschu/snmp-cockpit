@@ -34,11 +34,16 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import org.emschu.snmp.cockpit.adapter.DeviceMonitorViewRecyclerViewAdapter;
 import org.emschu.snmp.cockpit.fragment.items.DeviceMonitorItemContent.DeviceMonitorItem;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.R;
-import org.emschu.snmp.cockpit.tasks.RefreshListTask;
+import org.emschu.snmp.cockpit.tasks.RefreshDeviceListTask;
+
+import java.util.concurrent.Executors;
 
 /**
  * A fragment representing a list of Items.
@@ -103,9 +108,15 @@ public class DeviceMonitorViewFragment extends Fragment {
      */
     public void refreshListAsync() {
         Log.d(TAG, "refresh device list");
-        RefreshListTask refreshListTask = new RefreshListTask(recyclerView);
-        // NOTE: we do not use the default thread pool executor here. it would cause crashes
-        refreshListTask.execute();
+
+        OneTimeWorkRequest build = new OneTimeWorkRequest.Builder(RefreshDeviceListTask.class).build();
+        WorkManager.getInstance(getActivity()).enqueue(build).getResult().addListener(() -> {
+            getActivity().runOnUiThread(() -> {
+                if (recyclerView != null) {
+                    this.recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            });
+        }, Executors.newSingleThreadExecutor());
     }
 
     public RecyclerView getRecyclerView() {

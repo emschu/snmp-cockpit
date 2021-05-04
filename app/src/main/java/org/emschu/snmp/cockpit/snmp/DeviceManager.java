@@ -20,8 +20,8 @@
 package org.emschu.snmp.cockpit.snmp;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
@@ -309,7 +309,7 @@ public class DeviceManager {
             if (uniqueDeviceId.equals(managedDevice.getDeviceConfiguration().getUniqueDeviceId())) {
                 Log.d(TAG, "device deleted: " + managedDevice.getDeviceConfiguration().getUniqueDeviceId());
                 // this could cause network operations and must run async
-                AsyncTask.execute(() -> SnmpManager.getInstance().removeConnection(managedDevice.getDeviceConfiguration()));
+                new Thread(() -> SnmpManager.getInstance().removeConnection(managedDevice.getDeviceConfiguration())).start();
 
                 snmpManager.resetTimeout(managedDevice.getDeviceConfiguration());
                 // clear cache immediately
@@ -333,7 +333,7 @@ public class DeviceManager {
      * @param managedDevice
      */
     public void updateSystemQueryAsync(ManagedDevice managedDevice) {
-        new Handler().post(() -> updateSystemQuery(managedDevice));
+        new Handler(Looper.getMainLooper()).post(() -> updateSystemQuery(managedDevice));
     }
 
     /**

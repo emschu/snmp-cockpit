@@ -23,6 +23,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.CockpitStateManager;
@@ -106,6 +107,7 @@ public class SnmpManager {
         return instance;
     }
 
+    @Nullable
     public synchronized SnmpConnection getConnection(String uniqueDeviceId) {
         if (CockpitStateManager.getInstance().getIsInTimeoutsObservable().getValue()) {
             Log.w(TAG, "no connection available. clear timeout state first.");
@@ -157,12 +159,12 @@ public class SnmpManager {
         boolean isV3 = deviceConfiguration.isV3();
 
         SnmpConnection connection = getConnection(uniqueDeviceId);
-        if (connection != null) {
-            Log.w(TAG, String.format("requested connection '%s' is not available", uniqueDeviceId));
+        if (connection == null) {
+            Log.w(TAG, String.format("requested connection '%s' is not available. Reinit of connection is started.", uniqueDeviceId));
+        } else {
             return connection;
         }
         // create new connection:
-        registerConnection(deviceConfiguration);
         if (isV3) {
             resetV3Connection(deviceConfiguration);
             SnmpConnection v3Connection = snmpConnectionPool.get(deviceConfiguration.getUniqueDeviceId());
@@ -236,11 +238,6 @@ public class SnmpManager {
         snmpConnectionPool.put(deviceConfiguration.getUniqueDeviceId(), connection);
     }
 
-    public void registerConnection(DeviceConfiguration deviceConfiguration) {
-        Log.d(TAG, deviceConfiguration.getUniqueDeviceId() + " registered");
-        // TODO remove!
-    }
-
     /**
      * app-wide thread pool executor for android async tasks
      *
@@ -261,9 +258,9 @@ public class SnmpManager {
      */
     @NonNull
     private ThreadPoolExecutor createNewThreadPool() {
-        int corePoolSize = Runtime.getRuntime().availableProcessors();
+        int corePoolSize = Runtime.getRuntime().availableProcessors() - 1;
         Log.d(TAG, String.format("init new ThreadPoolFactory with core pool size %s", corePoolSize));
-        return new ThreadPoolExecutor(corePoolSize, Integer.MAX_VALUE,
+        return new ThreadPoolExecutor(Math.max(corePoolSize, 1), Integer.MAX_VALUE,
                 600L, TimeUnit.SECONDS, new LinkedBlockingDeque<>());
     }
 
@@ -318,7 +315,6 @@ public class SnmpManager {
                 testConfig.setTimeout(connectionTestTimeout);
                 testConfig.setRetries(connectionTestRetries);
 
-                SnmpManager.getInstance().registerConnection(testConfig);
                 SnmpConnection connection = new SnmpConnection(testConfig);
 
                 boolean isWorking = connection.canPing(testConfig);

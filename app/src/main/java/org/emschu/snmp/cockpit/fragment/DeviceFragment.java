@@ -21,6 +21,7 @@ package org.emschu.snmp.cockpit.fragment;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.concurrent.ExecutionException;
@@ -109,7 +110,7 @@ public abstract class DeviceFragment extends Fragment {
      * @param deviceConfiguration
      */
     protected void waitForTaskResultAsync(AsyncTask<?,?,?> queryTask, DeviceConfiguration deviceConfiguration) {
-        (new Handler()).post(() -> {
+        (new Handler(Looper.getMainLooper())).post(() -> {
             try {
                 int offset = deviceConfiguration.getAdditionalTimeoutOffset();
                 queryTask.get((long) CockpitPreferenceManager.TIMEOUT_WAIT_ASYNC_MILLISECONDS + offset, TimeUnit.MILLISECONDS);

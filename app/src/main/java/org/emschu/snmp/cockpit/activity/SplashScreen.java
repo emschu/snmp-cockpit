@@ -25,6 +25,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -83,7 +84,7 @@ public class SplashScreen extends Activity {
         splashImage.startAnimation(splashAnimation);
 
         //splashTread which sets the timer of the splash screen.
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent = new Intent(SplashScreen.this,
                     CockpitMainActivity.class);
             startActivity(intent);

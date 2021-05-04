@@ -23,12 +23,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.StrictMode;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -102,10 +102,9 @@ import java.io.PrintStream;
  * - settings screen
  * - about screen
  */
-public class CockpitMainActivity extends AppCompatActivity
+public class CockpitMainActivity extends ProtectedActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        DeviceMonitorViewFragment.OnListFragmentInteractionListener,
-        ProtectedActivity {
+        DeviceMonitorViewFragment.OnListFragmentInteractionListener {
 
     private static final String TAG = CockpitMainActivity.class.getName();
     private static final String KEY_LAST_SCREEN = "last_screen";
@@ -181,11 +180,11 @@ public class CockpitMainActivity extends AppCompatActivity
             }
         }
         // init oid catalog async
-        AsyncTask.execute(() -> {
+        new Thread(() -> {
             Log.d(TAG, "start oid catalog init");
             OIDCatalog.getInstance(new MibCatalogManager(PreferenceManager.getDefaultSharedPreferences(this)));
             Log.d(TAG, "finished oid catalog init");
-        });
+        }).start();
 
         booleanObservable = cockpitStateManagerInstance.getNetworkSecurityObservable();
 
@@ -382,7 +381,7 @@ public class CockpitMainActivity extends AppCompatActivity
                         Log.i(TAG, "start connectivity check task and add device to list - if check does not fail");
                         progressRow.setVisibility(View.VISIBLE);
                         cockpitStateManagerInstance.setConnecting(true);
-                        new Handler().post(() -> {
+                        new Handler(Looper.getMainLooper()).post(() -> {
                             connectionTestTask = new SNMPConnectivityAddDeviceTask(config,
                                     deviceMonitorViewFragment, progressRow);
                             cockpitStateManagerInstance.setConnectionTask(connectionTestTask);
@@ -430,7 +429,7 @@ public class CockpitMainActivity extends AppCompatActivity
             return;
         }
         backPressState = true;
-        new Handler().postDelayed(() -> backPressState = false, 500);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> backPressState = false, 500);
     }
 
     @Override
@@ -533,7 +532,7 @@ public class CockpitMainActivity extends AppCompatActivity
      * refresh ui and display some log debug information
      */
     private void refreshView() {
-        (new Handler()).post(() -> {
+        runOnUiThread(() -> {
             progressRow.findViewById(R.id.app_progress_bar).setVisibility(View.VISIBLE);
             cockpitStateManagerInstance.getQueryCache().evictSystemQueries();
             checkState();
@@ -784,7 +783,7 @@ public class CockpitMainActivity extends AppCompatActivity
                 isError = true;
             }
             boolean connectSuccess = wifiNetworkManager.connectNetwork(parsedResult);
-            new Handler().postDelayed(() -> {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 Log.d(TAG, "check security after wifi connection attempt");
                 checkState();
             }, 2500);
