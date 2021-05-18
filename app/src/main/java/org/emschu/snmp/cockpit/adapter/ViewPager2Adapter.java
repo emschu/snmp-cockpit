@@ -21,45 +21,54 @@ package org.emschu.snmp.cockpit.adapter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+
+import org.emschu.snmp.cockpit.activity.TabbedDeviceActivity;
+import org.emschu.snmp.cockpit.fragment.SingleQueryResultActivityFragment;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import org.emschu.snmp.cockpit.activity.TabbedDeviceActivity;
-import org.emschu.snmp.cockpit.fragment.SingleQueryResultActivityFragment;
-import org.jetbrains.annotations.NotNull;
-
 /**
  * view pager for tabs of single device view
  */
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
-    public static final String TAG = ViewPagerAdapter.class.getName();
+public class ViewPager2Adapter extends FragmentStateAdapter {
+    public static final String TAG = ViewPager2Adapter.class.getName();
 
     private final List<Fragment> mFragmentList = Collections.synchronizedList(new ArrayList<>());
     private final List<String> mFragmentTitleList = Collections.synchronizedList(new ArrayList<>());
 
-    public ViewPagerAdapter(FragmentManager manager) {
-        super(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+    public ViewPager2Adapter(@NonNull FragmentActivity fragmentActivity) {
+        super(fragmentActivity);
+    }
+
+    public ViewPager2Adapter(@NonNull Fragment fragment) {
+        super(fragment);
+    }
+
+    public ViewPager2Adapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+        super(fragmentManager, lifecycle);
+    }
+
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        if (position < 0 || position >= this.mFragmentList.size()) {
+            // this should never happen
+            return new Fragment();
+        }
+        return this.mFragmentList.get(position);
     }
 
     @Override
-    public int getItemPosition(@NonNull Object object) {
-        return POSITION_NONE;
-    }
-
-    @NotNull
-    @Override
-    public Fragment getItem(int position) {
-        return mFragmentList.get(position);
-    }
-
-    @Override
-    public int getCount() {
-        return mFragmentList.size();
+    public int getItemCount() {
+        return this.mFragmentList.size();
     }
 
     /**
@@ -93,14 +102,17 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         mFragmentTitleList.add(title);
     }
 
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return mFragmentTitleList.get(position);
-    }
-
     public void clear() {
         mFragmentList.clear();
         mFragmentTitleList.clear();
         notifyDataSetChanged();
+    }
+
+    public String getTabTitle(int position) {
+        if (position < 0 || position >= this.mFragmentTitleList.size()) {
+            // fallback
+            return "Unknown #" + position;
+        }
+        return this.mFragmentTitleList.get(position);
     }
 }

@@ -249,7 +249,7 @@
             android:indeterminate="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/device_info_container_viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

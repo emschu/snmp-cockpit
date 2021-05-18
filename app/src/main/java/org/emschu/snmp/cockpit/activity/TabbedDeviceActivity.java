@@ -34,19 +34,19 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.CockpitStateManager;
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.SnmpCockpitApp;
 import org.emschu.snmp.cockpit.adapter.DeviceSpinnerAdapter;
-import org.emschu.snmp.cockpit.adapter.ViewPagerAdapter;
+import org.emschu.snmp.cockpit.adapter.ViewPager2Adapter;
 import org.emschu.snmp.cockpit.fragment.DeviceFragment;
 import org.emschu.snmp.cockpit.fragment.tabs.DeviceCustomQueryFragment;
 import org.emschu.snmp.cockpit.fragment.tabs.DeviceDetailFragment;
@@ -73,8 +73,8 @@ public class TabbedDeviceActivity extends ProtectedActivity {
     public static final String EXTRA_IS_COLLAPSED = "is_collapsed";
     public static final String EXTRA_OPEN_TAB_OID = "open_tab_oid";
     public static final String TAG = TabbedDeviceActivity.class.getName();
-    private ViewPager viewPager;
-    private ViewPagerAdapter viewPagerAdapter;
+    private ViewPager2 viewPager;
+    private ViewPager2Adapter viewPagerAdapter;
     private ManagedDevice managedDevice;
     private boolean isCollapsed;
     private DeviceDetailFragment deviceDetailFragment;
@@ -91,8 +91,10 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         String deviceId = getIntent().getStringExtra(EXTRA_DEVICE_ID);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         alertHelper = new AlertHelper(this);
         initObservables(alertHelper, null);
@@ -111,7 +113,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         if (!managedDevices.isEmpty()) {
             managedDevice = managedDevices.get(targetPosition);
         }
-        if (managedDevice == null) {
+        if (managedDevice == null || deviceId == null || deviceId.trim().isEmpty()) {
             Log.e(TAG, "null device!");
             return;
         }
@@ -119,10 +121,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         Log.d(TAG, "init: " + managedDevice.getDeviceConfiguration().getUniqueDeviceId());
         // init view pager
         viewPager = findViewById(R.id.device_info_container_viewpager);
-
-        if (deviceId != null) {
-            initTabs(deviceId);
-        }
+        initViewPagerAdapter(deviceId);
 
         CockpitPreferenceManager cockpitPreferenceManager = SnmpCockpitApp.getPreferenceManager();
         if (cockpitPreferenceManager.isPeriodicUpdateEnabled()) {
@@ -150,7 +149,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
                 // updating system query information of managed device
                 DeviceManager.getInstance().updateSystemQueryAsync(managedDevice);
                 updateDeviceInformation();
-                initTabs(managedDevice.getDeviceConfiguration().getUniqueDeviceId());
+                initViewPagerAdapter(managedDevice.getDeviceConfiguration().getUniqueDeviceId());
                 if (deviceDetailFragment.getDeviceId().equals(
                         managedDevice.getDeviceConfiguration().getUniqueDeviceId()
                 )) {
@@ -225,7 +224,9 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         // initial collapse
         tableRow1.callOnClick();
         TabLayout tl = findViewById(R.id.query_tabs);
-        tl.setupWithViewPager(viewPager, false);
+
+        new TabLayoutMediator(tl, viewPager, false,
+                (tab, position) -> tab.setText(viewPagerAdapter.getTabTitle(position))).attach();
     }
 
     @Override
@@ -353,9 +354,10 @@ public class TabbedDeviceActivity extends ProtectedActivity {
      *
      * @param deviceId
      */
-    private void initTabs(String deviceId) {
+    private void initViewPagerAdapter(String deviceId) {
         Log.d(TAG, "init tabs of device detail view");
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter = new ViewPager2Adapter(this);
+
         deviceDetailFragment = new DeviceDetailFragment();
         viewPagerAdapter.addFragment(deviceDetailFragment, deviceId, getString(R.string.device_detail_fragment_tab_title));
         viewPagerAdapter.addFragment(new HardwareQueryFragment(), deviceId, getString(R.string.device_detail_tab_hardware_label));
@@ -365,7 +367,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         }
         viewPagerAdapter.addFragment(new SnmpUsageQueryFragment(), deviceId, getString(R.string.snmp_usage_tab_content_title));
 
-        final int staticTabCount = viewPagerAdapter.getCount();
+        final int staticTabCount = viewPagerAdapter.getItemCount();
         String tabOidQuery = getIntent().getStringExtra(EXTRA_OPEN_TAB_OID);
 
         List<String> oidQueryList = DeviceManager.getInstance().getTabs(deviceId);
@@ -454,7 +456,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
                     .getQueryCache().evictDeviceEntries(managedDevice.getDeviceConfiguration().getUniqueDeviceId());
             // update default tabs first
             reloadTabData();
-            DeviceDetailFragment ddFragment = (DeviceDetailFragment) viewPagerAdapter.getItem(0);
+            DeviceDetailFragment ddFragment = (DeviceDetailFragment) viewPagerAdapter.createFragment(0);
             Toast.makeText(this, getString(R.string.device_refresh_toast_message)
                     + ddFragment.getManagedDevice().getLastSystemQuery().getSysName(), Toast.LENGTH_SHORT).show();
         } else {
@@ -497,8 +499,8 @@ public class TabbedDeviceActivity extends ProtectedActivity {
     private void reloadTabData() {
         Log.d(TAG, "reload tab data");
         // refresh all device fragments with interface method, except first tab
-        for (int k = 1; k < viewPagerAdapter.getCount(); k++) {
-            DeviceFragment fragment = (DeviceFragment) viewPagerAdapter.getItem(k);
+        for (int k = 1; k < viewPagerAdapter.getItemCount(); k++) {
+            DeviceFragment fragment = (DeviceFragment) viewPagerAdapter.createFragment(k);
             if (!fragment.isDetached()) {
                 if (fragment instanceof DeviceDetailFragment ||
                         fragment instanceof HardwareQueryFragment) {
