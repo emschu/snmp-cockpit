@@ -120,11 +120,7 @@ public class DeviceManager {
         } else {
             Log.e(TAG, "no system query response received! Skip adding device.");
         }
-        if (managedDevices.isEmpty()) {
-            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(false);
-        } else {
-            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(true);
-        }
+        CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(!managedDevices.isEmpty());
     }
 
     /**
@@ -292,9 +288,7 @@ public class DeviceManager {
         Log.d(TAG, "remove item requested: " + uniqueDeviceId);
         CockpitStateManager.getInstance().setRemovalOngoing(true);
 
-        Iterator<DeviceMonitorItemContent.DeviceMonitorItem> listIterator = fragmentItemList.iterator();
-        while (listIterator.hasNext()) {
-            DeviceMonitorItemContent.DeviceMonitorItem deviceItem = listIterator.next();
+        for (DeviceMonitorItemContent.DeviceMonitorItem deviceItem : fragmentItemList) {
             if (uniqueDeviceId.equals(deviceItem.deviceConfiguration.getUniqueDeviceId())) {
                 fragmentItemList.remove(deviceItem);
                 Log.d(TAG, "item deleted: " + deviceItem.getDeviceConfiguration().getUniqueDeviceId());
@@ -319,11 +313,7 @@ public class DeviceManager {
                 break;
             }
         }
-        if (managedDevices.isEmpty()) {
-            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(false);
-        } else {
-            CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(true);
-        }
+        CockpitStateManager.getInstance().getAreDevicesConnectedObservable().setValueAndTriggerObservers(!managedDevices.isEmpty());
         CockpitStateManager.getInstance().setRemovalOngoing(false);
     }
 
