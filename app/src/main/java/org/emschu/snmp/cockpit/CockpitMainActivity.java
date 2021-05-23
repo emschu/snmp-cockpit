@@ -95,6 +95,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -185,11 +186,13 @@ public class CockpitMainActivity extends ProtectedActivity
             }
         }
         // init oid catalog async
-        Executors.newSingleThreadExecutor().execute(() -> {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(() -> {
             Log.d(TAG, "start oid catalog init");
             OIDCatalog.getInstance(new MibCatalogManager(PreferenceManager.getDefaultSharedPreferences(this)));
             Log.d(TAG, "finished oid catalog init");
         });
+        executorService.shutdown();
 
         booleanObservable = cockpitStateManagerInstance.getNetworkSecurityObservable();
 

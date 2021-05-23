@@ -29,7 +29,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,13 +36,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.adapter.DeviceMonitorViewRecyclerViewAdapter;
 import org.emschu.snmp.cockpit.fragment.items.DeviceMonitorItemContent.DeviceMonitorItem;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
-import org.emschu.snmp.cockpit.R;
+import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.tasks.RefreshDeviceListTask;
-
-import java.util.concurrent.Executors;
 
 /**
  * A fragment representing a list of Items.
@@ -110,13 +108,18 @@ public class DeviceMonitorViewFragment extends Fragment {
         Log.d(TAG, "refresh device list");
 
         OneTimeWorkRequest build = new OneTimeWorkRequest.Builder(RefreshDeviceListTask.class).build();
-        WorkManager.getInstance(getActivity()).enqueue(build).getResult().addListener(() -> {
-            getActivity().runOnUiThread(() -> {
-                if (recyclerView != null) {
-                    this.recyclerView.getAdapter().notifyDataSetChanged();
-                }
-            });
-        }, Executors.newSingleThreadExecutor());
+        if (getActivity() != null) {
+            WorkManager.getInstance(getActivity()).enqueue(build).getResult().addListener(() -> {
+                getActivity().runOnUiThread(() -> {
+                    if (recyclerView != null) {
+                        RecyclerView.Adapter<?> adapter = this.recyclerView.getAdapter();
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }, SnmpManager.getInstance().getThreadPoolExecutor());
+        }
     }
 
     public RecyclerView getRecyclerView() {

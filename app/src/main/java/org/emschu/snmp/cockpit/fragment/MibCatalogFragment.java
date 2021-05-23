@@ -23,7 +23,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -61,6 +61,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import tellh.com.recyclertreeview_lib.LayoutItemType;
 import tellh.com.recyclertreeview_lib.TreeNode;
@@ -234,6 +236,7 @@ public class MibCatalogFragment extends Fragment {
 
     /**
      * method to read json tree file to a jackson JsonNode object
+     *
      * @return
      */
     private JsonNode readJsonTree() {
@@ -260,6 +263,7 @@ public class MibCatalogFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.catalog_options_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -270,11 +274,13 @@ public class MibCatalogFragment extends Fragment {
                     .setMessage(getString(R.string.mib_catalog_import_dialog_description))
                     .setCancelable(true)
                     .setIcon(R.drawable.ic_info_black)
-                    .setNegativeButton(android.R.string.no, (dialog, which) -> dialog.dismiss())
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("application/zip");
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                        if (getActivity() == null) {
+                            return;
+                        }
+                        ActivityResultContracts.GetContent getContent = new ActivityResultContracts.GetContent();
+                        Intent intent = getContent.createIntent(getActivity(), "application/zip");
                         intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.mib_catalog_import_intent_extra));
                         startActivityForResult(intent, READ_REQUEST_CODE);
                     }).show();
@@ -309,7 +315,9 @@ public class MibCatalogFragment extends Fragment {
                         mcm.storeCatalog();
                         mcm.activateCatalog(fm.getArchiveName());
 
-                        AsyncTask.execute(() -> OIDCatalog.getInstance(null).refresh());
+                        ExecutorService executorService = Executors.newSingleThreadExecutor();
+                        executorService.execute(() -> OIDCatalog.getInstance(null).refresh());
+                        executorService.shutdown();
 
                         Log.i(TAG, "added new MIB catalog and activated it");
                         Toast.makeText(getActivity(), String.format(getString(R.string.new_mib_catalog_created_toast_message),
@@ -328,7 +336,6 @@ public class MibCatalogFragment extends Fragment {
                 }
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -542,8 +549,7 @@ public class MibCatalogFragment extends Fragment {
                 final ImageView ivArrow = dirDirectoryNodeViewHolder.getIvArrow();
                 if (ivArrow != null) {
                     int rotateDegree = isExpand ? 90 : -90;
-                    ivArrow.animate().rotationBy(rotateDegree)
-                            .start();
+                    ivArrow.animate().rotationBy(rotateDegree).start();
                 }
             }
         }
