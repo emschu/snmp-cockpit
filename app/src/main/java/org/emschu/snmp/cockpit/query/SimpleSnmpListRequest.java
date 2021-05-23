@@ -19,10 +19,9 @@
 
 package org.emschu.snmp.cockpit.query;
 
-import org.snmp4j.smi.OID;
-
 import org.emschu.snmp.cockpit.query.impl.DefaultListQuery;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.snmp4j.smi.OID;
 
 /**
  * You can do any recursive snmp query with this reqest class.
@@ -34,6 +33,16 @@ public class SimpleSnmpListRequest extends AbstractQueryRequest<DefaultListQuery
 
     public SimpleSnmpListRequest(DeviceConfiguration deviceConfiguration, String oid) {
         super(deviceConfiguration);
+        this.oid = new OID(oid);
+    }
+
+    public SimpleSnmpListRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId, OID oid) {
+        super(deviceConfiguration, contentTitleResourceId);
+        this.oid = oid;
+    }
+
+    public SimpleSnmpListRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId, String oid) {
+        super(deviceConfiguration, contentTitleResourceId);
         this.oid = new OID(oid);
     }
 

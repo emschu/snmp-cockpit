@@ -19,11 +19,10 @@
 
 package org.emschu.snmp.cockpit.query.impl;
 
-import org.snmp4j.smi.OID;
-
 import org.emschu.snmp.cockpit.query.AbstractQueryRequest;
 import org.emschu.snmp.cockpit.query.AbstractSnmpListQuery;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.snmp4j.smi.OID;
 
 /**
  * Every OID-Query of this app can be displayed in a list
@@ -64,6 +63,10 @@ public class DefaultListQuery extends AbstractSnmpListQuery {
             super(deviceConfiguration);
         }
 
+        public IpSectionQueryRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
+        }
+
         @Override
         public boolean isSingleRequest() {
             return false;
@@ -83,7 +86,7 @@ public class DefaultListQuery extends AbstractSnmpListQuery {
     /**
      * mibs
      */
-    public static class MrTableQueryRequest extends AbstractQueryRequest {
+    public static class MrTableQueryRequest extends AbstractQueryRequest<DefaultListQuery> {
 
         public MrTableQueryRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);

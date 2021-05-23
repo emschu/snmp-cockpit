@@ -19,14 +19,13 @@
 
 package org.emschu.snmp.cockpit.query.impl.ucdavis;
 
+import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import org.snmp4j.smi.OID;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * 1.3.6.1.4.1.2021.10
@@ -58,6 +57,10 @@ public class LaTableQuery extends AbstractSnmpTableQuery {
 
         public LaTableQueryRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public LaTableQueryRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
         }
 
         @Override

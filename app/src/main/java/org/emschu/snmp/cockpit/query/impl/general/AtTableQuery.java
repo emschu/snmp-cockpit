@@ -19,14 +19,13 @@
 
 package org.emschu.snmp.cockpit.query.impl.general;
 
+import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import org.snmp4j.smi.OID;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * this class represents a query for at table
@@ -58,6 +57,10 @@ public class AtTableQuery extends AbstractSnmpTableQuery {
     public static class AtTableRequest extends AbstractTableQueryRequest<AtTableQuery> {
         public AtTableRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public AtTableRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
         }
 
         @Override

@@ -33,7 +33,7 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 /**
  * this class represents a displayable section in the ui with a title and a type (enum {@link SectionType} )
  */
-abstract class AbstractCockpitQuerySection {
+public abstract class AbstractCockpitQuerySection {
 
     public static final String TAG = AbstractCockpitQuerySection.class.getName();
     private String title;

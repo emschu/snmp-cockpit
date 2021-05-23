@@ -22,7 +22,6 @@ package org.emschu.snmp.cockpit.query.view;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +30,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import java.io.BufferedInputStream;
-import java.util.Scanner;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.R;
@@ -48,6 +41,15 @@ import org.emschu.snmp.cockpit.query.TableQuery;
 import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.tasks.QueryTask;
 
+import java.io.BufferedInputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 /**
  * a custom view component wrapping an android webview + inserting custom generated html
  * of a list of {@link AbstractCockpitQuerySection}
@@ -57,8 +59,7 @@ public class CockpitQueryView extends ConstraintLayout {
     public static final String TAG = CockpitQueryView.class.getName();
     private static ThreadPoolExecutor THREAD_POOL_EXECUTOR = SnmpManager.getInstance().getThreadPoolExecutor();
     private WebView webView;
-    private ConcurrentHashMap<Integer, AbstractCockpitQuerySection> cockpitQuerySectionList = new ConcurrentHashMap<>();
-    private String content = null;
+    private Map<Integer, AbstractCockpitQuerySection> cockpitQuerySectionMap = new HashMap<>();
     private boolean isFullyRendered = false;
     private OnRenderingFinishedListener onRenderingFinishedListener = null;
 
@@ -114,19 +115,20 @@ public class CockpitQueryView extends ConstraintLayout {
     }
 
     public void addQuerySection(AbstractCockpitQuerySection querySection) {
-        cockpitQuerySectionList.put(cockpitQuerySectionList.size(), querySection);
+        cockpitQuerySectionMap.put(cockpitQuerySectionMap.size(), querySection);
     }
 
     /**
      * get generated content. empty ones at the end
+     *
      * @return
      */
     private String getGeneratedSectionContent() {
         StringBuilder sbContent = new StringBuilder();
         StringBuilder sbEmpty = new StringBuilder();
-        Log.d(TAG, "displaying " + cockpitQuerySectionList.values().size() + " sections");
+        Log.d(TAG, "displaying " + cockpitQuerySectionMap.size() + " sections");
 
-        for (AbstractCockpitQuerySection querySection : cockpitQuerySectionList.values()) {
+        for (AbstractCockpitQuerySection querySection : cockpitQuerySectionMap.values()) {
             if (querySection.isEmpty()) {
                 sbEmpty.append(querySection.generateHtml());
             } else {
@@ -172,7 +174,7 @@ public class CockpitQueryView extends ConstraintLayout {
     }
 
     public void clear() {
-        cockpitQuerySectionList.clear();
+        cockpitQuerySectionMap.clear();
     }
 
     /**
@@ -199,8 +201,7 @@ public class CockpitQueryView extends ConstraintLayout {
             THREAD_POOL_EXECUTOR = SnmpManager.getInstance().getThreadPoolExecutor();
         }
 
-        snmpInfoTask.executeOnExecutor(THREAD_POOL_EXECUTOR,
-                queryRequest);
+        snmpInfoTask.executeOnExecutor(THREAD_POOL_EXECUTOR, queryRequest);
         ListQuery listQuery = (ListQuery) getAnswer(snmpInfoTask);
         if (listQuery != null) {
             ListQuerySection querySection = new ListQuerySection(title, listQuery);
@@ -225,8 +226,7 @@ public class CockpitQueryView extends ConstraintLayout {
     public void addTableQuery(String title, AbstractQueryRequest queryRequest, boolean listUnknown) {
         QueryTask<? extends SnmpQuery> snmpInfoTask = new QueryTask<>();
 
-        if (THREAD_POOL_EXECUTOR.isTerminating() ||
-                THREAD_POOL_EXECUTOR.isShutdown()) {
+        if (THREAD_POOL_EXECUTOR.isTerminating() || THREAD_POOL_EXECUTOR.isShutdown()) {
             THREAD_POOL_EXECUTOR = SnmpManager.getInstance().getThreadPoolExecutor();
         }
 
@@ -298,6 +298,10 @@ public class CockpitQueryView extends ConstraintLayout {
             onRenderingFinishedListener.finished();
         }
         this.isFullyRendered = fullyRendered;
+    }
+
+    public Map<Integer, AbstractCockpitQuerySection> getCockpitQuerySectionMap() {
+        return cockpitQuerySectionMap;
     }
 
     /**

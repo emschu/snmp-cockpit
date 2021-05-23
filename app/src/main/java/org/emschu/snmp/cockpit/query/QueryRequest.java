@@ -19,9 +19,8 @@
 
 package org.emschu.snmp.cockpit.query;
 
-import org.snmp4j.smi.OID;
-
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.snmp4j.smi.OID;
 
 /**
  * general interface which needs to be implemented by each query class
@@ -58,7 +57,6 @@ public interface QueryRequest<T extends SnmpQuery> {
      */
     public Class<T> getQueryClass();
 
-
     /**
      * indicates wheter this query should be kept in cache or not
      *
@@ -74,6 +72,7 @@ public interface QueryRequest<T extends SnmpQuery> {
      * @return
      */
     public default String getCacheId() {
+        // FIXME is this really unique?
         return this.getClass().getSimpleName() + getDeviceConfiguration().getUniqueDeviceId();
     }
 }

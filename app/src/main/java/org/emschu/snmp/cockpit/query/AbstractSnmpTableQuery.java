@@ -21,13 +21,13 @@ package org.emschu.snmp.cockpit.query;
 
 import android.util.Log;
 
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * abstract class for table query with common methods
@@ -124,6 +124,10 @@ public abstract class AbstractSnmpTableQuery implements TableQuery {
     public abstract static class AbstractTableQueryRequest<T extends SnmpQuery> extends AbstractQueryRequest<T> {
         public AbstractTableQueryRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public AbstractTableQueryRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
         }
 
         @Override

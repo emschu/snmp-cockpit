@@ -28,13 +28,24 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
  * @param <T>
  */
 public abstract class AbstractQueryRequest<T extends SnmpQuery> implements QueryRequest<T> {
-    private DeviceConfiguration deviceConfiguration;
+    private final DeviceConfiguration deviceConfiguration;
+    private final int contentTitleResourceId;
 
     public AbstractQueryRequest(DeviceConfiguration deviceConfiguration) {
         this.deviceConfiguration = deviceConfiguration;
+        this.contentTitleResourceId = 0;
+    }
+
+    public AbstractQueryRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+        this.deviceConfiguration = deviceConfiguration;
+        this.contentTitleResourceId = contentTitleResourceId;
     }
 
     public DeviceConfiguration getDeviceConfiguration() {
         return deviceConfiguration;
+    }
+
+    public int getContentTitleResourceId() {
+        return contentTitleResourceId;
     }
 }

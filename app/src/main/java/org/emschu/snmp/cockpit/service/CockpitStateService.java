@@ -66,14 +66,14 @@ public class CockpitStateService extends JobIntentService {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
-                Log.w(TAG, "onAvailable()");
+                Log.d(TAG, "onAvailable()");
                 checkState();
             }
 
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
-                Log.w(TAG, "onLost()");
+                Log.d(TAG, "onLost()");
                 checkState();
             }
 
@@ -100,6 +100,5 @@ public class CockpitStateService extends JobIntentService {
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "finishing cockpit state service");
-//        cm.unregisterNetworkCallback(callback);
     }
 }

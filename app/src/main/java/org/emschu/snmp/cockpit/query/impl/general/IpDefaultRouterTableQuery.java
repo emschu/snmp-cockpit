@@ -19,14 +19,13 @@
 
 package org.emschu.snmp.cockpit.query.impl.general;
 
+import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import org.snmp4j.smi.OID;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * 1.3.6.1.2.1.4.37.1.1
@@ -55,6 +54,10 @@ public class IpDefaultRouterTableQuery extends AbstractSnmpTableQuery {
 
         public IpDefaultRouterTableQueryRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public IpDefaultRouterTableQueryRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
         }
 
         @Override

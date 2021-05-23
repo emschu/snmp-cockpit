@@ -19,14 +19,13 @@
 
 package org.emschu.snmp.cockpit.query.impl.ucdavis;
 
+import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import org.snmp4j.smi.OID;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * 1.3.6.1.4.1.30155.2.1.2
@@ -68,6 +67,10 @@ public class DskTableQuery extends AbstractSnmpTableQuery {
 
         public DskTableQueryRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public DskTableQueryRequest(DeviceConfiguration deviceConfiguration, int hw_info_task_view_label_table_dsktable) {
+            super(deviceConfiguration, hw_info_task_view_label_table_dsktable);
         }
 
         @Override

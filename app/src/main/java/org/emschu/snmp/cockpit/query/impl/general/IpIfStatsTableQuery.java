@@ -19,15 +19,14 @@
 
 package org.emschu.snmp.cockpit.query.impl.general;
 
-import org.snmp4j.smi.OID;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import org.emschu.snmp.cockpit.query.AbstractSnmpTableQuery;
 import org.emschu.snmp.cockpit.query.OIDCatalog;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
+import org.snmp4j.smi.OID;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * this class represents a query for ip route table 1.3.6.1.2.1.4.31.3
@@ -113,6 +112,10 @@ public class IpIfStatsTableQuery extends AbstractSnmpTableQuery {
     public static class IpIfStatsTableRequest extends AbstractTableQueryRequest<IpIfStatsTableQuery> {
         public IpIfStatsTableRequest(DeviceConfiguration deviceConfiguration) {
             super(deviceConfiguration);
+        }
+
+        public IpIfStatsTableRequest(DeviceConfiguration deviceConfiguration, int contentTitleResourceId) {
+            super(deviceConfiguration, contentTitleResourceId);
         }
 
         @Override
