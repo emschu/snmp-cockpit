@@ -67,9 +67,6 @@ public class SnmpManager {
 
     private static SnmpManager instance = null;
 
-    // only one at the same time possible
-    private int connectionTestCounter = 0;
-
     private OID[] privProtocols = new OID[]{
             PrivAES128.ID,
             PrivDES.ID,
@@ -185,6 +182,7 @@ public class SnmpManager {
 
     /**
      * setup a new v1Connection. very expensive
+     *
      * @param deviceConfiguration
      */
     public synchronized void resetV1Connection(DeviceConfiguration deviceConfiguration) {
@@ -213,6 +211,7 @@ public class SnmpManager {
 
     /**
      * setup a new v3Connection. very expensive
+     *
      * @param deviceConfiguration
      */
     public synchronized void resetV3Connection(DeviceConfiguration deviceConfiguration) {
@@ -273,17 +272,13 @@ public class SnmpManager {
         return authProtocols.length * privProtocols.length;
     }
 
-    public int getCurrentConnectionTestsDoneCount() {
-        return connectionTestCounter;
-    }
-
     /**
      * test all transport security options
      * atm ~ 25-30
      *
      * @param deviceConfiguration
      */
-    public synchronized List<Pair<OID, OID>> testConnections(DeviceConfiguration deviceConfiguration, Runnable progressCallback,
+    public synchronized List<Pair<OID, OID>> testConnections(DeviceConfiguration deviceConfiguration, ProgressConnectionTestCallback progressCallback,
                                                              int connectionTestTimeout, int connectionTestRetries) {
         List<Pair<OID, OID>> combinationList = new ArrayList<>();
         Log.d(TAG, "using v1Connection test timeout: " + connectionTestTimeout
@@ -294,19 +289,14 @@ public class SnmpManager {
             return combinationList;
         }
 
-        CockpitStateManager cockpitStateManager = CockpitStateManager.getInstance();
-
         // reset counter here
-        connectionTestCounter = 0;
+        int connectionTestCounter = 0;
         boolean shallBreak = false;
         for (int i = 0; i < authProtocols.length; i++) {
             for (int k = 0; k < privProtocols.length; k++) {
                 // ... this is expensive^2:
-                if (cockpitStateManager.getConnectionTask().isCancelled()) {
-                    return combinationList;
-                }
                 connectionTestCounter++;
-                progressCallback.run();
+                progressCallback.run(connectionTestCounter);
                 // clone device config object
                 DeviceConfiguration testConfig = new DeviceConfiguration(deviceConfiguration);
 
@@ -513,10 +503,14 @@ public class SnmpManager {
     private boolean hasV1OrV2cConnection() {
         for (SnmpConnection connection : snmpConnectionPool.values()) {
             if (connection.getDeviceConfiguration().isV1() ||
-                connection.getDeviceConfiguration().isV2c()) {
+                    connection.getDeviceConfiguration().isV2c()) {
                 return true;
             }
         }
         return false;
+    }
+
+    public interface ProgressConnectionTestCallback {
+        void run(int connectionTestCount);
     }
 }

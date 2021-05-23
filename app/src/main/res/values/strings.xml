@@ -254,7 +254,7 @@
     <string name="mib_catalog_reset_success_toast_message">All custom MIBs deleted. Using default MIB.</string>
     <string name="mib_catalog_reset_dialog_title">MIB catalog reset</string>
     <string name="mib_catalog_reset_confirmation_message">Do you really want to reset all your imported MIBs?</string>
-    <string name="secure_network_toast">SNMP-Cockpit: Inside the secure network!</string>
+    <string name="secure_network_toast">SNMP-Cockpit: Inside a secure network!</string>
     <string name="not_secure_network_toast">SNMP-Cockpit: No secure network!</string>
     <string name="net_details_refreshed_toast">Network details refreshed!</string>
     <string name="device_removal_toast">Device \'%s\' is removed</string>

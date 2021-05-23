@@ -21,7 +21,8 @@ package org.emschu.snmp.cockpit.snmp;
 
 import android.util.Log;
 
-
+import org.emschu.snmp.cockpit.CockpitStateManager;
+import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import org.jetbrains.annotations.NotNull;
 import org.snmp4j.AbstractTarget;
 import org.snmp4j.PDU;
@@ -38,9 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.emschu.snmp.cockpit.CockpitStateManager;
-import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 
 /**
  * this adapter abstracts the (partially) version specific device/message handling
@@ -186,7 +184,9 @@ public abstract class AbstractSnmpAdapter {
                 return responseList;
             }
         } catch (IOException | NoSnmpResponseException e) {
-            Log.w(AbstractSnmpAdapter.class.getName(), "exception message:" + e.getMessage());
+            if (e.getMessage() != null) {
+                Log.w(AbstractSnmpAdapter.class.getName(), "exception message:" + e.getMessage());
+            }
             return new ArrayList<>();
         }
         return responseList;

@@ -26,16 +26,9 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
-
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,15 +39,25 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -83,7 +86,7 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.snmp.MibCatalogManager;
 import org.emschu.snmp.cockpit.snmp.SnmpManager;
-import org.emschu.snmp.cockpit.tasks.SNMPConnectivityAddDeviceTask;
+import org.emschu.snmp.cockpit.tasks.DeviceAddTask;
 import org.emschu.snmp.cockpit.util.BooleanObservable;
 import org.emschu.snmp.cockpit.util.PeriodicTask;
 import org.jetbrains.annotations.NotNull;
@@ -91,6 +94,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
 /**
  * main activity of this app
@@ -111,6 +116,7 @@ public class CockpitMainActivity extends ProtectedActivity
 
     public static final int DEVICE_CONNECT_REQUEST = 13;
     public static final String QUERY_OWN_CATALOG_FRAGMENT_TAG = "ownQueryFragment";
+    private static final String CONNECTION_TEST_TASK_TAG = "connection_test_task";
     private final CockpitStateManager cockpitStateManagerInstance = CockpitStateManager.getInstance();
     private BooleanObservable booleanObservable = null;
 
@@ -119,10 +125,10 @@ public class CockpitMainActivity extends ProtectedActivity
     private TextView noDeviceText;
 
     // fragments
-    private DeviceMonitorViewFragment deviceMonitorViewFragment = DeviceMonitorViewFragment.newInstance();
-    private MibCatalogFragment mibCatalogFragment = MibCatalogFragment.newInstance();
+    private final DeviceMonitorViewFragment deviceMonitorViewFragment = DeviceMonitorViewFragment.newInstance();
+    private final MibCatalogFragment mibCatalogFragment = MibCatalogFragment.newInstance();
     private OwnQueryFragment ownQueryFragment = OwnQueryFragment.newInstance();
-    private NetworkDetailsFragment networkDetailsFragment = NetworkDetailsFragment.newInstance();
+    private final NetworkDetailsFragment networkDetailsFragment = NetworkDetailsFragment.newInstance();
     private ProgressBar progressBar;
     private CockpitScreens screenBefore = null;
     private CockpitScreens lastScreen = CockpitScreens.SCREEN_MAIN_DEVICES;
@@ -134,13 +140,12 @@ public class CockpitMainActivity extends ProtectedActivity
     private CockpitPreferenceManager cockpitPreferenceManager;
     private AlertHelper alertHelper;
     private LinearLayout progressRow;
-    private SNMPConnectivityAddDeviceTask connectionTestTask;
     private PeriodicTask periodicTask;
     private NavigationView navigationView;
     private boolean backPressState;
     private Long lastStateCheckAt = null;
 
-    private ActivityResultLauncher<String> requestPermissionLauncher =
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
                     // Permission is granted. Continue the action or workflow in your
@@ -180,11 +185,11 @@ public class CockpitMainActivity extends ProtectedActivity
             }
         }
         // init oid catalog async
-        new Thread(() -> {
+        Executors.newSingleThreadExecutor().execute(() -> {
             Log.d(TAG, "start oid catalog init");
             OIDCatalog.getInstance(new MibCatalogManager(PreferenceManager.getDefaultSharedPreferences(this)));
             Log.d(TAG, "finished oid catalog init");
-        }).start();
+        });
 
         booleanObservable = cockpitStateManagerInstance.getNetworkSecurityObservable();
 
@@ -225,10 +230,6 @@ public class CockpitMainActivity extends ProtectedActivity
             progressRow = findViewById(R.id.progress_info_row);
             if (cockpitStateManagerInstance.isConnecting()) {
                 progressRow.setVisibility(View.VISIBLE);
-                SNMPConnectivityAddDeviceTask connectionTask = cockpitStateManagerInstance.getConnectionTask();
-                if (connectionTask != null) {
-                    connectionTask.setProgressRow(progressRow);
-                }
             } else {
                 progressRow.setVisibility(View.GONE);
             }
@@ -333,18 +334,10 @@ public class CockpitMainActivity extends ProtectedActivity
      */
     public void cancelConnectionTestTask() {
         Log.d(TAG, "request to cancel all connection test tasks");
-        if (connectionTestTask == null) {
-            connectionTestTask = cockpitStateManagerInstance.getConnectionTask();
-        }
-        if (connectionTestTask != null) {
-            if (!connectionTestTask.isCancelled()) {
-                Log.d(TAG, "cancel connection test task");
-                connectionTestTask.cancel(true);
-            }
-            cockpitStateManagerInstance.setConnecting(false);
-            cockpitStateManagerInstance.setConnectionTask(null);
-        }
-        connectionTestTask = null;
+
+        WorkManager.getInstance(this).cancelAllWorkByTag(CONNECTION_TEST_TASK_TAG);
+        cockpitStateManagerInstance.setConnecting(false);
+
         // set default text
         TextView infoTextView = findViewById(R.id.connection_attempt_count_label);
         infoTextView.setText(getString(R.string.connection_attempt_label));
@@ -360,41 +353,100 @@ public class CockpitMainActivity extends ProtectedActivity
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        DeviceManager deviceManager = DeviceManager.getInstance();
-                        DeviceConfiguration config = deviceManager.createDeviceConfiguration(data);
-
-                        // apply snmp version user pref
-                        if (config.getSnmpVersion() < 3) {
-                            if (cockpitPreferenceManager.isV1InsteadOfV3()) {
-                                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v1);
-                            } else {
-                                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v2c);
-                            }
-                        }
-
-                        config.setTimeout(cockpitPreferenceManager.getConnectionTimeout());
-                        config.setRetries(cockpitPreferenceManager.getConnectionRetries());
-                        Log.d(TAG, "set user defined connection timeout to "
-                                + config.getTimeout() + " with " + config.getRetries() + " retries");
-
-                        Log.i(TAG, "start connectivity check task and add device to list - if check does not fail");
-                        progressRow.setVisibility(View.VISIBLE);
-                        cockpitStateManagerInstance.setConnecting(true);
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            connectionTestTask = new SNMPConnectivityAddDeviceTask(config,
-                                    deviceMonitorViewFragment, progressRow);
-                            cockpitStateManagerInstance.setConnectionTask(connectionTestTask);
-                            connectionTestTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
-                            Toast.makeText(this,
-                                    R.string.connectivity_check_start_label, Toast.LENGTH_SHORT).show();
-                        });
+                        startConnectionTest(result);
                     }
                 });
 
         addDeviceMainFab.setOnClickListener(view -> {
             this.openLoginActivity(activityLauncher);
         });
+    }
+
+    private void startConnectionTest(androidx.activity.result.ActivityResult result) {
+        Intent data = result.getData();
+        DeviceManager deviceManager = DeviceManager.getInstance();
+        DeviceConfiguration config = deviceManager.createDeviceConfiguration(data);
+
+        // apply snmp version user pref
+        if (config.getSnmpVersion() < 3) {
+            if (cockpitPreferenceManager.isV1InsteadOfV3()) {
+                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v1);
+            } else {
+                config.setSnmpVersion(DeviceConfiguration.SNMP_VERSION.v2c);
+            }
+        }
+
+        config.setTimeout(cockpitPreferenceManager.getConnectionTimeout());
+        config.setRetries(cockpitPreferenceManager.getConnectionRetries());
+        Log.d(TAG, "set user defined connection timeout to "
+                + config.getTimeout() + " with " + config.getRetries() + " retries");
+
+        Log.i(TAG, "start connectivity check task and add device to list - if check does not fail");
+        progressRow.setVisibility(View.VISIBLE);
+        cockpitStateManagerInstance.setConnecting(true);
+        cockpitStateManagerInstance.setTestConfiguration(config);
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(DeviceAddTask.class)
+                .setConstraints(constraints).addTag(CONNECTION_TEST_TASK_TAG).build();
+
+        WorkManager instance = WorkManager.getInstance(this);
+        instance.enqueueUniqueWork("connection_test_work", ExistingWorkPolicy.KEEP, workRequest);
+        instance.getWorkInfoByIdLiveData(workRequest.getId())
+                .observe(this, workInfo -> {
+                    if (workInfo != null && workInfo.getState().isFinished()) {
+                        cockpitStateManagerInstance.setTestConfiguration(null);
+                        // handle success/error/cancel cases
+                        if (workInfo.getState() == WorkInfo.State.FAILED || workInfo.getState() == WorkInfo.State.CANCELLED) {
+                            Log.e(TAG, "Connection test NOT successful! Could not connect!");
+                            if (workInfo.getOutputData().hasKeyWithValueOfType(DeviceAddTask.OUTPUT_DOES_EXIST, Boolean.class)) {
+                                Toast.makeText(this, R.string.connection_already_exists, Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(this, R.string.connection_test_not_successful_label, Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Log.i(TAG, "Connection test successful");
+                            Toast.makeText(this, getString(R.string.connection_test_successful_label), Toast.LENGTH_SHORT).show();
+
+                            DeviceManager.getInstance().add(config, false);
+                            // refresh ui on list change!
+                            RecyclerView.Adapter<?> adapter = deviceMonitorViewFragment.getRecyclerView().getAdapter();
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                            }
+                            checkNoData();
+                        }
+                        progressRow.setVisibility(View.GONE);
+                        TextView infoTextView = this.progressRow.findViewById(R.id.connection_attempt_count_label);
+                        infoTextView.setText(SnmpCockpitApp.getContext().getString(R.string.connection_attempt_label));
+                        CockpitStateManager.getInstance().setConnecting(false);
+                    } else {
+                        // handle progress update
+                        if (workInfo != null) {
+                            Data progressData = workInfo.getProgress();
+                            if (progressData.hasKeyWithValueOfType(DeviceAddTask.PROGRESS_CURRENT_NUM, Integer.class)) {
+                                int allProgress = progressData.getInt(DeviceAddTask.PROGRESS_ALL_NUM, 0);
+                                int currentProgress = progressData.getInt(DeviceAddTask.PROGRESS_CURRENT_NUM, 0);
+
+                                TextView infoTextView = this.progressRow.findViewById(R.id.connection_attempt_count_label);
+                                infoTextView.setText(String.format(getCurrentLocale(), "%s %d/%d",
+                                        SnmpCockpitApp.getContext().getString(R.string.connection_attempt_label),
+                                        currentProgress, allProgress)
+                                );
+                            }
+                        }
+                    }
+                });
+    }
+
+    private Locale getCurrentLocale() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
+            //noinspection deprecation
+            return this.getResources().getConfiguration().locale;
+        }
+        return this.getResources().getConfiguration().getLocales().get(0);
     }
 
     private void openLoginActivity(ActivityResultLauncher<Intent> activityLauncher) {
@@ -406,6 +458,7 @@ public class CockpitMainActivity extends ProtectedActivity
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         // first effect: close drawer
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -425,7 +478,6 @@ public class CockpitMainActivity extends ProtectedActivity
         }
         if (backPressState) {
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            super.onBackPressed();
             return;
         }
         backPressState = true;
@@ -560,7 +612,7 @@ public class CockpitMainActivity extends ProtectedActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         TextView ipLabel = drawer.findViewById(R.id.nav_header_ip_textview);
         if (ipLabel == null) {
-            Log.e(TAG, "no drawer view inited!");
+            Log.d(TAG, "no drawer view inited!");
             return;
         }
         ipLabel.setText(wifiNetworkManager.getIpAddressLabel());

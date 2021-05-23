@@ -19,12 +19,11 @@
 
 package org.emschu.snmp.cockpit;
 
+import org.emschu.snmp.cockpit.query.QueryCache;
+import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
+import org.emschu.snmp.cockpit.util.BooleanObservable;
 import org.snmp4j.mp.MPv3;
 import org.snmp4j.smi.OctetString;
-
-import org.emschu.snmp.cockpit.query.QueryCache;
-import org.emschu.snmp.cockpit.tasks.SNMPConnectivityAddDeviceTask;
-import org.emschu.snmp.cockpit.util.BooleanObservable;
 
 /**
  * activities are coming and going - this class should last to hold the (network security) state of the app
@@ -40,9 +39,9 @@ public class CockpitStateManager {
     private boolean isConnecting = false;
     private boolean isInRemoval = false;
     private boolean isInTestMode = false;
-    private SNMPConnectivityAddDeviceTask connectionTask = null;
     private OctetString localEngineId = null;
     private final QueryCache queryCache = new QueryCache();
+    private DeviceConfiguration testDeviceConfiguration;
 
     /**
      * singleton access method
@@ -78,14 +77,6 @@ public class CockpitStateManager {
 
     public boolean isConnecting() {
         return isConnecting;
-    }
-
-    public SNMPConnectivityAddDeviceTask getConnectionTask() {
-        return connectionTask;
-    }
-
-    public void setConnectionTask(SNMPConnectivityAddDeviceTask connectionTask) {
-        this.connectionTask = connectionTask;
     }
 
     /**
@@ -127,5 +118,13 @@ public class CockpitStateManager {
 
     public void setInTestMode(boolean inTestMode) {
         isInTestMode = inTestMode;
+    }
+
+    public void setTestConfiguration(final DeviceConfiguration config) {
+        this.testDeviceConfiguration = config;
+    }
+
+    public DeviceConfiguration getTestDeviceConfiguration() {
+        return testDeviceConfiguration;
     }
 }

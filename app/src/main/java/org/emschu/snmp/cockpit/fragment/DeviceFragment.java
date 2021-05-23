@@ -129,12 +129,10 @@ public abstract class DeviceFragment extends Fragment {
             instance.getWorkInfoByIdLiveData(workRequest.getId())
                     .observe(this, workInfo -> {
                         if (workInfo != null && workInfo.getState().isFinished()) {
-                            // ... do something with the result ...
                             queryView.getCockpitQuerySectionMap().clear();
-                            if (md.getSingleTabQueryCollection(tabId).isEmpty()) {
-                                System.out.println("OMG!!!");
+                            if (!md.getSingleTabQueryCollection(tabId).isEmpty()) {
+                                queryView.getCockpitQuerySectionMap().putAll(md.getSingleTabQueryCollection(tabId));
                             }
-                            queryView.getCockpitQuerySectionMap().putAll(md.getSingleTabQueryCollection(tabId));
                             queryView.render(true);
                         }
                     });
