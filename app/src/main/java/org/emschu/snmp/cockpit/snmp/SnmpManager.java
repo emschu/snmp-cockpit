@@ -316,20 +316,23 @@ public class SnmpManager {
                 testConfig.setRetries(connectionTestRetries);
 
                 SnmpConnection connection = new SnmpConnection(testConfig);
+                try {
+                    boolean isWorking = connection.canPing(testConfig);
+                    if (isWorking) {
+                        Log.d(TAG, "successful test with combination: "
+                                + testConfig.getAuthProtocol() + "/" + testConfig.getPrivProtocol()
+                                + testConfig.getAuthProtocolLabel() + "/"
+                                + testConfig.getPrivProtocolLabel());
 
-                boolean isWorking = connection.canPing(testConfig);
-                if (isWorking) {
-                    Log.d(TAG, "successful test with combination: "
-                            + testConfig.getAuthProtocol() + "/" + testConfig.getPrivProtocol()
-                            + testConfig.getAuthProtocolLabel() + "/"
-                            + testConfig.getPrivProtocolLabel());
-
-                    combinationList.add(new Pair<>(testConfig.getAuthProtocol(), testConfig.getPrivProtocol()));
-                    // in case of successful connection, we do not close this connection
-                    shallBreak = true;
-                    break;
+                        combinationList.add(new Pair<>(testConfig.getAuthProtocol(), testConfig.getPrivProtocol()));
+                        // in case of successful connection, we do not close this connection
+                        shallBreak = true;
+                        break;
+                    }
+                } finally {
+                    connection.close();
                 }
-                connection.close();
+
                 Log.d(TAG, "no connection possible with combination: "
                         + testConfig.getAuthProtocol() + "/" + testConfig.getPrivProtocol());
             }
