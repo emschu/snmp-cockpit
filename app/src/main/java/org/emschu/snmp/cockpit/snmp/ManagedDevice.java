@@ -19,11 +19,15 @@
 
 package org.emschu.snmp.cockpit.snmp;
 
-import java.util.Objects;
-
 import org.emschu.snmp.cockpit.fragment.items.DeviceMonitorItemContent;
 import org.emschu.snmp.cockpit.query.impl.general.SystemQuery;
+import org.emschu.snmp.cockpit.query.view.AbstractCockpitQuerySection;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * this class represents a currently managed device by the app
@@ -35,6 +39,8 @@ public class ManagedDevice {
     private final SystemQuery initialSystemQuery;
     private final boolean isDummy;
     private SystemQuery lastSystemQuery = null;
+    // tab contents
+    private final ConcurrentHashMap<String, Map<Integer, AbstractCockpitQuerySection>> tabQueryCollections = new ConcurrentHashMap<>();
 
     /**
      * constructor
@@ -137,5 +143,16 @@ public class ManagedDevice {
 
     public void updateSystemQuery(SystemQuery systemQuery) {
         this.lastSystemQuery = systemQuery;
+    }
+
+    public Map<Integer, AbstractCockpitQuerySection> getSingleTabQueryCollection(final String idx) {
+        if (!this.tabQueryCollections.containsKey(idx)) {
+            this.tabQueryCollections.put(idx, new HashMap<>());
+        }
+        return this.tabQueryCollections.get(idx);
+    }
+
+    public ConcurrentHashMap<String, Map<Integer, AbstractCockpitQuerySection>> getTabQueryCollections() {
+        return tabQueryCollections;
     }
 }
