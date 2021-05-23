@@ -47,6 +47,7 @@ public class DeviceMonitorViewRecyclerViewAdapter extends RecyclerView.Adapter<D
     private final OnListFragmentInteractionListener mListener;
 
     public DeviceMonitorViewRecyclerViewAdapter(List<DeviceMonitorItem> items, OnListFragmentInteractionListener listener) {
+        super();
         mValues = items;
         mListener = listener;
     }

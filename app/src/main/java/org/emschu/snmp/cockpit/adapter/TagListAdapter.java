@@ -47,6 +47,7 @@ public class TagListAdapter extends RecyclerView.Adapter<TagListAdapter.QueryAda
      * @param tagAlertHelper
      */
     public TagListAdapter(CockpitDbHelper cockpitDbHelper, TagAlertHelper tagAlertHelper) {
+        super();
         //Initialising the sql table
         this.cockpitDbHelper = cockpitDbHelper;
         this.tagAlertHelper = tagAlertHelper;

@@ -56,6 +56,7 @@ public class CustomQueryAdapter extends RecyclerView.Adapter<CustomQueryAdapter.
      * @param context
      */
     public CustomQueryAdapter(CockpitDbHelper cockpitDbHelper, Context context) {
+        super();
         //Initialising the sql table
         this.cockpitDbHelper = cockpitDbHelper;
         this.context = context;

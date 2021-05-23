@@ -43,6 +43,7 @@ public class BlockedSettingsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         finish();
     }
 }

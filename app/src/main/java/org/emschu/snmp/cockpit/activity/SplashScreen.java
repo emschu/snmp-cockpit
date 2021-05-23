@@ -58,6 +58,7 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splashscreen);
 
         Log.d(TAG, "db init started for 3 tables");
+        // "warmup" db
         SQLiteDatabase readableDatabase = new CockpitDbHelper(SplashScreen.this).getReadableDatabase();
         readableDatabase.close();
         Log.d(TAG, "db init finished for 3 tables");

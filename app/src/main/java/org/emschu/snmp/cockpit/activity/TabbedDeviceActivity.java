@@ -82,6 +82,7 @@ public class TabbedDeviceActivity extends ProtectedActivity {
     private AlertHelper alertHelper;
     private PeriodicTask periodicTask = new PeriodicTask(this::checkSecurity, 2500);
     private CockpitDbHelper dbHelper;
+    private TabLayoutMediator tabLayoutMediator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +136,8 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         Spinner spinner = findViewById(R.id.device_spinner);
         spinner.setAdapter(new DeviceSpinnerAdapter(
                 toolbar.getContext(),
-                deviceList));
+                deviceList)
+        );
 
         spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -150,12 +152,6 @@ public class TabbedDeviceActivity extends ProtectedActivity {
                 DeviceManager.getInstance().updateSystemQueryAsync(managedDevice);
                 updateDeviceInformation();
                 initViewPagerAdapter(managedDevice.getDeviceConfiguration().getUniqueDeviceId());
-                if (deviceDetailFragment.getDeviceId().equals(
-                        managedDevice.getDeviceConfiguration().getUniqueDeviceId()
-                )) {
-                    Log.d(TAG, "skip refresh. selected same device.");
-                    return;
-                }
                 reloadTabData();
             }
 
@@ -223,10 +219,6 @@ public class TabbedDeviceActivity extends ProtectedActivity {
 
         // initial collapse
         tableRow1.callOnClick();
-        TabLayout tl = findViewById(R.id.query_tabs);
-
-        new TabLayoutMediator(tl, viewPager, false,
-                (tab, position) -> tab.setText(viewPagerAdapter.getTabTitle(position))).attach();
     }
 
     @Override
@@ -356,39 +348,29 @@ public class TabbedDeviceActivity extends ProtectedActivity {
      */
     private void initViewPagerAdapter(String deviceId) {
         Log.d(TAG, "init tabs of device detail view");
+
+        if (this.tabLayoutMediator != null) {
+            // detach if called twice
+            this.tabLayoutMediator.detach();
+        }
+
         viewPagerAdapter = new ViewPager2Adapter(this);
+        viewPagerAdapter.setDeviceId(deviceId);
+        viewPagerAdapter.setCockpitDbHelper(this.dbHelper);
+        viewPagerAdapter.setOpenTabId(this.getIntent().getStringExtra(EXTRA_OPEN_TAB_OID));
+        viewPagerAdapter.initTitles(getResources());
 
-        deviceDetailFragment = new DeviceDetailFragment();
-        viewPagerAdapter.addFragment(deviceDetailFragment, deviceId, getString(R.string.device_detail_fragment_tab_title));
-        viewPagerAdapter.addFragment(new HardwareQueryFragment(), deviceId, getString(R.string.device_detail_tab_hardware_label));
-        viewPagerAdapter.addFragment(new MonitorQueryFragment(), deviceId, getString(R.string.device_detail_snmp_usage_query_label));
-        if (dbHelper.getQueryRowCount() > 0) {
-            viewPagerAdapter.addFragment(new DeviceCustomQueryFragment(), deviceId, getString(R.string.device_custom_query_tab_title));
-        }
-        viewPagerAdapter.addFragment(new SnmpUsageQueryFragment(), deviceId, getString(R.string.snmp_usage_tab_content_title));
-
-        final int staticTabCount = viewPagerAdapter.getItemCount();
-        String tabOidQuery = getIntent().getStringExtra(EXTRA_OPEN_TAB_OID);
-
-        List<String> oidQueryList = DeviceManager.getInstance().getTabs(deviceId);
-        int openedTabId = 0;
-        if (oidQueryList != null) {
-            Log.d(TAG, "found: " + oidQueryList.size() + " user defined tabs");
-            int i = 1;
-            for (String oidQuery : oidQueryList) {
-                if (tabOidQuery != null && tabOidQuery.equals(oidQuery)) {
-                    openedTabId = i;
-                }
-                viewPagerAdapter.addUserTabFragment(deviceId, oidQuery,
-                        i + " | " + oidQuery);
-                i++;
-            }
-        }
-        viewPagerAdapter.notifyDataSetChanged();
         viewPager.setAdapter(viewPagerAdapter);
-        if (openedTabId != 0) {
-            viewPager.setCurrentItem(staticTabCount + openedTabId, true);
-        }
+        TabLayout tl = findViewById(R.id.query_tabs);
+
+        this.tabLayoutMediator = new TabLayoutMediator(tl, viewPager, false,
+                (tab, position) -> tab.setText(viewPagerAdapter.getTabTitle(position)));
+        this.tabLayoutMediator.attach();
+
+        // FIXME re-implement auto-open tab
+//        if (openedTabId != 0) {
+//            viewPager.setCurrentItem(staticTabCount + openedTabId, true);
+//        }
     }
 
     @Override
@@ -474,10 +456,13 @@ public class TabbedDeviceActivity extends ProtectedActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         // avoid leaks
-        deviceDetailFragment = null;
+        if (this.tabLayoutMediator != null && this.tabLayoutMediator.isAttached()) {
+            this.tabLayoutMediator.detach();
+        }
         viewPager = null;
-        viewPagerAdapter.clear();
+        deviceDetailFragment = null;
 
         if (alertHelper != null) {
             // avoid window leaks
@@ -489,7 +474,6 @@ public class TabbedDeviceActivity extends ProtectedActivity {
         if (dbHelper != null) {
             dbHelper.close();
         }
-        super.onDestroy();
     }
 
     /**
