@@ -112,12 +112,12 @@ public class SingleQueryResultActivityFragment extends DeviceFragment {
         }
         cockpitQueryView.clear();
         String currentOidQuery = getDeviceIdOidTuple().second;
-        if (currentOidQuery == null) {
+        if (currentOidQuery == null || currentOidQuery.trim().isEmpty()) {
             Log.e(TAG, "no current oid query found");
             return;
         }
         cockpitQueryView.addListQuery("OID-Abfrage: " + currentOidQuery,
-                new SimpleSnmpListRequest(getManagedDevice().getDeviceConfiguration(), currentOidQuery), true);
+                new SimpleSnmpListRequest(getManagedDevice().getDeviceConfiguration(), currentOidQuery.trim()), true);
         cockpitQueryView.render(true);
     }
 }

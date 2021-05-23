@@ -118,7 +118,7 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-android:$mockitoVersion"
     androidTestImplementation "androidx.annotation:annotation:1.2.0"
     testImplementation 'androidx.test.ext:junit:1.1.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     // debug
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-3'
 }

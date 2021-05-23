@@ -20,7 +20,6 @@
 package org.emschu.snmp.cockpit.fragment.tabs;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,6 @@ import androidx.annotation.NonNull;
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.fragment.DeviceFragment;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
-import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.tasks.MonitoringQueryTask;
 
 /**
@@ -55,17 +53,13 @@ public class MonitorQueryFragment extends DeviceFragment {
      */
     private void updateCockpitQueryView() {
         if (getQueryView() == null) {
-            Log.w(TAG, "null query view");
             return;
         }
         getQueryView().clear();
 
         ManagedDevice md = getManagedDevice();
         if (!md.isDummy()) {
-            MonitoringQueryTask backgroundTask = new MonitoringQueryTask(getQueryView(), md.getDeviceConfiguration());
-            backgroundTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
-
-            waitForTaskResultAsync(backgroundTask, md.getDeviceConfiguration());
+            startQueryTasks(getQueryView(), md, MonitoringQueryTask.class, MonitoringQueryTask.MONITORING_QUERY_TASK);
         }
     }
 

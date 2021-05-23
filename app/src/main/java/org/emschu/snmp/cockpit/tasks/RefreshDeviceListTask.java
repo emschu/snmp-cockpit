@@ -37,10 +37,8 @@ public class RefreshDeviceListTask extends Worker {
         final List<DeviceMonitorItemContent.DeviceMonitorItem> newDeviceList = new ArrayList<>();
         CountDownLatch cdl = new CountDownLatch(oldDeviceList.size());
 
-        final QueryTaskExecutor<SystemQuery> exec = new QueryTaskExecutor<>();
-
         for (DeviceMonitorItemContent.DeviceMonitorItem deviceItem : oldDeviceList) {
-            exec.executeAsync(new SystemQuery.SystemQueryRequest(deviceItem.getDeviceConfiguration()), systemQuery -> {
+            QueryTaskExecutor.executeAsync(new SystemQuery.SystemQueryRequest(deviceItem.getDeviceConfiguration()), systemQuery -> {
                 if (systemQuery == null) {
                     Log.w(TAG, "no system query retrievable!");
                     // use old as fallback

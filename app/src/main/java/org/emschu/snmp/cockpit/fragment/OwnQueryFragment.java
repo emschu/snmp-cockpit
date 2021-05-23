@@ -23,9 +23,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -45,19 +42,22 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.activity.TagManagementActivity;
 import org.emschu.snmp.cockpit.adapter.CustomQueryAdapter;
 import org.emschu.snmp.cockpit.persistence.CockpitDbHelper;
 import org.emschu.snmp.cockpit.persistence.model.CustomQuery;
 import org.emschu.snmp.cockpit.persistence.model.Tag;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * this class represents the query management fragment
@@ -399,6 +399,7 @@ public class OwnQueryFragment extends Fragment {
      * method to remove already selected tags
      *
      * @param autoComplete
+     * @param selectedTagList
      */
     public void refreshTagSelection(AutoCompleteTextView autoComplete, List<Tag> selectedTagList) {
         List<String> tagListLabels = getTagLabels(HARDWARE_TAGS);
@@ -503,8 +504,9 @@ public class OwnQueryFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         if (savedInstanceState != null) {
             String[] stringArrayList = savedInstanceState.getStringArray(CURRENT_TAG_SELECTION_FORM_KEY);
             if (stringArrayList == null) {
@@ -533,13 +535,7 @@ public class OwnQueryFragment extends Fragment {
                 CustomQuery customQuery = new CustomQuery(id, oid, name, isSingleQuery);
                 customQuery.setTagList(selectedTagList);
 
-                if (id == 0) {
-                    // insert
-                    showCustomQueryDialog(customQuery, false);
-                } else {
-                    // update
-                    showCustomQueryDialog(customQuery, true);
-                }
+                showCustomQueryDialog(customQuery, id != 0);
             }
         }
     }

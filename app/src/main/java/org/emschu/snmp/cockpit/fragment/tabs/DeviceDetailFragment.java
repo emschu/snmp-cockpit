@@ -20,18 +20,17 @@
 package org.emschu.snmp.cockpit.fragment.tabs;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import org.emschu.snmp.cockpit.R;
 import org.emschu.snmp.cockpit.fragment.DeviceFragment;
 import org.emschu.snmp.cockpit.query.view.CockpitQueryView;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
-import org.emschu.snmp.cockpit.snmp.SnmpManager;
 import org.emschu.snmp.cockpit.tasks.DetailInfoQueryTask;
 
 /**
@@ -62,18 +61,12 @@ public class DeviceDetailFragment extends DeviceFragment {
     private void updateCockpitQueryView() {
         CockpitQueryView queryView = getQueryView();
         if (queryView == null) {
-            Log.w(TAG, "null query view");
             return;
         }
-        queryView.clear();
 
         ManagedDevice md = getManagedDevice();
         if (!md.isDummy()) {
-            DetailInfoQueryTask backgroundTask = new DetailInfoQueryTask(queryView, md.getDeviceConfiguration());
-            backgroundTask.executeOnExecutor(SnmpManager.getInstance().getThreadPoolExecutor());
-            // we wait async for the result to use the android task timeout feature
-
-            waitForTaskResultAsync(backgroundTask, md.getDeviceConfiguration());
+            startQueryTasks(queryView, md, DetailInfoQueryTask.class, DetailInfoQueryTask.DETAIL_INFO_QUERY_TASK);
         }
     }
 

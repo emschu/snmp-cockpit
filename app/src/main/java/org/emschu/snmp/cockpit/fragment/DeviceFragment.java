@@ -19,24 +19,25 @@
 
 package org.emschu.snmp.cockpit.fragment;
 
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import androidx.fragment.app.Fragment;
-import org.emschu.snmp.cockpit.CockpitPreferenceManager;
+import androidx.fragment.app.FragmentActivity;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ListenableWorker;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import org.emschu.snmp.cockpit.activity.TabbedDeviceActivity;
+import org.emschu.snmp.cockpit.query.view.AbstractCockpitQuerySection;
 import org.emschu.snmp.cockpit.query.view.CockpitQueryView;
-import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
 import org.emschu.snmp.cockpit.snmp.NoDeviceException;
-import org.emschu.snmp.cockpit.snmp.SnmpManager;
+
+import java.util.Map;
 
 /**
  * all tab fragments should extend this
@@ -71,7 +72,7 @@ public abstract class DeviceFragment extends Fragment {
      *
      * @param cockpitQueryView
      */
-    protected void initQueryView(CockpitQueryView cockpitQueryView) {
+    protected void initQueryView(final CockpitQueryView cockpitQueryView) {
         this.cockpitQueryView = cockpitQueryView;
     }
 
@@ -79,8 +80,9 @@ public abstract class DeviceFragment extends Fragment {
      * this method retrieves the {@link ManagedDevice} object of this class out of fragment args
      *
      * @return
+     * @throws NoDeviceException
      */
-    public ManagedDevice getManagedDevice() {
+    public ManagedDevice getManagedDevice() throws NoDeviceException {
         if (managedDevice == null) {
             String deviceId;
             // this should work in embedded activity mode and in pure fragment mode
@@ -103,28 +105,40 @@ public abstract class DeviceFragment extends Fragment {
         return managedDevice;
     }
 
-    /**
-     * async waiter with timeout handling
-     *
-     * @param queryTask
-     * @param deviceConfiguration
-     */
-    protected void waitForTaskResultAsync(AsyncTask<?,?,?> queryTask, DeviceConfiguration deviceConfiguration) {
-        (new Handler(Looper.getMainLooper())).post(() -> {
-            try {
-                int offset = deviceConfiguration.getAdditionalTimeoutOffset();
-                queryTask.get((long) CockpitPreferenceManager.TIMEOUT_WAIT_ASYNC_MILLISECONDS + offset, TimeUnit.MILLISECONDS);
-                SnmpManager.getInstance().resetTimeout(deviceConfiguration);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                Log.w(TAG, "interrupted: " + e.getMessage());
-            } catch (ExecutionException e) {
-                Log.e(TAG, "execution exception: " + e.getMessage());
-            } catch (TimeoutException e) {
-                Log.w(TAG, "timeout reached!");
-                SnmpManager.getInstance().registerTimeout(deviceConfiguration);
-            }
-        });
+
+    protected void startQueryTasks(CockpitQueryView queryView, ManagedDevice md, Class<? extends ListenableWorker> workerClass, String tabId) {
+        Data queryTaskTabInput = new Data.Builder().putString("device_id", md.getDeviceConfiguration().getUniqueDeviceId()).build();
+        // TODO add some more useful constraints
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+        OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(workerClass)
+                .setConstraints(constraints)
+                .setInputData(queryTaskTabInput).build();
+
+        // clear current collection
+        Map<Integer, AbstractCockpitQuerySection> singleTabQueryCollection = md.getSingleTabQueryCollection(tabId);
+        if (singleTabQueryCollection != null && !singleTabQueryCollection.isEmpty()) {
+            singleTabQueryCollection.clear();
+        }
+
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            WorkManager instance = WorkManager.getInstance(activity);
+            instance.enqueue(workRequest);
+            instance.getWorkInfoByIdLiveData(workRequest.getId())
+                    .observe(this, workInfo -> {
+                        if (workInfo != null && workInfo.getState().isFinished()) {
+                            // ... do something with the result ...
+                            queryView.getCockpitQuerySectionMap().clear();
+                            if (md.getSingleTabQueryCollection(tabId).isEmpty()) {
+                                System.out.println("OMG!!!");
+                            }
+                            queryView.getCockpitQuerySectionMap().putAll(md.getSingleTabQueryCollection(tabId));
+                            queryView.render(true);
+                        }
+                    });
+        }
     }
 
     /**

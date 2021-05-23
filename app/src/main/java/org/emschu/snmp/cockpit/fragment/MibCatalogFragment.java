@@ -36,8 +36,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.emschu.snmp.cockpit.R;
+import org.emschu.snmp.cockpit.activity.AlertHelper;
+import org.emschu.snmp.cockpit.query.OIDCatalog;
+import org.emschu.snmp.cockpit.snmp.MibCatalog;
+import org.emschu.snmp.cockpit.snmp.MibCatalogArchiveManager;
+import org.emschu.snmp.cockpit.snmp.MibCatalogManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,19 +61,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import org.emschu.snmp.cockpit.R;
-import org.emschu.snmp.cockpit.activity.AlertHelper;
-import org.emschu.snmp.cockpit.query.OIDCatalog;
-import org.emschu.snmp.cockpit.snmp.MibCatalog;
-import org.emschu.snmp.cockpit.snmp.MibCatalogArchiveManager;
-import org.emschu.snmp.cockpit.snmp.MibCatalogManager;
 
 import tellh.com.recyclertreeview_lib.LayoutItemType;
 import tellh.com.recyclertreeview_lib.TreeNode;
@@ -239,11 +239,15 @@ public class MibCatalogFragment extends Fragment {
     private JsonNode readJsonTree() {
         ObjectMapper om = new ObjectMapper();
         try {
+            if (getActivity() == null) {
+                return null;
+            }
             MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity()));
-            Reader is = new BufferedReader(
-                    new InputStreamReader(mcm.getTreeFileInputStream(getContext()), StandardCharsets.UTF_8));
-            JsonNode tree = om.readTree(is);
-            is.close();
+            JsonNode tree;
+            try (Reader is = new BufferedReader(
+                    new InputStreamReader(mcm.getTreeFileInputStream(getContext()), StandardCharsets.UTF_8))) {
+                tree = om.readTree(is);
+            }
             return tree;
         } catch (IOException e) {
             Log.w(TAG, "error reading json tree: " + e.getMessage());
@@ -261,7 +265,6 @@ public class MibCatalogFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_import_mib) {
-
             new AlertDialog.Builder(getActivity())
                     .setTitle(getString(R.string.mib_catalog_import_process))
                     .setMessage(getString(R.string.mib_catalog_import_dialog_description))
@@ -533,7 +536,7 @@ public class MibCatalogFragment extends Fragment {
         @Override
         public void onToggle(boolean isExpand, RecyclerView.ViewHolder holder) {
             if (holder instanceof DirectoryNodeBinder.DirectoryNodeViewHolder) {
-                layout.scrollToPositionWithOffset(holder.getAdapterPosition(), 175);
+                layout.scrollToPositionWithOffset(holder.getBindingAdapterPosition(), 175);
 
                 DirectoryNodeBinder.DirectoryNodeViewHolder dirDirectoryNodeViewHolder = (DirectoryNodeBinder.DirectoryNodeViewHolder) holder;
                 final ImageView ivArrow = dirDirectoryNodeViewHolder.getIvArrow();

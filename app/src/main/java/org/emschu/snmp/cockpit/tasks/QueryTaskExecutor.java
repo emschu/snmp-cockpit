@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.emschu.snmp.cockpit.CockpitStateManager;
 import org.emschu.snmp.cockpit.query.QueryCache;
@@ -19,7 +20,7 @@ import org.emschu.snmp.cockpit.snmp.model.QueryResponse;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-public class QueryTaskExecutor<T extends SnmpQuery> {
+public class QueryTaskExecutor {
     private final static String TAG = QueryTaskExecutor.class.getSimpleName();
 
     private static final Executor executor = SnmpManager.getInstance().getThreadPoolExecutor();
@@ -29,9 +30,9 @@ public class QueryTaskExecutor<T extends SnmpQuery> {
         void onComplete(R result);
     }
 
-    public void executeAsync(@NonNull QueryRequest<T> queryRequest, Callback<T> uiCompletionCallback) {
+    public static <T extends SnmpQuery> void executeAsync(@NonNull QueryRequest<T> queryRequest, @Nullable Callback<T> uiCompletionCallback) {
         executor.execute(() -> {
-            final long startTime = System.currentTimeMillis();
+            //final long startTime = System.currentTimeMillis();
             DeviceConfiguration deviceConfiguration = queryRequest.getDeviceConfiguration();
             if (deviceConfiguration == null) {
                 throw new IllegalStateException("null device config!");
@@ -44,9 +45,11 @@ public class QueryTaskExecutor<T extends SnmpQuery> {
                 if (cachedQuery != null) {
                     Log.d(TAG, "return query from cache");
                     // this is executed on the main/ui thread
-                    handler.post(() -> {
-                        uiCompletionCallback.onComplete(cachedQuery);
-                    });
+                    if (uiCompletionCallback != null) {
+                        handler.post(() -> {
+                            uiCompletionCallback.onComplete(cachedQuery);
+                        });
+                    }
                     return;
                 }
             }
@@ -101,9 +104,11 @@ public class QueryTaskExecutor<T extends SnmpQuery> {
             }
 
             // this is executed on the main/ui thread
-            handler.post(() -> {
-                uiCompletionCallback.onComplete(queryResponseClass);
-            });
+            if (uiCompletionCallback != null) {
+                handler.post(() -> {
+                    uiCompletionCallback.onComplete(queryResponseClass);
+                });
+            }
         });
     }
 

@@ -1,147 +1,68 @@
-/*
- * SNMP Cockpit Android App
- *
- * Copyright (C) 2018-2019
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
 package org.emschu.snmp.cockpit.tasks;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicReference;
+import androidx.annotation.NonNull;
+import androidx.work.WorkerParameters;
 
 import org.emschu.snmp.cockpit.persistence.CockpitDbHelper;
 import org.emschu.snmp.cockpit.persistence.model.CustomQuery;
-import org.emschu.snmp.cockpit.query.SimpleSnmpListRequest;
+import org.emschu.snmp.cockpit.query.AbstractQueryRequest;
 import org.emschu.snmp.cockpit.query.SnmpQuery;
-import org.emschu.snmp.cockpit.query.impl.DefaultListQuery;
-import org.emschu.snmp.cockpit.query.view.CockpitQueryView;
+import org.emschu.snmp.cockpit.query.impl.CustomListQuery;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
-import org.emschu.snmp.cockpit.snmp.SnmpManager;
+import org.emschu.snmp.cockpit.snmp.ManagedDevice;
 
-/**
- * this task class handles display of custom queries
- */
-public class CustomQueryTask extends AsyncTask<Void, Void, Void> implements TabTaskHelper {
+import java.util.List;
 
-    public static final String TAG = CustomQueryTask.class.getName();
+public class CustomQueryTask extends AbstractWorker {
+    public static final String CUSTOM_QUERY_TASK = "custom_query_task";
+    private final CockpitDbHelper dbHelper;
 
-    private final AtomicReference<CockpitQueryView> queryView = new AtomicReference<>();
-    private DeviceConfiguration deviceConfiguration = null;
-    private CockpitDbHelper cockpitDbHelper = null;
-
-    private final List<TaskWrapper> taskList = Collections.synchronizedList(new ArrayList<>());
-
-    /**
-     * constructor
-     *
-     * @param queryView
-     * @param deviceConfiguration
-     * @param dbHelper
-     */
-    public CustomQueryTask(CockpitQueryView queryView, DeviceConfiguration deviceConfiguration, CockpitDbHelper dbHelper) {
-        this.queryView.set(queryView);
-        this.deviceConfiguration = deviceConfiguration;
-        this.cockpitDbHelper = dbHelper;
+    public CustomQueryTask(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+        this.dbHelper = new CockpitDbHelper(context);
     }
 
     @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    public AbstractWorkerQueryTask getTask() {
+        return new Task(getManagedDevice());
+    }
 
-        ThreadPoolExecutor tpe = SnmpManager.getInstance().getThreadPoolExecutor();
-        if (tpe.isTerminating() || tpe.isShutdown() || tpe.isTerminated()) {
-            Log.d(TAG, "invalid thread pool given");
-            return;
-        }
+    class Task extends AbstractWorkerQueryTask {
 
-        int rowCount = cockpitDbHelper.getQueryRowCount();
-        for (int j = 0; j < rowCount; j++) {
-            CustomQuery customQuery = cockpitDbHelper.getCustomQueryByListOffset(j);
-            if (customQuery != null) {
-                String oidToQuery = customQuery.getOid();
+        public Task(ManagedDevice managedDevice) {
+            super(managedDevice);
 
-                Log.d(TAG, "start query task for oid:" + oidToQuery);
-                QueryTask<DefaultListQuery> queryTask = new QueryTask<>();
-                SimpleSnmpListRequest request = new SimpleSnmpListRequest(deviceConfiguration, oidToQuery);
-                queryTask.executeOnExecutor(tpe, request);
-                taskList.add(new TaskWrapper(queryTask, customQuery));
+            List<AbstractQueryRequest<? extends SnmpQuery>> queryList = this.getQueryList();
+            DeviceConfiguration deviceConfiguration = getManagedDevice().getDeviceConfiguration();
+            if (deviceConfiguration == null) {
+                return;
+            }
+
+            int rowCount = dbHelper.getQueryRowCount();
+            for (int j = 0; j < rowCount; j++) {
+                CustomQuery customQuery = dbHelper.getCustomQueryByListOffset(j);
+                if (customQuery != null) {
+                    String oidToQuery = customQuery.getOid();
+                    Log.d(TAG, "start query task for oid:" + oidToQuery);
+
+                    queryList.add(new CustomListQuery.CustomQueryRequest(deviceConfiguration, customQuery));
+                }
             }
         }
 
-        if (rowCount == 0) {
-            // finish loading if user has no queries
-            this.queryView.get().render(true);
+        @Override
+        public String getTabId() {
+            return CUSTOM_QUERY_TASK;
         }
-
-        cockpitDbHelper.close();
     }
 
     @Override
-    protected Void doInBackground(Void... voids) {
-        if (deviceConfiguration == null) {
-            throw new IllegalArgumentException("null DeviceConfiguration given");
-        }
+    public void cleanUp() {
+        super.cleanUp();
 
-        for (TaskWrapper taskWrapper : taskList) {
-            CustomQuery customQuery = taskWrapper.getCustomQuery();
-            addListQuery(customQuery.getName() + " | " + customQuery.getOid(), taskWrapper.getQueryTask(), queryView);
-        }
-
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        Log.d(TAG, "start rendering");
-        // here we are on the ui thread
-        queryView.get().render(true);
-    }
-
-    @Override
-    public void cancelTasks() {
-        for (TaskWrapper taskWrapper: taskList) {
-            taskWrapper.getQueryTask().cancel(true);
-        }
-    }
-
-    /**
-     * simple wrapper for two objects
-     */
-    class TaskWrapper {
-        private final QueryTask<? extends SnmpQuery> queryTask;
-        private final CustomQuery customQuery;
-
-        TaskWrapper(QueryTask<? extends SnmpQuery> queryTask, CustomQuery customQuery) {
-            this.queryTask = queryTask;
-            this.customQuery = customQuery;
-        }
-
-        QueryTask<? extends SnmpQuery> getQueryTask() {
-            return queryTask;
-        }
-
-        CustomQuery getCustomQuery() {
-            return customQuery;
-        }
+        this.dbHelper.close();
     }
 }

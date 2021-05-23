@@ -53,6 +53,10 @@ public class CustomQuery {
         return name;
     }
 
+    public String getTitle() {
+        return this.getName() + " | " + this.getOid();
+    }
+
     public boolean isSingleQuery() {
         return isSingleQuery;
     }
