@@ -444,9 +444,9 @@ public class CockpitMainActivity extends ProtectedActivity
                 });
     }
 
+    @SuppressWarnings({"deprecation"})
     private Locale getCurrentLocale() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
-            //noinspection deprecation
             return this.getResources().getConfiguration().locale;
         }
         return this.getResources().getConfiguration().getLocales().get(0);

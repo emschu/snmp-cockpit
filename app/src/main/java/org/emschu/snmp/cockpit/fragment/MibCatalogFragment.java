@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,8 +79,8 @@ import tellh.com.recyclertreeview_lib.TreeViewBinder;
 public class MibCatalogFragment extends Fragment {
 
     public static final String TAG = MibCatalogFragment.class.getName();
-    public static final int READ_REQUEST_CODE = 45;
     private LinearLayoutManager layout;
+    ActivityResultLauncher<Intent> intentActivityResultLauncher;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -150,6 +151,14 @@ public class MibCatalogFragment extends Fragment {
         node5.expand(); // 1.3.6.1.6
         adapter.refresh(nodes);
 
+        intentActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null) {
+                    this.handleResult(data.getData());
+                }
+            }
+        });
         return view;
     }
 
@@ -282,7 +291,7 @@ public class MibCatalogFragment extends Fragment {
                         ActivityResultContracts.GetContent getContent = new ActivityResultContracts.GetContent();
                         Intent intent = getContent.createIntent(getActivity(), "application/zip");
                         intent.putExtra(Intent.EXTRA_TITLE, getString(R.string.mib_catalog_import_intent_extra));
-                        startActivityForResult(intent, READ_REQUEST_CODE);
+                        intentActivityResultLauncher.launch(intent);
                     }).show();
             return true;
         }
@@ -290,53 +299,44 @@ public class MibCatalogFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "result received for MIB catalog .zip file import");
+    public void handleResult(Uri uri) {
+        Log.d(TAG, "result received for MIB catalog .zip file import");
+        Log.i(TAG, "URI of import archive: " + uri.toString());
 
-            Uri uri = null;
-            if (data != null && data.getData() != null) {
-                uri = data.getData();
-                Log.i(TAG, "URI of import archive: " + uri.toString());
+        MibCatalogArchiveManager fm = new MibCatalogArchiveManager(requireActivity(), uri);
+        MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireActivity()));
 
-                MibCatalogArchiveManager fm = new MibCatalogArchiveManager(requireActivity(), uri);
-                MibCatalogManager mcm = new MibCatalogManager(androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireActivity()));
+        if (mcm.isDuplicate(fm.getArchiveName())) {
+            Toast.makeText(getActivity(), R.string.mib_catalog_duplicate_toast_message, Toast.LENGTH_LONG).show();
+        } else if (fm.isArchiveValid()) {
+            boolean success = fm.unpackZip();
+            if (success) {
+                Log.i(TAG, String.format("successfully imported '%s'", fm.getArchiveName()));
 
-                if (mcm.isDuplicate(fm.getArchiveName())) {
-                    Toast.makeText(getActivity(), R.string.mib_catalog_duplicate_toast_message, Toast.LENGTH_LONG).show();
-                } else if (fm.isArchiveValid()) {
-                    boolean success = fm.unpackZip();
-                    if (success) {
-                        Log.i(TAG, String.format("successfully imported '%s'", fm.getArchiveName()));
+                MibCatalog newCatalog = new MibCatalog(fm.getArchiveName());
+                mcm.getMibCatalog().add(newCatalog);
+                mcm.storeCatalog();
+                mcm.activateCatalog(fm.getArchiveName());
 
-                        MibCatalog newCatalog = new MibCatalog(fm.getArchiveName());
-                        mcm.getMibCatalog().add(newCatalog);
-                        mcm.storeCatalog();
-                        mcm.activateCatalog(fm.getArchiveName());
+                ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.execute(() -> OIDCatalog.getInstance(null).refresh());
+                executorService.shutdown();
 
-                        ExecutorService executorService = Executors.newSingleThreadExecutor();
-                        executorService.execute(() -> OIDCatalog.getInstance(null).refresh());
-                        executorService.shutdown();
-
-                        Log.i(TAG, "added new MIB catalog and activated it");
-                        Toast.makeText(getActivity(), String.format(getString(R.string.new_mib_catalog_created_toast_message),
-                                fm.getArchiveName()), Toast.LENGTH_LONG).show();
-                        // refresh this fragment
-                        requireActivity().getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, newInstance())
-                                .commit();
-                    } else {
-                        Log.w(TAG, String.format("Import of archive '%s' was not possible", fm.getArchiveName()));
-                        Toast.makeText(getActivity(), getString(R.string.error_importing_mib_catalog_archive), Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Log.w(TAG, String.format("archive '%s' is NOT valid!", fm.getArchiveName()));
-                    Toast.makeText(getActivity(), R.string.invalid_mib_catalog_archive_toast_message, Toast.LENGTH_LONG).show();
-                }
+                Log.i(TAG, "added new MIB catalog and activated it");
+                Toast.makeText(getActivity(), String.format(getString(R.string.new_mib_catalog_created_toast_message),
+                        fm.getArchiveName()), Toast.LENGTH_LONG).show();
+                // refresh this fragment
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, newInstance())
+                        .commit();
+            } else {
+                Log.w(TAG, String.format("Import of archive '%s' was not possible", fm.getArchiveName()));
+                Toast.makeText(getActivity(), getString(R.string.error_importing_mib_catalog_archive), Toast.LENGTH_LONG).show();
             }
+        } else {
+            Log.w(TAG, String.format("archive '%s' is NOT valid!", fm.getArchiveName()));
+            Toast.makeText(getActivity(), R.string.invalid_mib_catalog_archive_toast_message, Toast.LENGTH_LONG).show();
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
