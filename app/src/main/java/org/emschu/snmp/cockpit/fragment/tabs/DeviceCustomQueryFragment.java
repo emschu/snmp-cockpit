@@ -46,8 +46,10 @@ public class DeviceCustomQueryFragment extends DeviceFragment {
         return rootView;
     }
 
-    @Override
-    public void reloadData() {
+    /**
+     * method to update cockpit query view
+     */
+    private void updateCockpitQueryView() {
         CockpitQueryView queryView = getQueryView();
         if (queryView == null) {
             return;
@@ -57,5 +59,10 @@ public class DeviceCustomQueryFragment extends DeviceFragment {
         if (!md.isDummy()) {
             startQueryTasks(queryView, md, CustomQueryTask.class, CustomQueryTask.CUSTOM_QUERY_TASK);
         }
+    }
+
+    @Override
+    public void reloadData() {
+        updateCockpitQueryView();
     }
 }

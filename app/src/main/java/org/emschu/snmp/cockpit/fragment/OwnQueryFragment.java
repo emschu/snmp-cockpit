@@ -142,12 +142,10 @@ public class OwnQueryFragment extends Fragment {
             return;
         }
         if (cockpitDbHelper != null && cockpitDbHelper.getQueryRowCount() == 0) {
-            Log.d(TAG, "visible");
             // is empty - show message
             noQueriesText.setText(R.string.no_own_queries_message);
             noQueriesText.setVisibility(View.VISIBLE);
         } else {
-            Log.d(TAG, "invisible");
             noQueriesText.setVisibility(View.GONE);
         }
     }
@@ -156,6 +154,9 @@ public class OwnQueryFragment extends Fragment {
      * method with to show create query dialog
      */
     public void showCustomQueryDialog(@Nullable CustomQuery customQuery, final boolean isEditMode) {
+        if (getContext() == null) {
+            return;
+        }
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         dialogView = inflater.inflate(R.layout.dialog_custom_query, null, false);
 
@@ -186,7 +187,9 @@ public class OwnQueryFragment extends Fragment {
         if (isEditMode) {
             // add additional button in edit mode: delete
             builder.setNeutralButton(R.string.delete_custom_query_label, (dialog, which) -> {
-                cockpitDbHelper.removeQuery(customQuery.getId());
+                if (customQuery != null) {
+                    cockpitDbHelper.removeQuery(customQuery.getId());
+                }
                 dialog.cancel();
             });
         }
@@ -209,9 +212,11 @@ public class OwnQueryFragment extends Fragment {
                     cockpitDbHelper.linkTagsToQuery(insertedQueryId, selectedTags);
                 } else {
                     // update
-                    CustomQuery updatedCustomQuery = new CustomQuery(customQuery.getId(), inputOID, inputName, isSingleQuery);
-                    updatedCustomQuery.setTagList(currentTagSelection);
-                    cockpitDbHelper.updateQuery(updatedCustomQuery);
+                    if (customQuery != null) {
+                        CustomQuery updatedCustomQuery = new CustomQuery(customQuery.getId(), inputOID, inputName, isSingleQuery);
+                        updatedCustomQuery.setTagList(currentTagSelection);
+                        cockpitDbHelper.updateQuery(updatedCustomQuery);
+                    }
                 }
 
                 adapter.notifyDataSetChanged();

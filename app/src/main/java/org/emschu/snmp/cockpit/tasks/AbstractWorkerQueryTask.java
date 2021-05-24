@@ -49,14 +49,15 @@ public abstract class AbstractWorkerQueryTask {
         Map<Integer, AbstractCockpitQuerySection> tabQueries = managedDevice.getSingleTabQueryCollection(this.getTabId());
         this.snmpQueryList.forEach(queryRequest -> {
             QueryTaskExecutor.executeAsync(queryRequest, result -> {
-                if (queryRequest.getContentTitleResourceId() == 0) {
-                    Log.e(AbstractWorkerQueryTask.class.getSimpleName(), "String resource id is zero!");
+                if ((!(queryRequest instanceof CustomListQuery.CustomQueryRequest) && queryRequest.getContentTitleResourceId() == 0)
+                        || (queryRequest instanceof CustomListQuery.CustomQueryRequest && ((CustomListQuery.CustomQueryRequest) queryRequest).getCustomQuery().getTitle().isEmpty())) {
+                    Log.e(this.getClass().getSimpleName(), "String resource id is zero!");
                     return;
                 }
                 if (result instanceof TableQuery) {
                     TableQuery tq = (TableQuery) result;
                     tabQueries.put(tabQueries.size(), new GroupedListQuerySection(SnmpCockpitApp.getContext().getString(queryRequest.getContentTitleResourceId()), tq));
-                } else if (result instanceof CustomListQuery) {
+                } else if (result instanceof CustomListQuery && queryRequest instanceof CustomListQuery.CustomQueryRequest) {
                     CustomListQuery clq = (CustomListQuery) result;
                     CustomListQuery.CustomQueryRequest customQueryRequest = (CustomListQuery.CustomQueryRequest) queryRequest;
                     tabQueries.put(tabQueries.size(), new ListQuerySection(customQueryRequest.getCustomQuery().getTitle(), clq, true));
@@ -65,8 +66,7 @@ public abstract class AbstractWorkerQueryTask {
                     ListQuerySection querySection = new ListQuerySection(SnmpCockpitApp.getContext().getString(queryRequest.getContentTitleResourceId()), lq, true);
                     tabQueries.put(tabQueries.size(), querySection);
                 } else {
-                    System.out.println("sdfsdf");
-                    // TODO how-to handle other cases?
+                    Log.e(this.getClass().getSimpleName(), "Current query result is unknown!");
                 }
                 cdl.countDown();
             });
@@ -80,5 +80,4 @@ public abstract class AbstractWorkerQueryTask {
             SnmpManager.getInstance().registerTimeout(managedDevice.getDeviceConfiguration());
         }
     }
-
 }

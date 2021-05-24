@@ -37,7 +37,7 @@ public class CustomListQuery extends AbstractSnmpListQuery {
         private final CustomQuery customQuery;
 
         public CustomQueryRequest(DeviceConfiguration deviceConfiguration, CustomQuery customQuery) {
-            super(deviceConfiguration);
+            super(deviceConfiguration, 0);
             this.customQuery = customQuery;
         }
 

@@ -115,7 +115,6 @@ public class CockpitMainActivity extends ProtectedActivity
     private static final String TAG = CockpitMainActivity.class.getName();
     private static final String KEY_LAST_SCREEN = "last_screen";
 
-    public static final int DEVICE_CONNECT_REQUEST = 13;
     public static final String QUERY_OWN_CATALOG_FRAGMENT_TAG = "ownQueryFragment";
     private static final String CONNECTION_TEST_TASK_TAG = "connection_test_task";
     private final CockpitStateManager cockpitStateManagerInstance = CockpitStateManager.getInstance();
@@ -1022,7 +1021,7 @@ public class CockpitMainActivity extends ProtectedActivity
             if (str.startsWith("StrictMode VmPolicy violation with POLICY_DEATH;")) {
                 // StrictMode is about to terminate us... do a heap dump!
                 try {
-                    File dir = Environment.getExternalStorageDirectory();
+                    File dir = SnmpCockpitApp.getContext().getExternalFilesDir(null);
                     File file = new File(dir, "strictmode-violation.hprof");
                     super.println("Dumping HPROF to: " + file);
                     Debug.dumpHprofData(file.getAbsolutePath());

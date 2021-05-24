@@ -48,11 +48,8 @@ import org.emschu.snmp.cockpit.SnmpCockpitApp;
 import org.emschu.snmp.cockpit.adapter.DeviceSpinnerAdapter;
 import org.emschu.snmp.cockpit.adapter.ViewPager2Adapter;
 import org.emschu.snmp.cockpit.fragment.DeviceFragment;
-import org.emschu.snmp.cockpit.fragment.tabs.DeviceCustomQueryFragment;
 import org.emschu.snmp.cockpit.fragment.tabs.DeviceDetailFragment;
 import org.emschu.snmp.cockpit.fragment.tabs.HardwareQueryFragment;
-import org.emschu.snmp.cockpit.fragment.tabs.MonitorQueryFragment;
-import org.emschu.snmp.cockpit.fragment.tabs.SnmpUsageQueryFragment;
 import org.emschu.snmp.cockpit.persistence.CockpitDbHelper;
 import org.emschu.snmp.cockpit.query.impl.general.SystemQuery;
 import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
@@ -77,7 +74,6 @@ public class TabbedDeviceActivity extends ProtectedActivity {
     private ViewPager2Adapter viewPagerAdapter;
     private ManagedDevice managedDevice;
     private boolean isCollapsed;
-    private DeviceDetailFragment deviceDetailFragment;
     private ProgressBar deviceProgressBar;
     private AlertHelper alertHelper;
     private PeriodicTask periodicTask = new PeriodicTask(this::checkSecurity, 2500);
@@ -462,7 +458,6 @@ public class TabbedDeviceActivity extends ProtectedActivity {
             this.tabLayoutMediator.detach();
         }
         viewPager = null;
-        deviceDetailFragment = null;
 
         if (alertHelper != null) {
             // avoid window leaks
