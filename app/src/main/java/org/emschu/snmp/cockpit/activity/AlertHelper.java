@@ -27,14 +27,9 @@ import android.os.Process;
 import android.util.Log;
 import android.view.View;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+
 import org.emschu.snmp.cockpit.CockpitMainActivity;
 import org.emschu.snmp.cockpit.CockpitPreferenceManager;
 import org.emschu.snmp.cockpit.CockpitStateManager;
@@ -45,6 +40,12 @@ import org.emschu.snmp.cockpit.snmp.DeviceConfiguration;
 import org.emschu.snmp.cockpit.snmp.DeviceManager;
 import org.emschu.snmp.cockpit.snmp.ManagedDevice;
 import org.emschu.snmp.cockpit.snmp.SnmpManager;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * this class encapsulates alert dialogs and their functionality in this app
@@ -267,7 +268,7 @@ public class AlertHelper {
                     Process.killProcess(Process.myPid());
                 });
 
-        if (context.get() instanceof Activity && !((Activity) context.get()).isFinishing()) {
+        if (context.get() instanceof Activity && !((Activity) context.get()).isFinishing() && !((Activity) context.get()).isDestroyed()) {
             ((Activity) context.get()).runOnUiThread(() -> {
                 AlertDialog dialog = builder.create();
                 timeoutDialogs.add(dialog);

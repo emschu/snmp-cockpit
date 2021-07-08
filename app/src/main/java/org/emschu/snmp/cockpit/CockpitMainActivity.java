@@ -274,12 +274,14 @@ public class CockpitMainActivity extends ProtectedActivity
         BooleanObservable areDevicesConnectedObservable = CockpitStateManager.getInstance().getAreDevicesConnectedObservable();
         areDevicesConnectedObservable.deleteObservers(); // ensure only one observer is registered
         areDevicesConnectedObservable.addObserver((o, arg) -> {
-            boolean areDevicesConnected = ((BooleanObservable) o).getValue();
-            if (areDevicesConnected) {
-                noDeviceText.setVisibility(View.INVISIBLE);
-            } else {
-                noDeviceText.setVisibility(View.VISIBLE);
-            }
+            runOnUiThread(() -> {
+                boolean areDevicesConnected = ((BooleanObservable) o).getValue();
+                if (areDevicesConnected) {
+                    noDeviceText.setVisibility(View.INVISIBLE);
+                } else {
+                    noDeviceText.setVisibility(View.VISIBLE);
+                }
+            });
         });
     }
 

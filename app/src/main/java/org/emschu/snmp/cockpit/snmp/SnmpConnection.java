@@ -112,8 +112,11 @@ public class SnmpConnection {
             Log.e(TAG, "no valid transport object");
             return;
         }
-        startListening();
-        Log.d(TAG, "is listening: " + transport.isListening());
+
+        if (!this.deviceConfiguration.isDummy()) {
+            startListening();
+            Log.d(TAG, "is listening: " + transport.isListening());
+        }
     }
 
     /**

@@ -104,6 +104,9 @@ public abstract class AbstractSnmpAdapter {
             Log.w(TAG, "no snmp connection allowed, execution prevented");
             return null;
         }
+        if (deviceConfiguration.isDummy()) {
+            return null;
+        }
         if (!udpAddressTransportMapping.isListening()) {
             Log.wtf(TAG, "no transport mapping is listening!");
             return null;
@@ -169,6 +172,9 @@ public abstract class AbstractSnmpAdapter {
         }
 
         try {
+            if (this.deviceConfiguration.isDummy()) {
+                return responseList;
+            }
             if (!udpAddressTransportMapping.isListening()) {
                 Log.w(TAG, "Socket is no longer open!");
                 return responseList;

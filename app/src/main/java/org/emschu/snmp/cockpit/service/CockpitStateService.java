@@ -39,7 +39,8 @@ import org.emschu.snmp.cockpit.util.BooleanObservable;
  */
 public class CockpitStateService extends JobIntentService {
     public static final String TAG = CockpitStateService.class.getName();
-    public static final int JOB_ID = 1;
+    public static final int JOB_ID = 1423;
+    ConnectivityManager.NetworkCallback callback;
 
     public static void enqueueWork(Context context, Intent work) {
         enqueueWork(context, CockpitStateService.class, JOB_ID, work);
@@ -62,7 +63,7 @@ public class CockpitStateService extends JobIntentService {
         final BooleanObservable isNetworkSecureObservable = CockpitStateManager.getInstance().getNetworkSecurityObservable();
         final WifiNetworkManager wifiNetworkManager = WifiNetworkManager.getInstance();
 
-        ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+        this.callback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
@@ -93,12 +94,18 @@ public class CockpitStateService extends JobIntentService {
             }
         };
 
-        cm.registerNetworkCallback(builder.build(), callback);
+        cm.registerNetworkCallback(builder.build(), this.callback);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.d(TAG, "finishing cockpit state service");
+        ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (this.callback != null) {
+            cm.unregisterNetworkCallback(this.callback);
+        }
     }
 }
