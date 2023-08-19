@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ SNMP Cockpit Android App
+  ~ snmp-cockpit
   ~
-  ~ Copyright (C) 2018-2019
+  ~ Copyright (C) 2018-2023
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,46 +13,67 @@
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU General Public License for more details.
-  ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
+-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.emschu.snmp.cockpit">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:maxSdkVersion="25" android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission
+        android:name="android.permission.WAKE_LOCK"
+        android:maxSdkVersion="25" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.camera.flash" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="true" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="false"
+        android:normalScreens="true"
+        android:smallScreens="true" />
 
     <application
+        android:name=".SnmpCockpitApp"
         android:allowBackup="true"
-        android:fullBackupContent="@xml/cockpit_backup_rules"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:logo="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:allowClearUserData="true"
-        android:name=".SnmpCockpitApp">
+        android:theme="@style/Theme.Cockpit"
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="tiramisu">
+
         <activity
-            android:name="org.emschu.snmp.cockpit.activity.SplashScreen"
+            android:name=".MainActivity"
+            android:exported="true"
             android:hardwareAccelerated="true"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:launchMode="singleTask"
+            android:allowEmbedded="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.Cockpit.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,48 +81,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.emschu.snmp.cockpit.CockpitMainActivity"
-            android:hardwareAccelerated="true"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="org.emschu.snmp.cockpit.activity.SNMPLoginActivity"
-            android:label="@string/title_activity_snmplogin"
-            android:parentActivityName="org.emschu.snmp.cockpit.CockpitMainActivity">
-        </activity>
-        <activity
-            android:name="org.emschu.snmp.cockpit.activity.TabbedDeviceActivity"
-            android:label="@string/title_activity_tabbed_device"
-            android:hardwareAccelerated="true"
-            android:launchMode="singleTop"
-            android:parentActivityName="org.emschu.snmp.cockpit.CockpitMainActivity"
-            android:theme="@style/AppTheme">
-        </activity>
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.AppCompat" />
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:exported="false"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
+
+        <activity
+            android:name=".ui.screens.CockpitAppIntro"
+            android:exported="false"
+            android:label="Snmp Cockpit Intro"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.Cockpit.NoActionBar" />
 
         <uses-library
             android:name="android.test.runner"
             android:required="false" />
-
-        <activity
-            android:name="org.emschu.snmp.cockpit.activity.BlockedSettingsActivity"
-            android:parentActivityName="org.emschu.snmp.cockpit.CockpitMainActivity"
-            android:label="@string/title_activity_settings">
-        </activity>
-
-        <activity
-            android:name="org.emschu.snmp.cockpit.activity.TagManagementActivity"
-            android:label="@string/title_activity_tag_management"
-            android:parentActivityName="org.emschu.snmp.cockpit.CockpitMainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
 
         <meta-data
             android:name="android.webkit.WebView.EnableSafeBrowsing"
@@ -110,20 +115,26 @@
             android:name="android.webkit.WebView.MetricsOptOut"
             android:value="true" />
 
-        <activity
-            android:name="org.emschu.snmp.cockpit.activity.SingleQueryResultActivity"
-            android:label="@string/title_activity_single_query_result"
-            android:parentActivityName="org.emschu.snmp.cockpit.CockpitMainActivity"
-            android:theme="@style/AppTheme">
-        </activity>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
-        <activity android:name=".fragment.AboutHelperFragment" />
-        <activity android:name=".activity.AboutHelperActivity" />
-
-        <service
-            android:name="org.emschu.snmp.cockpit.service.CockpitStateService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
     </application>
 
 </manifest>

@@ -1,7 +1,7 @@
 /*
- * SNMP Cockpit Android App
+ * snmp-cockpit
  *
- * Copyright (C) 2018-2019
+ * Copyright (C) 2018-2023
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -26,35 +25,17 @@ import android.provider.BaseColumns;
  */
 public class DatabaseContract {
     public static final String DATABASE_NAME = "SNMPCockpit.db";
-    public static final int DATABASE_VERSION = 21;
+    public static final int DATABASE_VERSION = 25;
 
     /**
      * query table
      */
-    public class QueryTable implements BaseColumns {
-        static final String TABLE_NAME = "custom_queries";
+    public static class QueryTable implements BaseColumns {
+        static final String TABLE_NAME = "user_queries";
 
         static final String COLUMN_NAME_OID = "OID";
         static final String COLUMN_NAME_NAME = "description";
         static final String COLUMN_NAME_IS_SINGLE = "is_single";
-    }
-
-    /**
-     * category table
-     */
-    public class CategoryTable implements BaseColumns {
-        static final String TABLE_NAME = "tags";
-
-        static final String COLUMN_NAME_NAME = "description";
-    }
-
-    /**
-     * linking table for m:n relation of the tables above
-     */
-    public class QueryToCategoryTable implements BaseColumns {
-        static final String TABLE_NAME = "query_to_category";
-
-        static final String COLUMN_NAME_QUERY_ID = "query_id";
-        static final String COLUMN_NAME_CATEGORY_ID = "category_id";
+        static final String COLUMN_NAME_IS_IN_DETAILS = "is_in_details";
     }
 }

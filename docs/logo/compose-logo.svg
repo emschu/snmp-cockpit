@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="32mm"
+   height="32mm"
+   viewBox="0 0 39.487774 56.596542"
+   version="1.1"
+   id="svg8"
+   inkscape:export-filename="compose_logo_square.png"
+   inkscape:export-xdpi="400"
+   inkscape:export-ydpi="400"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="compose-logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-193.94929"
+     inkscape:cy="31.819805"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer4"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1051"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:snap-grids="false"
+     inkscape:snap-bbox="true"
+     inkscape:showpageshadow="2"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="Ebene 3"
+     style="display:inline">
+    <rect
+       style="opacity:1;fill:#5a0e42;fill-opacity:1;stroke:#5a0e42;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
+       id="rect873"
+       width="57.079021"
+       height="56.665401"
+       x="-8.7907362"
+       y="-0.12794973"
+       inkscape:label="rect873" />
+  </g>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline;opacity:0.865"
+     transform="translate(-47.669494,-69.730776)" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Ebene 2"
+     transform="translate(-47.669494,-69.730776)"
+     style="display:inline">
+    <g
+       id="g647"
+       transform="matrix(1.2816001,0,0,1.3760257,-19.096667,-26.765894)">
+      <g
+         id="g4532"
+         transform="matrix(0.61106153,0,0,0.61106153,53.908016,93.288344)"
+         style="display:inline;opacity:0.865;fill:#000000">
+        <path
+           id="path4518"
+           d="M 0,0 H 24 V 24 H 0 Z"
+           inkscape:connector-curvature="0"
+           style="fill:none" />
+        <path
+           id="path4520"
+           d="M 5,2 C 5,1.45 4.55,1 4,1 3.45,1 3,1.45 3,2 V 6 H 1 v 6 H 7 V 6 H 5 Z m 4,14 c 0,1.3 0.84,2.4 2,2.82 V 23 h 2 V 18.82 C 14.16,18.41 15,17.31 15,16 V 14 H 9 Z m -8,0 c 0,1.3 0.84,2.4 2,2.82 V 23 H 5 V 18.82 C 6.16,18.4 7,17.3 7,16 V 14 H 1 Z M 21,6 V 2 C 21,1.45 20.55,1 20,1 19.45,1 19,1.45 19,2 v 4 h -2 v 6 h 6 V 6 Z M 13,2 C 13,1.45 12.55,1 12,1 11.45,1 11,1.45 11,2 V 6 H 9 v 6 h 6 V 6 h -2 z m 4,14 c 0,1.3 0.84,2.4 2,2.82 V 23 h 2 v -4.18 c 1.16,-0.41 2,-1.51 2,-2.82 v -2 h -6 z"
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-opacity:1" />
+      </g>
+      <g
+         id="g4548"
+         transform="matrix(1.3225252,0,0,1.1721861,52.321301,69.730776)"
+         style="opacity:0.955">
+        <path
+           id="path4534"
+           d="M 0,0 H 24 V 24 H 0 Z"
+           inkscape:connector-curvature="0"
+           style="fill:none" />
+        <path
+           id="path4536"
+           d="M 12,7 V 3 H 2 V 21 H 22 V 7 Z M 6,19 H 4 V 17 H 6 Z M 6,15 H 4 V 13 H 6 Z M 6,11 H 4 V 9 H 6 Z M 6,7 H 4 V 5 h 2 z m 4,12 H 8 v -2 h 2 z m 0,-4 H 8 v -2 h 2 z m 0,-4 H 8 V 9 h 2 z M 10,7 H 8 V 5 h 2 z m 10,12 h -8 v -2 h 2 v -2 h -2 v -2 h 2 V 11 H 12 V 9 h 8 z m -2,-8 h -2 v 2 h 2 z m 0,4 h -2 v 2 h 2 z"
+           inkscape:connector-curvature="0"
+           style="fill:#ffffff;fill-opacity:1" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:6.61458px;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;display:none;opacity:0.955;fill:#c7c7c7;fill-opacity:1;stroke:#ffffff;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       x="46.242294"
+       y="116.33865"
+       id="text4552"
+       inkscape:export-filename="/home/worker/lettering_logo.png"
+       inkscape:export-xdpi="179"
+       inkscape:export-ydpi="179"><tspan
+         sodipodi:role="line"
+         id="tspan4550"
+         x="46.242294"
+         y="116.33865"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';fill:#c7c7c7;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">  SNMP</tspan><tspan
+         sodipodi:role="line"
+         x="46.242294"
+         y="122.95323"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';fill:#c7c7c7;fill-opacity:1;stroke:#000000;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="tspan5111">Cockpit</tspan></text>
+  </g>
+</svg>

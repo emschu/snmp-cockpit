@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 34
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compilerExtensionVersion
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    namespace 'org.emschu.android.treeview'
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:$coreKtxVersion"
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
+    implementation "com.google.android.material:material:$googleMaterialVersion"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinGradlePluginVersion"
+
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.runtime:runtime:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
+
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidJUnitExtVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+}
