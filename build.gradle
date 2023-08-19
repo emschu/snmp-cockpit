@@ -13,7 +13,7 @@ buildscript {
         junitVersion = '4.13.2'
         espressoVersion = '3.5.0'
         coreKtxVersion = '1.10.1'
-        kotlinCoroutinesVersion = '1.6.3'
+        kotlinCoroutinesVersion = '1.7.3'
         appCompatVersion = '1.6.1'
         googleMaterialVersion = '1.9.0'
         lifecycleVersion = '2.5.1'
