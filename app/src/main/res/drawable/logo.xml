@@ -1,0 +1,39 @@
+<!--
+  ~ snmp-cockpit
+  ~
+  ~ Copyright (C) 2018-2023
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<vector android:height="64dp"
+    android:viewportHeight="56.597"
+    android:viewportWidth="39.488"
+    android:width="64dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="#5a0e42"
+        android:pathData="M-8.791,-0.128h57.079v56.665h-57.079z"
+        android:strokeColor="#5a0e42"
+        android:strokeWidth="1" />
+    <path
+        android:fillAlpha="0.865"
+        android:fillColor="#ffffff"
+        android:pathData="M6.238,33.552C6.238,33.09 5.886,32.711 5.455,32.711 5.024,32.711 4.672,33.09 4.672,33.552L4.672,36.916L3.105,36.916l0,5.045L7.804,41.961L7.804,36.916L6.238,36.916ZM9.371,45.324c0,1.093 0.658,2.018 1.566,2.371L10.937,51.21l1.566,0L12.503,47.695C13.412,47.35 14.069,46.425 14.069,45.324L14.069,43.642L9.371,43.642ZM3.105,45.324c0,1.093 0.658,2.018 1.566,2.371L4.672,51.21L6.238,51.21L6.238,47.695C7.146,47.342 7.804,46.417 7.804,45.324L7.804,43.642L3.105,43.642ZM18.768,36.916L18.768,33.552C18.768,33.09 18.416,32.711 17.985,32.711 17.554,32.711 17.202,33.09 17.202,33.552l0,3.363l-1.566,0l0,5.045l4.699,0L20.334,36.916ZM12.503,33.552C12.503,33.09 12.151,32.711 11.72,32.711 11.289,32.711 10.937,33.09 10.937,33.552L10.937,36.916L9.371,36.916l0,5.045l4.699,0L14.069,36.916l-1.566,0zM15.636,45.324c0,1.093 0.658,2.018 1.566,2.371L17.202,51.21l1.566,0l0,-3.515c0.908,-0.345 1.566,-1.27 1.566,-2.371l0,-1.682l-4.699,0z"
+        android:strokeAlpha="0.865" />
+    <path
+        android:fillAlpha="0.955"
+        android:fillColor="#ffffff"
+        android:pathData="M20.628,10.745L20.628,4.294L3.679,4.294L3.679,33.327L37.578,33.327L37.578,10.745ZM10.459,30.101L7.069,30.101L7.069,26.875L10.459,26.875ZM10.459,23.649L7.069,23.649L7.069,20.423L10.459,20.423ZM10.459,17.197L7.069,17.197L7.069,13.971L10.459,13.971ZM10.459,10.745L7.069,10.745L7.069,7.519l3.39,0zM17.238,30.101L13.848,30.101l0,-3.226l3.39,0zM17.238,23.649L13.848,23.649l0,-3.226l3.39,0zM17.238,17.197L13.848,17.197L13.848,13.971l3.39,0zM17.238,10.745L13.848,10.745L13.848,7.519l3.39,0zM34.188,30.101l-13.56,0l0,-3.226l3.39,0l0,-3.226l-3.39,0l0,-3.226l3.39,0L24.018,17.197L20.628,17.197L20.628,13.971l13.56,0zM30.798,17.197l-3.39,0l0,3.226l3.39,0zM30.798,23.649l-3.39,0l0,3.226l3.39,0z"
+        android:strokeAlpha="0.955" />
+</vector>

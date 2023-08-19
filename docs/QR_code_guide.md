@@ -1,24 +1,6 @@
-# QR code guide
-
-`qrencode -o qr_code.png "<QR content string>"`
-
-## Wifi QR code
-
-### Schema:
-```
-WIFI:S:<SSID>;T:WPA2;P:<PW>;;
-```
-
-Replace *\<SSID\>*, *\<PW\>* and notice semicolons.   
-    
-Use a QR code generator like <pre>qrencode</pre> or any other qr code tool for image generation.
-
-[More details](https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11)
-
-
 ## Device QR code
 
-**Schema (valid JSON-Format):** 
+**Schema (valid JSON-Format)**
 ```json
 {
      "user": "",
@@ -28,10 +10,10 @@ Use a QR code generator like <pre>qrencode</pre> or any other qr code tool for i
          "IPv4": "",
          "IPv6": ""
      }
- }
+}
 ```
 
-#### Description:
+#### Description
 
 - **user**:
     - *v1/v2c*: Community
@@ -70,6 +52,22 @@ Use a QR code generator like <pre>qrencode</pre> or any other qr code tool for i
     - *Note:* If you provide both IPv4 and IPv6 address, the app will use the latter.
 
 
-### Example qr codes:
-Have a look at the QR code generation file of valid (and invalid) strings for test purposes [test_qr_codes.sh](./Testnet/test_qr_codes.sh).
+### Example QR codes
 
+The following are valid JSON strings for device QR codes:
+
+```
+'{"user": "public","pw": "","enc": "","naddr": {"IPv4": "10.10.10.1:161","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "0;0;0;;privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "0;0;0;;privkey1","naddr": {"IPv4": "10.10.10.3:161","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "0;0;0;null;privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "10;0;0;null;privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "0;10;0;null;privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin1","pw": "authkey1","enc": "0;0;10;null;privkey1","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin2","pw": "authkey2","enc": "privkey2","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin2","pw": "authkey2","enc": "0;0;1;;privkey2","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin3","pw": "authkey3","enc": "","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin3","pw": "authkey3","enc": "1;;;;","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+'{"user": "sysadmin4","pw": "","enc": "2;;;;","naddr": {"IPv4": "10.10.10.3","IPv6": ""}}'
+```

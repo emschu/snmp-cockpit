@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ SNMP Cockpit Android App
+  ~ snmp-cockpit
   ~
-  ~ Copyright (C) 2018-2019
+  ~ Copyright (C) 2018-2023
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -13,20 +13,14 @@
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU General Public License for more details.
-  ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
+-->
 
 <resources>
-    <!-- default theme colors -->
-    <color name="colorViolet">#5a0e42</color>
-    <color name="colorPrimary">#5a0e42</color>
-    <!--<color name="colorPrimaryDark">#7B1FA2</color>-->
-    <color name="colorPrimaryDark">#330726</color>
-    <color name="colorTransparent">#00000000</color>
-    <color name="colorAccent">#5a0e42</color>
-    <color name="colorPrimaryTextLight">#aaffff</color>
-    <color name="drawerBackgroundColor">#ffffff</color>
-    <color name="colorWhite">#ffffff</color>
+    <color name="primaryColor">@color/design_default_color_primary</color>
+    <color name="secondaryColor">@color/design_default_color_secondary</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
