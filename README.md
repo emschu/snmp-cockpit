@@ -13,7 +13,7 @@ A free software GPL v3 Android SNMP reader app.
 - Show basic system information
 - Custom queries with your OIDs, in single-query and recursive-query mode
 - Integrated exchangeable MIB-Catalog (see documentation for more information)
-  - Use the built-in MIB catalog (RFC 1213 + common MIBs of *net-snmp*) or generate and import your own as
+  - Use the built-in MIB catalog (RFC 1213 + common MIBs of *net-snmp*) or generate and import your own as described [here](./docs/MIB_catalog_guide.md)
 - QR-code support for SNMP connections
 - No tracking, no ads
 
