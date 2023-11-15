@@ -166,7 +166,7 @@ dependencies {
 
     // project specific non-platform libs
     implementation project(":treeview")
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.0'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.github.mukeshsolanki:MarkdownView-Android:2.0.0'
     implementation "com.mikepenz:aboutlibraries-compose:$latestAboutLibsRelease"
