@@ -11,7 +11,7 @@ jobs:
     runs-on: macos-11
     strategy:
       matrix:
-        api-level: [23, 31]
+        api-level: [24, 31]
         target: [default]
     steps:
       - name: checkout
@@ -39,7 +39,7 @@ jobs:
           script: ./gradlew connectedCheck --stacktrace
 
       - name: Upload Reports
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Test-Reports
           path: app/build/reports
