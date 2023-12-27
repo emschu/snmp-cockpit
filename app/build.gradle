@@ -112,7 +112,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$coreKtxVersion"
 
     implementation "androidx.appcompat:appcompat:$appCompatVersion"
-    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation 'androidx.activity:activity-compose:1.8.2'
     implementation "com.google.android.material:material:$googleMaterialVersion"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinGradlePluginVersion"
@@ -120,7 +120,7 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
     implementation "androidx.compose.foundation:foundation-layout:$compose_version"
 
-    implementation "androidx.compose.material3:material3:1.1.1"
+    implementation "androidx.compose.material3:material3:1.1.2"
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
@@ -146,7 +146,7 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:$navigationComposeVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationComposeVersion"
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.work:work-runtime:2.8.1'
+    implementation 'androidx.work:work-runtime:2.9.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
 

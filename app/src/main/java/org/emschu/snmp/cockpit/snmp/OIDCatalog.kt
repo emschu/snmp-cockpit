@@ -83,15 +83,30 @@ object OIDCatalog {
      * @return
      */
     fun getAsnByOid(oid: String): String? {
+        val jsonCatalogItem = findItem(oid)
+        return jsonCatalogItem?.name
+    }
+
+    /**
+     * get description an oid and strip last number (usually index) of oid for catalog lookup
+     *
+     * @param oid
+     * @return
+     */
+    fun getSysDescrByOid(oid: String): String? {
+        val jsonCatalogItem = findItem(oid)
+        return jsonCatalogItem?.description
+    }
+
+    private fun findItem(oid: String): JsonCatalogItem? {
         var key = oid
         while (!mapOidKey.containsKey(key) && key.contains('.')) {
             key = oid.substring(0, key.lastIndexOf('.'))
         }
         if (key == "" || !mapOidKey.containsKey(key)) {
-            return ""
+            return null
         }
-        val jsonCatalogItem = mapOidKey[key]
-        return jsonCatalogItem?.name
+        return mapOidKey[key]
     }
 
     fun load(mibCatalogManager: MibCatalogManager) {
