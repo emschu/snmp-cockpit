@@ -8,7 +8,7 @@ buildscript {
         kotlin_version = '1.8.10'
         compilerExtensionVersion = '1.4.4'
         kotlinGradlePluginVersion = '1.8.10'
-        latestAboutLibsRelease = '10.8.3'
+        latestAboutLibsRelease = '10.9.1'
         navigationComposeVersion = '2.7.0'
         junitVersion = '4.13.2'
         espressoVersion = '3.5.0'
