@@ -33,7 +33,7 @@ android {
         applicationId "org.emschu.snmp.cockpit"
         minSdk 24
         targetSdk 34
-        versionCode 50
+        versionCode 52
         versionName versionCode.toString()
         resourceConfigurations += ['en', 'de']
 
