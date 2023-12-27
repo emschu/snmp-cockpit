@@ -20,6 +20,12 @@ jobs:
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
 
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "oracle"
+          java-version: "17"
+
       - name: AVD cache
         uses: actions/cache@v3
         id: avd-cache
