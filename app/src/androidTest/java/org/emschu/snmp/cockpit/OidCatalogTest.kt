@@ -36,7 +36,7 @@ class OidCatalogTest : AbstractCockpitAppTest() {
         Assert.assertEquals("laIndex", OIDCatalog.getAsnByOid("1.3.6.1.4.1.2021.10.1.1.1"))
 
         Assert.assertEquals("", OIDCatalog.getAsnByOid(""))
-        // these oid does not exist
+        // these oid do not exist
         Assert.assertEquals("", OIDCatalog.getAsnByOid("2.1"))
         Assert.assertEquals("ipAdEntAddr", OIDCatalog.getAsnByOid("1.3.6.1.2.1.4.20.1.1.192.168.178.21"))
     }

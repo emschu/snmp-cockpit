@@ -43,10 +43,6 @@ class SnmpCockpitApp : Application(), Configuration.Provider {
         dbHelper = CockpitDbHelper(context!!)
     }
 
-    override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder()
-        .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.DEBUG else android.util.Log.ERROR)
-        .build()
-
     companion object {
         @JvmStatic
         @SuppressLint("StaticFieldLeak")
@@ -83,4 +79,9 @@ class SnmpCockpitApp : Application(), Configuration.Provider {
 
         fun isConnectedToWifi(): Boolean = cockpitStateManager.networkAvailabilityObservable.value ?: true
     }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(if (BuildConfig.DEBUG) android.util.Log.DEBUG else android.util.Log.ERROR)
+            .build()
 }
