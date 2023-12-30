@@ -171,7 +171,7 @@ dependencies {
     implementation 'com.github.mukeshsolanki:MarkdownView-Android:2.0.0'
     implementation "com.mikepenz:aboutlibraries-compose:$latestAboutLibsRelease"
     implementation "com.mikepenz:aboutlibraries-core:$latestAboutLibsRelease"
-    implementation "commons-validator:commons-validator:1.7"
+    implementation "commons-validator:commons-validator:1.8.0"
     implementation 'org.snmp4j:snmp4j:3.7.7'
     implementation 'com.github.AppIntro:AppIntro:6.2.0'
 }
