@@ -151,7 +151,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinCoroutinesVersion"
 
     testImplementation "junit:junit:$junitVersion"
-    testImplementation "org.mockito:mockito-core:5.5.0"
+    testImplementation "org.mockito:mockito-core:5.11.0"
     testImplementation "androidx.lifecycle:lifecycle-runtime-testing:$lifecycleVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinCoroutinesVersion"
     androidTestImplementation 'androidx.test:core:1.5.0'
